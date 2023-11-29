@@ -7,6 +7,9 @@ const config: Config = {
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
+    transitionDuration: {
+      DEFAULT: '300ms'
+    },
     extend: {
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
@@ -30,6 +33,7 @@ const config: Config = {
       },
       colors: {
         'gray': '#373737',
+        'gray-dark': '#282828',
         'heavy': '#1B1B1B',
         'light': '#242424',
         'blue': '#545FE2',

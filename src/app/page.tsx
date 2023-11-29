@@ -11,10 +11,13 @@ import {
   faUsers,
   faEnvelope,
   faMagnifyingGlass,
-  faMicrophone, faVideo, faHeadphones, faBell, faGear
+  faMicrophone, faVideo, faHeadphones, faBell, faGear, faPhone, faEllipsisVertical
 } from "@fortawesome/free-solid-svg-icons";
-import MessageLink from "@/app/components/MessageLink";
 import MessagesSection from "@/app/components/MessagesSection";
+import SidebarIcon from "@/app/components/sidebar/SidebarIcon";
+import ProfileIcon from "@/app/components/ProfileIcon";
+import SmallIcon from "@/app/components/SmallIcon";
+import ChannelMain from "@/app/components/ChannelMain";
 
 interface HomeProps {
   // Add any specific props for the Home component here
@@ -24,23 +27,30 @@ const Home: React.FC<HomeProps> = () => {
   return (
       <div className="w-screen h-screen overflow-hidden flex flex-row">
         <aside className="w-0.5/10 h-screen flex flex-col py-4 bg-heavy text-white text-4">
-          <div className="flex flex-col gap-2 h-2/10 text-center justify-center items-center">
-            <div><FontAwesomeIcon icon={faDiscord} className="hover:text-green-600" /></div>
+          <div className="flex flex-col gap-4 h-2/10 text-center justify-center items-center">
+            <SidebarIcon title={'🏠 Home'} icon={<FontAwesomeIcon icon={faDiscord} />} />
             <hr className="w-1/3 text-heavily" />
-            <div><FontAwesomeIcon icon={faInbox} /></div>
-            <div><FontAwesomeIcon icon={faUsers} /></div>
+            <SidebarIcon title={'✉️ Inbox'} icon={<FontAwesomeIcon icon={faInbox} />} />
+            <SidebarIcon title={'👥 Friends'} icon={<FontAwesomeIcon icon={faUsers} />} />
             <hr className="w-1/3 text-heavily" />
           </div>
-          <div className="flex flex-col gap-2 h-6/10 text-center pt-4">
-            <div>S1</div>
-            <div>S1</div>
-            <div>S1</div>
-            <div>S1</div>
+          <div className="flex flex-col gap-2 h-full text-center items-center my-4 overflow-y-scroll no-scrollbar z-0">
+            <SidebarIcon title={''} icon={<Image className='w-2/3 rounded-3xl group-hover:rounded-xl transition-all ease-in' alt={'World War Community'} height={0} width={0} src={'/images/servers/wwc_gif_logo.gif'}/>} />
+            <SidebarIcon title={''} icon={<Image className='w-2/3 rounded-3xl group-hover:rounded-xl transition-all ease-in' alt={'World War Community'} height={0} width={0} src={'/images/servers/wwc_gif_logo.gif'}/>} />
+            <SidebarIcon title={''} icon={<Image className='w-2/3 rounded-3xl group-hover:rounded-xl transition-all ease-in' alt={'World War Community'} height={0} width={0} src={'/images/servers/wwc_gif_logo.gif'}/>} />
+            <SidebarIcon title={''} icon={<Image className='w-2/3 rounded-3xl group-hover:rounded-xl transition-all ease-in' alt={'World War Community'} height={0} width={0} src={'/images/servers/wwc_gif_logo.gif'}/>} />
+            <SidebarIcon title={''} icon={<Image className='w-2/3 rounded-3xl group-hover:rounded-xl transition-all ease-in' alt={'World War Community'} height={0} width={0} src={'/images/servers/wwc_gif_logo.gif'}/>} />
+            <SidebarIcon title={''} icon={<Image className='w-2/3 rounded-3xl group-hover:rounded-xl transition-all ease-in' alt={'World War Community'} height={0} width={0} src={'/images/servers/wwc_gif_logo.gif'}/>} />
+            <SidebarIcon title={''} icon={<Image className='w-2/3 rounded-3xl group-hover:rounded-xl transition-all ease-in' alt={'World War Community'} height={0} width={0} src={'/images/servers/wwc_gif_logo.gif'}/>} />
+            <SidebarIcon title={''} icon={<Image className='w-2/3 rounded-3xl group-hover:rounded-xl transition-all ease-in' alt={'World War Community'} height={0} width={0} src={'/images/servers/wwc_gif_logo.gif'}/>} />
+            <SidebarIcon title={''} icon={<Image className='w-2/3 rounded-3xl group-hover:rounded-xl transition-all ease-in' alt={'World War Community'} height={0} width={0} src={'/images/servers/wwc_gif_logo.gif'}/>} />
+            <SidebarIcon title={''} icon={<Image className='w-2/3 rounded-3xl group-hover:rounded-xl transition-all ease-in' alt={'World War Community'} height={0} width={0} src={'/images/servers/wwc_gif_logo.gif'}/>} />
           </div>
-          <div className="flex flex-col gap-2 h-2/10 text-center justify-center items-center">
-            <div><img className="w-[3dvw] rounded-full" src="https://openseauserdata.com/files/3085b3fc65f00b28699b43efb4434eec.png" alt="profile picture" /><div className="group-hover:border-blue relative bottom-6 left-10 border-2 border-light bg-green-500 h-6 w-6 text-lg rounded-full text-white"></div></div>
-            <div><FontAwesomeIcon icon={faBell} /></div>
-            <div><FontAwesomeIcon icon={faGear} /></div>
+          <div className="flex flex-col gap-4 h-2/10 text-center justify-center items-center">
+            <hr className="w-1/3 text-heavily" />
+            <ProfileIcon imageUrl={'/images/users/atrih.png'} status={'online'} />
+            <SidebarIcon title={'🔔 Notifications'} icon={<FontAwesomeIcon icon={faBell} />} />
+            <SidebarIcon title={'⚙️ Settings'} icon={<FontAwesomeIcon icon={faGear} />} />
           </div>
         </aside>
         <main className="w-full h-screen flex flex-row">
@@ -69,24 +79,23 @@ const Home: React.FC<HomeProps> = () => {
 
             <div className="w-full text-center h-1/10 border-t-2 border-blue flex flex-row justify-between px-4">
               <div className="flex flex-row items-center justify-center gap-2">
-                <img className="w-[3dvw] rounded-full" src="https://openseauserdata.com/files/3085b3fc65f00b28699b43efb4434eec.png" alt="profile picture" />
+                <ProfileIcon imageUrl={'/images/users/atrih.png'} status={'online'} />
                 <div className="flex flex-col justify-between text-start">
                   <span>Mia</span>
                   <span className="text-lightly">#2007</span>
                 </div>
               </div>
               <div className="flex flex-row gap-4 items-center">
-                <div><FontAwesomeIcon icon={faMicrophone} className="text-2 text-lightly" /></div>
-                <div><FontAwesomeIcon icon={faVideo} className="text-2 text-lightly" /></div>
-                <div><FontAwesomeIcon icon={faHeadphones} className="text-2 text-lightly" /></div>
+                <SmallIcon icon={<FontAwesomeIcon icon={faMicrophone} />} />
+                <SmallIcon icon={<FontAwesomeIcon icon={faVideo} />} />
+                <SmallIcon icon={<FontAwesomeIcon icon={faHeadphones} />} />
               </div>
             </div>
 
           </section>
 
-          <section className="w-8/10 bg-gray h-full">
+          <ChannelMain />
 
-          </section>
         </main>
       </div>
   );

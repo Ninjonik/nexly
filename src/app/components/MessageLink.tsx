@@ -18,16 +18,16 @@ const MessageLink: FC<MessageLinkProps> = ({ typing, time, notifications }) => (
             <div className="flex flex-col justify-between w-7/10">
                 <h3 className="text-lg font-bold">Leila</h3>
                 {typing ?
-                    <span className="italic text-sm text-blue">Typing...</span>
+                    <span className="italic text-md text-blue">Typing...</span>
                     :
-                    <span className="text-sm text-lightly">OK! See ya tomorrow!</span>
+                    <span className="text-md text-lightly">OK! See ya tomorrow!</span>
                 }
 
             </div>
 
             <div className="flex flex-col justify-between items-end w-3/10">
                 {time ? <h3 className="text-md text-lightly font-bold">8:30 PM</h3> : null}
-                {notifications ? <span className="text-center bg-blue h-[2dvh] w-[1dvw] text-sm rounded-full text-white">{ notifications }</span> : null}
+                {notifications ? <span className="text-center bg-blue h-[1dvw] w-[1dvw] text-md rounded-full text-white">{ notifications }</span> : null}
             </div>
         </div>
     </div>

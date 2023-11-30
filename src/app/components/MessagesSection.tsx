@@ -1,3 +1,5 @@
+"use client"
+
 import React, {FC, ReactNode} from 'react';
 import MessageLink from "@/app/components/MessageLink";
 

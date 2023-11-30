@@ -52,6 +52,10 @@ const config: Config = {
         '50': '50dvh',
         '75': '75dvh',
         '100': '100dvh',
+        'sm': '0.5dvw',
+        'md': '0.75dvw',
+        'lg': '1dvw',
+        'xl': '1.25dvw',
       }
     },
   },

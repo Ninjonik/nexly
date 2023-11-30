@@ -61,7 +61,7 @@ const Home: React.FC<HomeProps> = () => {
                 <FontAwesomeIcon icon={faPenToSquare} className="text-blue text-4" />
               </div>
 
-              <div className="relative">
+              <div className="relative text-lightly">
                 <input type="text" className="pl-10 pr-4 py-2 border rounded-lg bg-gray border-none w-full" placeholder="Search" />
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none bg-gray rounded-lg">
                     <FontAwesomeIcon icon={faMagnifyingGlass} className="text-gray-400" />
@@ -69,7 +69,7 @@ const Home: React.FC<HomeProps> = () => {
               </div>
             </div>
 
-            <div className="h-8/10 flex flex-col gap-8 text-white p-6">
+            <div className="h-7/10 flex flex-col gap-8 text-white p-6">
 
               <MessagesSection icon={<FontAwesomeIcon className="text-blue pr-4" icon={faThumbtack} />} title="Pinned" />
 

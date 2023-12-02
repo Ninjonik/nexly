@@ -12,9 +12,9 @@ interface ChannelMessageProps {
 }
 
 const ChannelMessage: FC<ChannelMessageProps> = ({ typing, time, user }) => (
-    <div className='w-full flex flex-row gap-[0.5dvw]'>
+    <div className='w-full flex flex-row gap-[0.5dvw] h-[6dvh]'>
         <ProfileIcon imageUrl={'/images/users/atrih.png'} size={'3dvw'}/>
-        <div className='w-full flex flex-col justify-center'>
+        <div className='w-9/10 flex flex-col justify-center'>
             <div className='flex flex-row gap-[0.5dvw] items-center'>
                 <h4 className='font-bold text-xl'>Turcute</h4>
                 <span className='text-lightly text-md'>{formatTimestampToTime(time)}</span>

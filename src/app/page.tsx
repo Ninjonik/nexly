@@ -62,15 +62,15 @@ const Home: React.FC<HomeProps> = () => {
             <header className='h-1/10 flex flex-col justify-center gap-8 p-6'>
                 <div className="flex flex-row justify-between">
                   <h2 className="text-3">Messages</h2>
-                  <FontAwesomeIcon icon={faPenToSquare} className="text-blue text-4" />
+                  <FontAwesomeIcon icon={faPenToSquare} className="text-blue text-3" />
                 </div>
             </header>
 
-            <article className='h-9/10 w-full p-6'>
+            <article className='h-9/10 w-full'>
 
-              <FormInput icon={<FontAwesomeIcon icon={faMagnifyingGlass} className="text-gray-400" />}  title={'Search'} />
+              <div className="h-9/10 flex flex-col gap-8 text-white pt-[2dvh] px-6">
 
-              <div className="h-9/10 flex flex-col gap-8 text-white pt-[2dvh]">
+                <FormInput icon={<FontAwesomeIcon icon={faMagnifyingGlass} className="text-gray-400" />}  title={'Search'} />
 
                 <MessagesSection icon={<FontAwesomeIcon className="text-blue pr-4" icon={faThumbtack} />} title="Pinned" />
 

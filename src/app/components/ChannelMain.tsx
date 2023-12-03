@@ -25,7 +25,7 @@ const ChannelMain: FC<ChannelMainProps> = ({}) => (
     <section className="w-8/10 bg-gray h-full flex flex-col">
 
         <header className='h-1/10 w-full bg-light flex flex-row justify-between p-4 px-8'>
-            <div className='flex flex-row gap-2 w-1/2'>
+            <div className='flex flex-row gap-2 w-1/2 items-center'>
                 <ProfileIcon imageUrl={'/images/users/atrih.png'} size={'3dvw'} />
                 <div className='flex flex-col justify-center'>
                     <h3 className='text-xl font-bold'>Stay Woke</h3>
@@ -57,6 +57,18 @@ const ChannelMain: FC<ChannelMainProps> = ({}) => (
                     <ChannelMessage time={1701376127} />
                     <ChannelMessage time={1701376127} />
                     <ChannelMessage time={1801371147} />
+                    <ChannelMessage time={1801371147} />
+                    <ChannelMessage time={1801371147} />
+                    <ChannelMessage time={1801371147} />
+                    <ChannelMessage time={1801371147} />
+                    <ChannelMessage time={1801371147} />
+                    <ChannelMessage time={1801371147} />
+                    <ChannelMessage time={1801371147} />
+                    <ChannelMessage time={1801371147} />
+                    <ChannelMessage time={1801371147} />
+                    <ChannelMessage time={1801371147} />
+                    <ChannelMessage time={1801371147} />
+                    <ChannelMessage time={1801371147} />
 
                 </div>
 
@@ -74,7 +86,7 @@ const ChannelMain: FC<ChannelMainProps> = ({}) => (
 
                 <FormInput icon={<FontAwesomeIcon icon={faFileLines} className="text-gray-400" />}  title={'Description'} />
 
-                <div className='flex flex-col gap-[0.5dvw]'>
+                <div className='flex flex-col gap-[0.5dvw] text-2'>
                     <div className='flex flex-row justify-between'>
                         <div className=""><FontAwesomeIcon icon={faUser} className="text-blue pr-[0.5dvw]" /> Members (8)</div>
                         <a href='#' className='text-blue hover:text-lightly transition-all'>Add</a>

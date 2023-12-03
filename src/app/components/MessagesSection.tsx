@@ -12,11 +12,11 @@ interface MessagesSectionProps {
 const MessagesSection: FC<MessagesSectionProps> = ({ title, icon }) => (
     <div className="flex flex-col gap-2 w-full">
 
-        <div className="text-lightly">{icon} { title }</div>
+        <div className="text-lightly text-2">{icon} { title }</div>
 
         <MessageLink  notifications={1} time={Date.now()} typing={false}/>
 
-        <hr className="w-full text-heavily my-2" />
+        <hr className="w-full text-heavily my-2 text-2" />
 
         <MessageLink  notifications={0} time={Date.now()} typing={true}/>
 

@@ -25,7 +25,7 @@ const handleStatusColor = (status: "online" | "offline" | "away" | "dnd") => {
 // @ts-ignore
 const ProfileIcon: FC<ProfileIconProps> = ({ imageUrl, status, size }) => (
     <div className={`w-[${size ?? '3dvw'}] h-[${size ?? '3dvw'}] relative group`}>
-        <Image className={`rounded-full`} fill={true} src={imageUrl} alt={'user icon'}/>
+        <Image src={imageUrl} width="0" height="0" sizes={`${size ?? '3dvw'}`} className="w-full h-full rounded-full" alt={'user icon'}/>
         {status && (
             <div className={`w-[1dvw] h-[1dvw] bottom-[0.1dvw] left-[2dvw] group-hover:border-blue absolute border-2 border-light rounded-full ${handleStatusColor(status)}`} ></div>
         )}</div>

@@ -37,6 +37,7 @@ const config: Config = {
         'heavy': '#1B1B1B',
         'light': '#242424',
         'blue': '#545FE2',
+        'blue-hover': '#544DD0',
         'lightly': '#7A7A7A',
         'heavily': '#464646',
       },

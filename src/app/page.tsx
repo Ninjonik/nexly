@@ -10,7 +10,7 @@ interface HomeProps {
 
 const Home: React.FC<HomeProps> = () => {
 
-  const loggedIn = true
+  const loggedIn = false
 
   return (
       loggedIn ? (

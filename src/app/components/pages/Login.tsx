@@ -54,8 +54,8 @@ const Login: FC<LoginProps> = ({}) => {
                 onSubmit={handleSubmit}
             >
                 <h1 className='text-4 text-white'>Welcome Back!</h1>
-                <FormInput title={'Username'} icon={<FontAwesomeIcon icon={faUser} />} ref={username} />
-                <FormInput title={'Password'} icon={<FontAwesomeIcon icon={faLock} />} inputType={'password'} ref={password} />
+                <FormInput title={'Username'} icon={<FontAwesomeIcon icon={faUser} />} ref={username} required={true} />
+                <FormInput title={'Password'} icon={<FontAwesomeIcon icon={faLock} />} inputType={'password'} ref={password} required={true} />
                 <PrimaryButton title={'Log In'} type='submit' />
             </form>
         </main>

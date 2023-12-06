@@ -14,7 +14,11 @@
     "@fortawesome/free-regular-svg-icons": "^6.5.0",
     "@fortawesome/free-solid-svg-icons": "^6.5.0",
     "@fortawesome/react-fontawesome": "^0.2.0",
+    "@types/js-cookie": "^3.0.6",
+    "appwrite": "^13.0.1",
+    "js-cookie": "^3.0.5",
     "next": "14.0.3",
+    "next-client-cookies": "^1.1.0",
     "react": "^18",
     "react-dom": "^18",
     "react-fontawesome": "^1.7.1"

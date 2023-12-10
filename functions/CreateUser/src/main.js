@@ -12,6 +12,8 @@ export default async ({ req, res, log, error }) => {
       // Parse the request body to get the new user details
       const newUser = req.body;
 
+      console.log(newUser)
+
       // Get the user ID and username from the new user data
       const authId = newUser.$id; // Assuming $id contains the user ID
       const username = newUser.username;

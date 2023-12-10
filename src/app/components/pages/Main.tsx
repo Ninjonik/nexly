@@ -19,18 +19,20 @@ import MessagesSection from "@/app/components/MessagesSection";
 import SmallIcon from "@/app/components/SmallIcon";
 import ChannelMain from "@/app/components/ChannelMain";
 import React, {FC} from "react";
-
-
+import logout from "@/app/utils/logout";
+import User from "@/app/utils/interfaces/User";
 
 interface MainProps {
+    loggedInUser: User | null,
+    setLoggedInUser:  React.Dispatch<React.SetStateAction<User | null>>
 }
 
-const Main: FC<MainProps> = ({}) => (
+const Main: FC<MainProps> = ({ loggedInUser, setLoggedInUser }) => (
 
 <div className="w-screen h-screen overflow-hidden flex flex-row">
     <aside className="w-0.5/10 h-screen flex flex-col py-4 bg-heavy text-white text-4">
         <div className="flex flex-col gap-4 h-2/10 text-center justify-center items-center">
-            <SidebarIcon title={'🏠 Home'} icon={<FontAwesomeIcon icon={faDiscord} />} />
+            <SidebarIcon title={'🏠 Home'} icon={<FontAwesomeIcon icon={faDiscord} onClick={async () => setLoggedInUser(await logout())} />} />
             <hr className="w-1/3 text-heavily" />
             <SidebarIcon title={'✉️ Inbox'} icon={<FontAwesomeIcon icon={faInbox} />} />
             <SidebarIcon title={'👥 Friends'} icon={<FontAwesomeIcon icon={faUsers} />} />
@@ -82,7 +84,7 @@ const Main: FC<MainProps> = ({}) => (
                     <div className="flex flex-row items-center justify-center gap-2">
                         <ProfileIcon imageUrl={'/images/users/atrih.png'} status={'online'} />
                         <div className="flex flex-col justify-between text-start text-2">
-                            <span>Mia</span>
+                            <span>{loggedInUser?.name}</span>
                             <span className="text-lightly">#2007</span>
                         </div>
                     </div>

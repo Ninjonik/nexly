@@ -7,9 +7,7 @@ import LoginPage from "@/app/components/pages/Login";
 import login from "@/app/utils/login";
 import Loading from "@/app/loading";
 
-interface User {
-    name: string;
-}
+import User from "@/app/utils/interfaces/User";
 
 interface HomeProps {}
 
@@ -38,7 +36,7 @@ const Home: React.FC<HomeProps> = () => {
 
     return (
         loggedInUser ? (
-            <Main />
+            <Main setLoggedInUser={setLoggedInUser} loggedInUser={loggedInUser} />
           ) : (
             <LoginPage setLoggedInUser={setLoggedInUser} loggedInUser={loggedInUser} />
           )

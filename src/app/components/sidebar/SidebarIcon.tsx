@@ -5,10 +5,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 interface SidebarIconProps {
     title: string;
     icon: ReactNode;
+    onClickFn?: () => void;
 }
 
-const SidebarIcon: FC<SidebarIconProps> = ({ title, icon }) => (
-    <div className="flex items-center group relative">
+const SidebarIcon: FC<SidebarIconProps> = ({ title, icon, onClickFn = () => {} }) => (
+    <button className="flex items-center group relative" onClick={onClickFn}>
         <div className="bg-blue h-6 w-8 rounded-md absolute left-[-1.25dvw] group-hover:h-8 transition-all invisible"></div>
         <div className="text-white group-hover:text-blue transition-all ease-linear cursor-pointer flex justify-center relative z-10 text-3">
             {icon}
@@ -18,7 +19,7 @@ const SidebarIcon: FC<SidebarIconProps> = ({ title, icon }) => (
                 {title}
             </div>
         )}
-    </div>
+    </button>
 );
 
 export default SidebarIcon;

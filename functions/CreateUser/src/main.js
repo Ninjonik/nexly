@@ -26,7 +26,7 @@ export default async ({ req, res, log, error }) => {
           }
       );
 
-      log('New user record created:', userRecord);
+      // log('New user record created:', userRecord);
 
       return res.json({
         success: true,

@@ -1,29 +1,53 @@
-import { Client } from 'node-appwrite';
+import {Client, Databases, ID} from "appwrite";
 
-// This is your Appwrite function
-// It's executed each time we get a request
 export default async ({ req, res, log, error }) => {
-  // Why not try the Appwrite SDK?
-  //
-  // const client = new Client()
-  //    .setEndpoint('https://cloud.appwrite.io/v1')
-  //    .setProject(process.env.APPWRITE_FUNCTION_PROJECT_ID)
-  //    .setKey(process.env.APPWRITE_API_KEY);
+  const client = new Client()
+      .setEndpoint(process.env.APPWRITE_ENDPOINT)
+      .setProject(process.env.APPWRITE_PROJECT)
 
-  // You can log messages to the console
-  log('Hello, Logs!');
+  const databases = new Databases(client);
 
-  // If something goes wrong, log an error
-  error('Hello, Errors!');
+  if (req.method === 'POST') {
+    try {
+      // Parse the request body to get the new user details
+      const newUser = req.body;
 
-  // The `req` object contains the request data
-  if (req.method === 'GET') {
-    // Send a response with the res object helpers
-    // `res.send()` dispatches a string back to the client
-    return res.send('Hello, World!');
+      // Get the user ID and username from the new user data
+      const authId = newUser.$id; // Assuming $id contains the user ID
+      const username = newUser.username;
+
+      // Create a new record in the 'users' collection in the 'nexly' database
+      const userRecord = await databases.createDocument(
+          process.env.APPWRITE_FUNCTION_DATABASE_ID,
+          'users',
+          ID.unique(),
+          {
+            authId,
+            username,
+          }
+      );
+
+      // Log the newly created user record
+      log('New user record created:', userRecord);
+
+      // Send a response indicating success
+      return res.json({
+        success: true,
+        message: 'User record created successfully',
+      });
+    } catch (err) {
+      // Log any errors that occur during the process
+      error('Error creating user record:', err);
+
+      // Send a response indicating failure
+      return res.json({
+        success: false,
+        message: 'Error creating user record',
+      });
+    }
   }
 
-  // `res.json()` is a handy helper for sending JSON
+  // If the request method is not 'POST', send a default response
   return res.json({
     motto: 'Build like a team of hundreds_',
     learn: 'https://appwrite.io/docs',

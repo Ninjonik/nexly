@@ -14,15 +14,15 @@ export default async ({ req, res, log, error }) => {
       console.log(newUser);
 
       const authId = newUser.$id;
-      const email = newUser.name;
+      const name = newUser.name;
 
       const userRecord = await database.createDocument(
           process.env.APPWRITE_FUNCTION_DATABASE_ID,
           process.env.APPWRITE_FUNCTION_COLLECTION_ID,
           ID.unique(),
           {
-            authId,
-            email,
+            "authId": authId,
+            "username": name,
           }
       );
 

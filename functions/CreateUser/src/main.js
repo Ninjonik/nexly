@@ -9,17 +9,16 @@ export default async ({ req, res, log, error }) => {
   const database = new Databases(client);
 
   if (req.method === 'POST') {
-    try {
-      const newUser = req.body;
+    try {const newUser = req.body;
 
-      log(newUser);
+      console.log(newUser);
 
       const authId = newUser.$id;
       const email = newUser.name;
 
       const userRecord = await database.createDocument(
           process.env.APPWRITE_FUNCTION_DATABASE_ID,
-          'users',
+          process.env.APPWRITE_FUNCTION_COLLECTION_ID,
           ID.unique(),
           {
             authId,
@@ -35,16 +34,20 @@ export default async ({ req, res, log, error }) => {
       });
     } catch (err) {
       error('Error creating user record:', err);
+      error(err.message)
 
       return res.json({
         success: false,
         message: 'Error creating user record',
+        error: err.message || 'Unknown error',
       });
     }
   }
 
   return res.json({
-    success: false,
-    message: 'Invalid method',
+    motto: 'Build like a team of hundreds_',
+    learn: 'https://appwrite.io/docs',
+    connect: 'https://appwrite.io/discord',
+    getInspired: 'https://builtwith.appwrite.io',
   });
 };

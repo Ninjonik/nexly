@@ -1,25 +1,26 @@
-import {Client, Databases, ID} from "appwrite";
+import { Client, Databases } from 'node-appwrite';
 
 export default async ({ req, res, log, error }) => {
   const client = new Client()
       .setEndpoint(process.env.APPWRITE_ENDPOINT)
       .setProject(process.env.APPWRITE_PROJECT)
+      .setKey(process.env.APPWRITE_KEY);
 
-  const databases = new Databases(client);
+  const database = new Databases(client);
 
   if (req.method === 'POST') {
     try {
       // Parse the request body to get the new user details
       const newUser = req.body;
 
-      console.log(newUser)
+      console.log(newUser);
 
       // Get the user ID and username from the new user data
       const authId = newUser.$id; // Assuming $id contains the user ID
       const username = newUser.username;
 
       // Create a new record in the 'users' collection in the 'nexly' database
-      const userRecord = await databases.createDocument(
+      const userRecord = await database.createDocument(
           process.env.APPWRITE_FUNCTION_DATABASE_ID,
           'users',
           ID.unique(),

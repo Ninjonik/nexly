@@ -21,7 +21,7 @@ export default async ({ req, res, log, error }) => {
           'users',
           ID.unique(),
           {
-            "authId": authId,
+            "authID": authId,
             "username": name,
           }
       );

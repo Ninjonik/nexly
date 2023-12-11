@@ -19,6 +19,9 @@ const Home: React.FC<HomeProps> = () => {
         const storedEmail = Cookies.get("email");
         const storedPassword = Cookies.get("password");
 
+        // TODO: spraviť aby sa v cookies ukladali celé userData
+        // TODO: po update sa vymažú a spravia nové
+
         const loginCookies = async (storedEmail: string, storedPassword: string) => {
             setLoggedInUser(await login(storedEmail, storedPassword));
         };

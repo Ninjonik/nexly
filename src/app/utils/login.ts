@@ -1,5 +1,6 @@
 import {account, databases} from "@/app/appwrite";
 import Cookies from "js-cookie";
+import {Query} from "appwrite";
 
 const login = async (email: string, password: string) => {
     const session = await account.createEmailSession(email, password);
@@ -8,9 +9,13 @@ const login = async (email: string, password: string) => {
     Cookies.set("password", password, { expires: 7 });
     // TODO: Encrypt stored passwords
 
-    await databases.getDocument('[DATABASE_ID]', '[COLLECTION_ID]', '[DOCUMENT_ID]');
+    const authAccount = await account.get()
 
-    return await account.get();
+    const dbAccount = await databases.listDocuments('nexly', 'users', [
+        Query.equal('authID', authAccount.$id)
+    ])
+    console.log('DBACCOUNT:', dbAccount)
+    return authAccount;
 
 };
 

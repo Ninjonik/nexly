@@ -23,7 +23,7 @@ const Home: React.FC<HomeProps> = () => {
             setLoggedInUser(await login(storedEmail, storedPassword));
         };
 
-        if (storedEmail && storedPassword) {
+        if (storedEmail && storedPassword && !loggedInUser) {
             loginCookies(storedEmail, storedPassword).then(r => setLoading(false))
         } else {
             setLoading(false);

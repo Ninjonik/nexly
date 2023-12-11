@@ -2,9 +2,12 @@ import { NextApiRequest } from 'next';
 import {databases} from "@/app/appwrite_server";
 import {Query} from "appwrite";
 
+const database = process.env.NEXT_PUBLIC_APPWRITE_DB_NAME
+
 const getUser = async (authID: string) => {
+    if(!database) return null;
     try {
-        const result = await databases.listDocuments('nexly', 'users',
+        const result = await databases.listDocuments(database, 'users',
             [
                 Query.equal('authID', authID)
             ]

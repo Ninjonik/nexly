@@ -21,9 +21,10 @@ import ChannelMain from "@/app/components/ChannelMain";
 import React, {FC} from "react";
 import logout from "@/app/utils/logout";
 import User from "@/app/utils/interfaces/User";
+import getAvatar from "@/app/utils/getAvatar";
 
 interface MainProps {
-    loggedInUser: User | null,
+    loggedInUser: User,
     setLoggedInUser:  React.Dispatch<React.SetStateAction<User | null>>
 }
 
@@ -52,7 +53,7 @@ const Main: FC<MainProps> = ({ loggedInUser, setLoggedInUser }) => (
         </div>
         <div className="flex flex-col gap-4 h-2/10 text-center justify-center items-center">
             <hr className="w-1/3 text-heavily" />
-            <ProfileIcon imageUrl={'/images/users/atrih.png'} status={'online'} />
+            <ProfileIcon imageUrl={getAvatar(loggedInUser.avatarPath)} status={'online'} />
             <SidebarIcon title={'🔔 Notifications'} icon={<FontAwesomeIcon icon={faBell} />} />
             <SidebarIcon title={'⚙️ Settings'} icon={<FontAwesomeIcon icon={faGear} />} />
         </div>
@@ -82,10 +83,10 @@ const Main: FC<MainProps> = ({ loggedInUser, setLoggedInUser }) => (
 
                 <div className="w-full text-center h-1/10 border-t-2 border-blue flex flex-row justify-between px-4">
                     <div className="flex flex-row items-center justify-center gap-2">
-                        <ProfileIcon imageUrl={'/images/users/atrih.png'} status={'online'} />
+                        <ProfileIcon imageUrl={getAvatar(loggedInUser.avatarPath)} status={'online'} />
                         <div className="flex flex-col justify-between text-start text-2">
-                            <span>{loggedInUser?.name}</span>
-                            <span className="text-lightly">#2007</span>
+                            <span>{loggedInUser.name}</span>
+                            <span className="text-lightly">#{loggedInUser.$id.slice(0,4)}</span>
                         </div>
                     </div>
                     <div className="flex flex-row gap-4 items-center">

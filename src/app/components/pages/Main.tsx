@@ -74,9 +74,9 @@ const Main: FC<MainProps> = ({ loggedInUser, setLoggedInUser }) => (
 
                     <FormInput icon={<FontAwesomeIcon icon={faMagnifyingGlass} className="text-gray-400" />}  title={'Search'} />
 
-                    <MessagesSection icon={<FontAwesomeIcon className="text-blue pr-4" icon={faThumbtack} />} title="Pinned" />
+                    <MessagesSection icon={<FontAwesomeIcon className="text-blue pr-4" icon={faThumbtack} />} title="Pinned" loggedInUser={loggedInUser} />
 
-                    <MessagesSection icon={<FontAwesomeIcon className="text-blue pr-4" icon={faEnvelope} />} title="Messages" />
+                    <MessagesSection icon={<FontAwesomeIcon className="text-blue pr-4" icon={faEnvelope} />} title="Groups" loggedInUser={loggedInUser} />
 
                 </div>
 

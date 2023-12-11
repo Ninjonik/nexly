@@ -1,11 +1,12 @@
-import {Account, Client, Functions} from 'appwrite';
+import {Account, Client, Functions, Databases} from 'appwrite';
 
 const appwriteEndpoint = process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT;
 const appwriteProject = process.env.NEXT_PUBLIC_APPWRITE_PROJECT;
 const appwriteKey = process.env.APPWRITE_KEY;
 
 export const client = new Client();
-const functions = new Functions(client)
+export const databases = new Databases(client);
+export const functions = new Functions(client)
 
 if (appwriteEndpoint && appwriteProject) {
     client

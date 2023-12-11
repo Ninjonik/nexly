@@ -2,14 +2,16 @@
 
 import React, {FC, ReactNode} from 'react';
 import MessageLink from "@/app/components/MessageLink";
+import User from "@/app/utils/interfaces/User";
 
 
 interface MessagesSectionProps {
     title: string,
     icon: ReactNode,
+    loggedInUser: User | null,
 }
 
-const MessagesSection: FC<MessagesSectionProps> = ({ title, icon }) => (
+const MessagesSection: FC<MessagesSectionProps> = ({ title, icon, loggedInUser }) => (
     <div className="flex flex-col gap-2 w-full">
 
         <div className="text-lightly text-2">{icon} { title }</div>

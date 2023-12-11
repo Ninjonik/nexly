@@ -34,6 +34,8 @@ const Home: React.FC<HomeProps> = () => {
         return <Loading />;
     }
 
+    console.log(loggedInUser)
+
     return (
         loggedInUser ? (
             <Main setLoggedInUser={setLoggedInUser} loggedInUser={loggedInUser} />

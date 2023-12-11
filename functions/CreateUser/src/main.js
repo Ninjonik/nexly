@@ -17,8 +17,8 @@ export default async ({ req, res, log, error }) => {
       const name = newUser.name;
 
       const userRecord = await database.createDocument(
-          process.env.APPWRITE_FUNCTION_DATABASE_ID,
-          process.env.APPWRITE_FUNCTION_COLLECTION_ID,
+          'nexly',
+          'users',
           ID.unique(),
           {
             "authId": authId,

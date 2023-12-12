@@ -2,35 +2,59 @@
 
 import React, { FC } from 'react';
 import ProfileIcon from "@/app/components/ProfileIcon";
+import GroupsInterface from '../utils/interfaces/GroupsInterface';
+import {useEffect} from 'react';
+import {databases} from "@/app/appwrite";
+import { Query } from 'appwrite';
 
 
 interface MessageLinkProps {
     typing: boolean,
     time: number,
     notifications: number,
+    group: GroupsInterface,
 }
 
-const MessageLink: FC<MessageLinkProps> = ({ typing, time, notifications }) => (
-    <div className="flex flex-row justify-between items-center gap-4 group">
-        <ProfileIcon imageUrl={'/images/users/atrih.png'} status={'online'} />
+const database = process.env.NEXT_PUBLIC_APPWRITE_DB_NAME
 
-        <div className="flex flex-row justify-between w-8/10">
-            <div className="flex flex-col justify-between w-7/10">
-                <h3 className="text-lg font-bold">Leila</h3>
-                {typing ?
-                    <span className="italic text-md text-blue">Typing...</span>
-                    :
-                    <span className="text-md text-lightly">OK! See ya tomorrow!</span>
-                }
+const MessageLink: FC<MessageLinkProps> = ({ typing, time, notifications, group }) => {
 
-            </div>
+    if(!database){
+        return "<div>No database configured!</div>"
+    }
 
-            <div className="flex flex-col justify-between items-end w-3/10">
-                {time ? <h3 className="text-md text-lightly font-bold">8:30 PM</h3> : null}
-                {notifications ? <span className="text-center bg-blue h-[1dvw] w-[1dvw] text-md rounded-full text-white">{ notifications }</span> : null}
+    useEffect(() => {
+
+        let message = null
+
+        const fetchMessage = async () => {
+            message = await databases.listDocuments(database, 'groups', [Query.equal('', '')]);
+        }
+
+    }, []);
+
+    return (
+        <div className="flex flex-row justify-between items-center gap-4 group">
+            <ProfileIcon imageUrl={'/images/users/atrih.png'} status={'online'} />
+
+            <div className="flex flex-row justify-between w-8/10">
+                <div className="flex flex-col justify-between w-7/10">
+                    <h3 className="text-lg font-bold">Leila</h3>
+                    {typing ?
+                        <span className="italic text-md text-blue">Typing...</span>
+                        :
+                        <span className="text-md text-lightly">OK! See ya tomorrow!</span>
+                    }
+
+                </div>
+
+                <div className="flex flex-col justify-between items-end w-3/10">
+                    {time ? <h3 className="text-md text-lightly font-bold">8:30 PM</h3> : null}
+                    {notifications ? <span className="text-center bg-blue h-[1dvw] w-[1dvw] text-md rounded-full text-white">{ notifications }</span> : null}
+                </div>
             </div>
         </div>
-    </div>
-);
+    )
+};
 
 export default MessageLink;

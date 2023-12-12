@@ -3,16 +3,17 @@ import Cookies from "js-cookie";
 import UsersInterface from "@/app/utils/interfaces/UsersInterface";
 
 const login = async (email: string, password: string) => {
-    let authAccount: any = await account.get()
 
-    if (!authAccount){
+    let authAccount: any
+
+    try {
+        authAccount = await account.get()
+    } catch (e) {
         await account.createEmailSession(email, password)
         authAccount = await account.get()
         Cookies.set("email", email, { expires: 7 })
         Cookies.set("password", password, { expires: 7 })
     }
-
-    // TODO: Encrypt stored passwords
 
     try {
         const response = await fetch(`/api/getUser/${authAccount.$id}`, {

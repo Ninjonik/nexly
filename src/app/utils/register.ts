@@ -4,8 +4,8 @@ import {redirect} from "next/navigation";
 
 const register = async (name: string, email: string, password: string) => {
     await account.create(ID.unique(), email, password, name);
-    await login(email, password);
-    return('/');
+    const result = await login(email, password);
+    return result;
 };
 
 export default register;

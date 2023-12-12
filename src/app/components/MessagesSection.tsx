@@ -5,7 +5,7 @@ import MessageLink from "@/app/components/MessageLink";
 import User from "@/app/utils/interfaces/User";
 import {databases} from "@/app/appwrite";
 import { Query } from 'appwrite';
-import GroupsInterface from '../utils/interfaces/GroupsInterface';
+import GroupInterface from '../utils/interfaces/GroupInterface';
 
 
 interface MessagesSectionProps {
@@ -36,7 +36,7 @@ const MessagesSection: FC<MessagesSectionProps> = ({ title, icon, loggedInUser }
             <div className="text-lightly text-2">{icon} {title}</div>
 
             {groups.map((group: any) =>
-                <MessageLink notifications={1} time={Date.now()} typing={false} group={group} />
+                <MessageLink notifications={1} time={Date.now()} typing={false} group={group} key={group.title} />
             )}
 
             <hr className="w-full text-heavily my-2 text-2"/>

@@ -15,7 +15,7 @@ const PrimaryButton: FC<PrimaryButtonProps> = ({ title, height, onClickFn = () =
             type={type ?? 'button'}
             ref={ref ?? defaultRef}
             onClick={onClickFn}
-            className={`bg-blue text-white flex justify-center items-center text-center w-full h-${height ?? 'full'} rounded-md hover:rounded-lg hover:bg-blue-hover transition-all `}
+            className={`bg-blue text-white flex justify-center items-center text-center w-full h-${height ?? 'full'} rounded-md hover:rounded-lg hover:bg-blue-hover transition-all`}
             {...rest}
         >
             {title}

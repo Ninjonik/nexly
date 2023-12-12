@@ -1,6 +1,8 @@
-interface GroupsInterface {
+interface GroupInterface {
     title: string;
+    users: string[];
     ownerID: string;
+    avatarPath: string;
     $id: string;
     $createdAt: string;
     $updatedAt: string;
@@ -9,4 +11,4 @@ interface GroupsInterface {
     $collectionId: string;
 }
 
-export default GroupsInterface
+export default GroupInterface

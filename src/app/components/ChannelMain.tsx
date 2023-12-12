@@ -22,7 +22,7 @@ interface ChannelMainProps {
 }
 
 const ChannelMain: FC<ChannelMainProps> = ({}) => (
-    <section className="w-8/10 bg-gray h-full flex flex-col">
+    <section className="w-8/10 bg-gray h-full flex flex-col text-white">
 
         <header className='h-1/10 w-full bg-light flex flex-row justify-between p-4 px-8'>
             <div className='flex flex-row gap-2 w-1/2 items-center'>

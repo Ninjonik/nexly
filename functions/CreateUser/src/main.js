@@ -14,7 +14,7 @@ export default async ({ req, res, log, error }) => {
       const authId = newUser.$id;
       const name = newUser.name;
 
-      const userRecord = await database.createDocument(
+      await database.createDocument(
           'nexly',
           'users',
           ID.unique(),
@@ -23,7 +23,7 @@ export default async ({ req, res, log, error }) => {
             "username": name,
           },
           [
-            Permission.read(Role.user(authId)),
+            Permission.read(Role.any()),
             Permission.update(Role.user(authId)),
             Permission.delete(Role.user(authId))
           ]
@@ -31,7 +31,7 @@ export default async ({ req, res, log, error }) => {
 
       return res.json({
         success: true,
-        message: 'User record created successfully',
+        message: 'User record created successfully.',
       });
     } catch (err) {
       error('Error creating user record:', err);
@@ -39,7 +39,7 @@ export default async ({ req, res, log, error }) => {
 
       return res.json({
         success: false,
-        message: 'Error creating user record',
+        message: 'Error creating user record.',
         error: err.message || 'Unknown error',
       });
     }

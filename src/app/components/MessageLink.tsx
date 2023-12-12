@@ -1,6 +1,6 @@
 "use client"
 
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import ProfileIcon from "@/app/components/ProfileIcon";
 import GroupsInterface from '../utils/interfaces/GroupsInterface';
 import {useEffect} from 'react';
@@ -23,15 +23,16 @@ const MessageLink: FC<MessageLinkProps> = ({ typing, time, notifications, group 
         return "<div>No database configured!</div>"
     }
 
+    const [message, setMessage] = useState(null);
+
     useEffect(() => {
-
-        let message = null
-
-        const fetchMessage = async () => {
-            message = await databases.listDocuments(database, 'groups', [Query.equal('', '')]);
-        }
-
+    const fetchMessage = async () => {
+        const fetchedMessage = await databases.listDocuments(database, 'messages', [Query.equal('group.$id', group.$id)]);
+        setMessage(fetchedMessage);
+    }
+    fetchMessage();
     }, []);
+
 
     return (
         <div className="flex flex-row justify-between items-center gap-4 group">

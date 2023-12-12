@@ -14,21 +14,18 @@ export default async ({ req, res, log, error }) => {
       const authId = newUser.$id;
       const name = newUser.name;
 
-      const generatedID = ID.unique()
-      console.log('Generated ID:', generatedID);
-
       const userRecord = await database.createDocument(
           'nexly',
           'users',
-          generatedID,
+          ID.unique(),
           {
             "authID": authId,
             "username": name,
           },
           [
-            Permission.read(Role.user(generatedID)),
-            Permission.update(Role.user(generatedID)),
-            Permission.delete(Role.user(generatedID))
+            Permission.read(Role.user(authId)),
+            Permission.update(Role.user(authId)),
+            Permission.delete(Role.user(authId))
           ]
       );
 

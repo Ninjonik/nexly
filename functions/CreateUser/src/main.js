@@ -15,6 +15,7 @@ export default async ({ req, res, log, error }) => {
       const name = newUser.name;
 
       const generatedID = ID.unique()
+      console.log('Generated ID:', generatedID);
 
       const userRecord = await database.createDocument(
           'nexly',

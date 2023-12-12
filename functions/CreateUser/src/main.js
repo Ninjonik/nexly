@@ -1,4 +1,4 @@
-import { Client, Databases, ID, Permission } from 'node-appwrite';
+import { Client, Databases, ID, Permission, Role } from 'node-appwrite';
 
 export default async ({ req, res, log, error }) => {
   const client = new Client()
@@ -25,9 +25,9 @@ export default async ({ req, res, log, error }) => {
             "username": name,
           },
           [
-            Permission.read(generatedID),
-            Permission.update(generatedID),
-            Permission.delete(generatedID)
+            Permission.read(Role.user(generatedID)),
+            Permission.update(Role.user(generatedID)),
+            Permission.delete(Role.user(generatedID))
           ]
       );
 

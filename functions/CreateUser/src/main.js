@@ -1,4 +1,5 @@
 import { Client, Databases, ID } from 'node-appwrite';
+import {Permission} from "appwrite";
 
 export default async ({ req, res, log, error }) => {
   const client = new Client()
@@ -11,19 +12,24 @@ export default async ({ req, res, log, error }) => {
   if (req.method === 'POST') {
     try {const newUser = req.body;
 
-      console.log(newUser);
-
       const authId = newUser.$id;
       const name = newUser.name;
+
+      const generatedID = ID.unique()
 
       const userRecord = await database.createDocument(
           'nexly',
           'users',
-          ID.unique(),
+          generatedID,
           {
             "authID": authId,
             "username": name,
-          }
+          },
+          [
+            Permission.read(generatedID),
+            Permission.update(generatedID),
+            Permission.delete(generatedID)
+          ]
       );
 
       return res.json({

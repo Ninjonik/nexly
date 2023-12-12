@@ -26,11 +26,12 @@ const MessageLink: FC<MessageLinkProps> = ({ typing, time, notifications, group 
     const [message, setMessage] = useState(null);
 
     useEffect(() => {
-    const fetchMessage = async () => {
-        const fetchedMessage = await databases.listDocuments(database, 'messages', [Query.equal('group.$id', group.$id)]);
-        setMessage(fetchedMessage);
-    }
-    fetchMessage();
+        const fetchMessage = async () => {
+            const fetchedMessage = await databases.listDocuments(database, 'messages', [Query.equal('group', '657757fb8430273aea4c')]);
+            console.log(fetchedMessage)
+            // setMessage(fetchedMessage);
+        }
+        fetchMessage();
     }, []);
 
 

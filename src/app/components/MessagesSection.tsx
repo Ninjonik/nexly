@@ -22,7 +22,6 @@ const MessagesSection: FC<MessagesSectionProps> = ({ title, icon, loggedInUser }
     }
 
     const groups = loggedInUser.groups
-    console.log("GROUP:", groups[0])
 
     useEffect(() => {
         // const fetchGroups = async () => {
@@ -36,9 +35,8 @@ const MessagesSection: FC<MessagesSectionProps> = ({ title, icon, loggedInUser }
 
             <div className="text-lightly text-2">{icon} {title}</div>
 
-            {groups.map((group) =>      
-
-                // <MessageLink notifications={1} time={Date.now()} typing={false} />     
+            {groups.map((group: any) =>
+                <MessageLink notifications={1} time={Date.now()} typing={false} group={group} />
             )}
 
             <hr className="w-full text-heavily my-2 text-2"/>

@@ -1,33 +1,50 @@
-import { Client } from 'node-appwrite';
+import { Client, Databases, Users } from 'node-appwrite';
+import {Query} from "appwrite";
 
-// This is your Appwrite function
-// It's executed each time we get a request
 export default async ({ req, res, log, error }) => {
-  // Why not try the Appwrite SDK?
-  //
-  // const client = new Client()
-  //    .setEndpoint('https://cloud.appwrite.io/v1')
-  //    .setProject(process.env.APPWRITE_FUNCTION_PROJECT_ID)
-  //    .setKey(process.env.APPWRITE_API_KEY);
+  const client = new Client()
+      .setEndpoint(process.env.APPWRITE_ENDPOINT)
+      .setProject(process.env.APPWRITE_PROJECT)
+      .setKey(process.env.APPWRITE_KEY);
 
-  // You can log messages to the console
-  log('Hello, Logs!');
+  const database = new Databases(client);
+  const users = new Users(client);
 
-  // If something goes wrong, log an error
-  error('Hello, Errors!');
+  if (req.method === 'POST') {
+    try {
+      const removedUserId = req.body.$id;
 
-  // The `req` object contains the request data
-  if (req.method === 'GET') {
-    // Send a response with the res object helpers
-    // `res.send()` dispatches a string back to the client
-    return res.send('Hello, World!');
+      const userRecord = await database.listDocuments('nexly', 'users', [Query.equal('authID', removedUserId)]);
+
+      if (userRecord.documents.length > 0) {
+        const documentId = userRecord.documents[0].$id;
+
+        await database.deleteDocument('nexly', 'users', documentId);
+
+        return res.json({
+          success: true,
+          message: 'User record deleted successfully',
+        });
+      } else {
+        return res.json({
+          success: false,
+          message: 'User record not found',
+        });
+      }
+    } catch (err) {
+      error('Error deleting user record:', err);
+      error(err.message);
+
+      return res.json({
+        success: false,
+        message: 'Error deleting user record',
+        error: err.message || 'Unknown error',
+      });
+    }
   }
 
-  // `res.json()` is a handy helper for sending JSON
   return res.json({
-    motto: 'Build like a team of hundreds_',
-    learn: 'https://appwrite.io/docs',
-    connect: 'https://appwrite.io/discord',
-    getInspired: 'https://builtwith.appwrite.io',
+    success: false,
+    message: 'Invalid Method',
   });
 };

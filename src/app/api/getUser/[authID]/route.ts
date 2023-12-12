@@ -35,8 +35,6 @@ export async function GET(req: NextApiRequest, context: {params: {authID: string
 
         const user = await getUser(authID);
 
-        console.log(authID, user)
-
         if (user) {
             return Response.json({ user })
         } else {

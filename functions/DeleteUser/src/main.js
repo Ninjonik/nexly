@@ -1,5 +1,4 @@
-import { Client, Databases, Users } from 'node-appwrite';
-import {Query} from "appwrite";
+import { Client, Databases, Users, Query } from 'node-appwrite';
 
 export default async ({ req, res, log, error }) => {
   const client = new Client()

@@ -1,14 +1,15 @@
 "use client"
 
-import React, { FC, useState } from 'react';
+import React, {Dispatch, FC, SetStateAction, useState} from 'react';
 import ProfileIcon from "@/app/components/ProfileIcon";
 import GroupInterface from '../utils/interfaces/GroupInterface';
 import {useEffect} from 'react';
-import {client, databases} from "@/app/appwrite";
+import {client, database, databases} from "@/app/appwrite";
 import {Models, Query} from 'appwrite';
 import MessageInterface from "@/app/utils/interfaces/MessageInterface";
-import formatTimestampToTime from "@/app/utils/formatTimestampToTime";
+import formatTimestampToTime from "@/app/utils/convertTimestamp";
 import {subscribeMessage} from "@/app/utils/realtime";
+import {subscribe} from "diagnostics_channel";
 
 
 interface MessageLinkProps {
@@ -16,17 +17,15 @@ interface MessageLinkProps {
     time: number,
     notifications: number,
     group: GroupInterface,
+    setActiveGroup: Dispatch<SetStateAction<string | null>>
 }
 
-const database = process.env.NEXT_PUBLIC_APPWRITE_DB_NAME
-
-const MessageLink: FC<MessageLinkProps> = ({ typing, time, notifications, group }) => {
+const MessageLink: FC<MessageLinkProps> = ({ typing, time, notifications, group, setActiveGroup }) => {
 
     const [loading, setLoading] = useState<boolean>(true)
     const [message, setMessage] = useState<MessageInterface | {}>({});
 
     useEffect(() => {
-
         if(database){
             const fetchMessage = async () => {
                 const fetchedMessage = await databases.listDocuments(database, 'messages', [Query.equal('group', group.$id), Query.orderDesc("$updatedAt"), Query.limit(1)]);
@@ -36,14 +35,19 @@ const MessageLink: FC<MessageLinkProps> = ({ typing, time, notifications, group 
             }
             fetchMessage();
 
-            client.subscribe(`databases.${database}.collections.messages.documents`, response => {
-                // Callback will be executed on all events related to documents in the specified collection.
-                setMessage(response.payload)
+            setLoading(false)
+
+            const unsubscribe = client.subscribe(`databases.${database}.collections.messages.documents`, response => {
+                const res: any = response.payload
+                setMessage(res)
             });
+
+            return () => {
+                unsubscribe()
+            };
         }
 
         setLoading(false)
-
 
     }, []);
 
@@ -58,7 +62,7 @@ const MessageLink: FC<MessageLinkProps> = ({ typing, time, notifications, group 
     }
 
     return (
-        <div className="flex flex-row justify-between items-center gap-4 group">
+        <button className="flex flex-row justify-between text-start items-center gap-4 group" onClick={() => setActiveGroup(group.$id)}>
             <ProfileIcon imageUrl={`/images/groups/${group.avatarPath}`}
                          // status={'online'}
             />
@@ -66,20 +70,17 @@ const MessageLink: FC<MessageLinkProps> = ({ typing, time, notifications, group 
             <div className="flex flex-row justify-between w-8/10">
                 <div className="flex flex-col justify-between w-7/10">
                     <h3 className="text-lg font-bold">{group.title}</h3>
-                    {console.log(message)}
                     {typing ?
                         <span className="italic text-md text-blue">Typing...</span>
                         :
                         (
                             (Object.keys(message).length > 0) && (
-                                <div className={'flex flex-row'}>
-                                    <span className='text-blue'>
-                                        {console.log(message)}
-                                     </span>
+                                <div className={'flex flex-row gap-[0.25dvw]'}>
+                                    {/*<span className='text-blue'>*/}
+                                    {/*    {message.author.username}:*/}
+                                    {/* </span>*/}
                                     <span className="text-md text-lightly">
-                                      {message.message.length > 15
-                                          ? `${message.message.slice(0, 15)}...`
-                                          : message.message}
+                                      {"message" in message ? message.message.slice(0, 15) : ""}
                                     </span>
                                 </div>
                             )
@@ -89,11 +90,11 @@ const MessageLink: FC<MessageLinkProps> = ({ typing, time, notifications, group 
                 </div>
 
                 <div className="flex flex-col justify-between items-end w-3/10">
-                    {(Object.keys(message).length > 0) && <h3 className="text-md text-lightly font-bold">{formatTimestampToTime(message.$updatedAt)}</h3>}
+                    {(Object.keys(message).length > 0) && <h3 className="text-md text-lightly font-bold">{formatTimestampToTime("$updatedAt" in message ? message.$updatedAt : "")}</h3>}
                     {/*{notifications && <span className="text-center bg-blue h-[1dvw] w-[1dvw] text-md rounded-full text-white">{ notifications }</span>}*/}
                 </div>
             </div>
-        </div>
+        </button>
     )
 };
 

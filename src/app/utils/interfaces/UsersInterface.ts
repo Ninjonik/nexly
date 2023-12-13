@@ -1,16 +1,7 @@
+import UserInterface from "@/app/utils/interfaces/UserInterface";
+
 type UsersInterface = {
-    user: {
-        authID: string;
-        username: string;
-        avatarPath: string;
-        '$id': string;
-        '$createdAt': string;
-        '$updatedAt': string;
-        '$permissions': string[];
-        groups: string[];
-        '$databaseId': string;
-        '$collectionId': string;
-    }
+    user: UserInterface
     // TODO: add more fields there
 };
 

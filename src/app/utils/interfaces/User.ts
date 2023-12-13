@@ -2,6 +2,7 @@ type User = {
     "$id": string;
     "$createdAt": string;
     "$updatedAt": string;
+    dbID: string;
     name: string;
     registration: string;
     status: boolean;

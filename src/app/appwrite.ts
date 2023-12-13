@@ -37,4 +37,5 @@ if (appwriteEndpoint && appwriteProject) {
 }
 
 export const account = new Account(client);
+export const database = process.env.NEXT_PUBLIC_APPWRITE_DB_NAME ?? 'appwrite'
 export { ID } from 'appwrite';

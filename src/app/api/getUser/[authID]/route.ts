@@ -1,8 +1,7 @@
 import { NextApiRequest } from 'next';
 import {databases} from "@/app/appwrite_server";
 import {Query} from "appwrite";
-
-const database = process.env.NEXT_PUBLIC_APPWRITE_DB_NAME
+import {database} from "@/app/appwrite";
 
 const getUser = async (authID: string) => {
     if(!database) return null;

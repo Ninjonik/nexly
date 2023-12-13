@@ -11,7 +11,7 @@ export default async ({ req, res, log, error }) => {
   if (req.method === 'POST') {
     try {const newUser = req.body;
 
-      const authId = newUser.$id;
+      const authID = newUser.$id;
       const name = newUser.name;
 
       await database.createDocument(
@@ -19,13 +19,13 @@ export default async ({ req, res, log, error }) => {
           'users',
           ID.unique(),
           {
-            "authID": authId,
+            "authID": authID,
             "username": name,
           },
           [
             Permission.read(Role.any()),
-            Permission.update(Role.user(authId)),
-            Permission.delete(Role.user(authId))
+            Permission.update(Role.user(authID)),
+            Permission.delete(Role.user(authID))
           ]
       );
 

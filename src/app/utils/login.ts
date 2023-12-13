@@ -27,6 +27,7 @@ const login = async (email: string, password: string) => {
         const data: UsersInterface = await response.json()
         authAccount.avatarPath = data.user.avatarPath
         authAccount.groups = data.user.groups
+        authAccount.dbID = data.user.$id
         // TODO: add more fields there
     } catch (error) {
         console.error('Error fetching user data:', error)

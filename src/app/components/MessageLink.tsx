@@ -8,8 +8,6 @@ import {client, database, databases} from "@/app/appwrite";
 import {Models, Query} from 'appwrite';
 import MessageInterface from "@/app/utils/interfaces/MessageInterface";
 import formatTimestampToTime from "@/app/utils/convertTimestamp";
-import {subscribeMessage} from "@/app/utils/realtime";
-import {subscribe} from "diagnostics_channel";
 
 
 interface MessageLinkProps {

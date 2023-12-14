@@ -31,7 +31,7 @@ const MessagesSection: FC<MessagesSectionProps> = ({ title, icon, loggedInUser, 
 
             <div className="text-lightly text-2">{icon} {title}</div>
 
-            {groups.map((group: any) =>
+            {groups?.map((group: any) =>
                 <MessageLink notifications={1} time={Date.now()} typing={false} group={group} key={group.title} setActiveGroup={setActiveGroup} />
             )}
 

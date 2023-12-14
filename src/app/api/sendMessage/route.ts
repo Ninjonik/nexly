@@ -27,11 +27,10 @@ const createMessage = async ({ dbID, activeGroup, message }: { dbID: string, act
     }
 };
 
-export async function POST(req: NextRequest, res: NextApiResponse) {
+export async function POST(req: Request, res: NextApiResponse) {
     try {
-        const dbID = req.nextUrl.searchParams.get('dbID');
-        const activeGroup = req.nextUrl.searchParams.get('activeGroup');
-        const message = req.nextUrl.searchParams.get('message');
+        const reqRes = await req.json()
+        const { dbID, activeGroup, message } = reqRes
 
         if (!dbID || !activeGroup || !message) {
             return Response.json({ error: 'Invalid request body' }, { status: 400 })

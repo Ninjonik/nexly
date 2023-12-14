@@ -1,7 +1,7 @@
 import React, { FC, ReactNode, RefObject, forwardRef, ChangeEvent } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-interface SidebarIconProps {
+interface FormInputProps {
     title: string;
     icon: ReactNode;
     inputType?: string;
@@ -10,7 +10,7 @@ interface SidebarIconProps {
     onChangeFn?: (event: ChangeEvent<HTMLInputElement>) => void;
 }
 
-const FormInput = forwardRef<HTMLInputElement, SidebarIconProps>(
+const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
     ({ title, icon, inputType, required, valueProp = "", onChangeFn = () => {} }, ref) => {
         return (
             <div className="relative text-lightly text-2 w-full">

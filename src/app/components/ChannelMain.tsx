@@ -27,7 +27,7 @@ import groupInterface from "@/app/utils/interfaces/GroupInterface";
 import UserInterface from "@/app/utils/interfaces/UserInterface";
 import ChannelMainSkeleton from "@/app/components/skeletons/ChannelMain";
 import FormTextarea from "@/app/components/form/FormTextarea";
-
+import emojiNameMap from "emoji-name-map";
 
 interface ChannelMainProps {
     loggedInUser: User,
@@ -139,6 +139,15 @@ const ChannelMain: FC<ChannelMainProps> = ({ loggedInUser, activeGroup }) => {
         };
     }, [messageSubmit]);
 
+    const convertText = (inputText: string) => {
+        // Use emoji-name-map to replace emoji placeholders with actual emojis
+        return inputText.replace(/:\w+:/g, (match) => {
+            const emojiName = match.slice(1, -1); // Remove colons from the placeholder
+            const emoji = emojiNameMap.get(emojiName);
+            return emoji || match; // Return the emoji if found, otherwise return the original placeholder
+        });
+    };
+
     if (loading || !group?.users) {
         return <ChannelMainSkeleton />;
     }
@@ -181,8 +190,8 @@ const ChannelMain: FC<ChannelMainProps> = ({ loggedInUser, activeGroup }) => {
                         messageSubmit();
                     }}>
 
-                        <FormTextarea icon={<FontAwesomeIcon icon={faCirclePlus} className="text-gray-400"/>} title={''}
-                                   valueProp={newMessage} onChangeFn={(e) => setNewMessage(e.target.value)} required={true}
+                        <FormTextarea icon={<FontAwesomeIcon icon={faCirclePlus} className="text-gray-400 text-2"/>} title={''}
+                                   valueProp={newMessage} onChangeFn={(e) => setNewMessage(convertText(e.target.value))} required={true}
                         />
 
                     </form>

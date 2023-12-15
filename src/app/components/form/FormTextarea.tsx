@@ -1,4 +1,5 @@
 import React, { FC, ReactNode, forwardRef, ChangeEvent, useState, useRef } from 'react';
+import { Picker } from 'emoji-mart'
 
 interface FormTextAreaProps {
     title: string;
@@ -42,10 +43,13 @@ const FormTextArea = forwardRef<HTMLTextAreaElement, FormTextAreaProps>(
                     value={valueProp}
                     onChange={handleTextareaChange}
                     style={{ height: textareaHeight }}
-                    className="pr-[1dvw] py-[0.5dvh] border bg-gray rounded-md border-none w-full focus:outline-none text-white h-full"
+                    className="pr-[1dvw] py-[0.5dvh] border bg-gray rounded-md border-none w-full focus:outline-none text-white h-full resize-none"
                     placeholder={title}
                     rows={1}
                 />
+                <div className="h-full w-0.5/10 flex items-center justify-center pointer-events-none rounded-lg">
+
+                </div>
             </div>
         );
     }

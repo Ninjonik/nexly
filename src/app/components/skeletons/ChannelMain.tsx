@@ -30,7 +30,7 @@ const ChannelMainSkeleton = () => {
                     <div className='h-9/10 w-full bg-gray-dark p-[2dvw] flex flex-col-reverse gap-[2dvw] overflow-y-scroll no-scrollbar'>
                         {/* Skeleton for messages */}
                         {[1, 2, 3, 4, 5, 6].map((_, index) => (
-                            <div className='w-8/10 flex flex-row gap-[0.5dvw] items-center animate-pulse'>
+                            <div className='w-8/10 flex flex-row gap-[0.5dvw] items-center animate-pulse' key={index}>
                                 <div className={'w-[3dvw] h-[3dvw] relative group bg-lightly rounded-full'}></div>
                                 <div className='w-9/10 flex flex-col justify-center'>
                                     <div className='flex flex-row gap-[0.5dvw] items-center'>

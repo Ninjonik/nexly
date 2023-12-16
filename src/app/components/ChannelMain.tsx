@@ -38,6 +38,7 @@ const ChannelMain: FC<ChannelMainProps> = ({ loggedInUser, activeGroup }) => {
 
     const [loading, setLoading] = useState<boolean>(true)
     const [newMessage, setNewMessage] = useState<string>("")
+    const [gifValue, setGifValue] = useState<string>("")
     const [messages, setMessages] = useState<any>([])
     const [group, setGroup] = useState<any>([])
     const [submitting, setSubmitting] = useState(false)
@@ -92,7 +93,7 @@ const ChannelMain: FC<ChannelMainProps> = ({ loggedInUser, activeGroup }) => {
 
     // TODO: fixnúť to, aby bol cooldown, keď sa niečo napíše a aby to teda stále neupdatovalo state cez setNewMessage
 
-    const messageSubmit = async () => {
+    const messageSubmit = async (messageToSubmit: string) => {
         try {
             setSubmitting(true);
 
@@ -100,7 +101,7 @@ const ChannelMain: FC<ChannelMainProps> = ({ loggedInUser, activeGroup }) => {
             const constructedBody = JSON.stringify({
                 "dbID": dbID,
                 "activeGroup": activeGroup,
-                "message": newMessage.replace(/\\n/g, "\n")
+                "message": messageToSubmit
             });
 
             const response = await fetch(`/api/sendMessage`, {
@@ -128,7 +129,7 @@ const ChannelMain: FC<ChannelMainProps> = ({ loggedInUser, activeGroup }) => {
         const keyDownHandler = (event: { key: string; shiftKey: boolean; preventDefault: () => void; }) => {
             if (event.key === 'Enter' && !event.shiftKey) {
                 event.preventDefault();
-                messageSubmit();
+                messageSubmit(newMessage.replace(/\\n/g, "\n"));
             }
         };
 
@@ -138,6 +139,10 @@ const ChannelMain: FC<ChannelMainProps> = ({ loggedInUser, activeGroup }) => {
             document.removeEventListener('keydown', keyDownHandler);
         };
     }, [messageSubmit]);
+
+    useEffect(() => {
+        messageSubmit(gifValue)
+    }, [gifValue]);
 
     const convertText = (inputText: string) => {
         // Use emoji-name-map to replace emoji placeholders with actual emojis
@@ -187,11 +192,17 @@ const ChannelMain: FC<ChannelMainProps> = ({ loggedInUser, activeGroup }) => {
 
                     <form className='min-h-1/10 w-full bg-light p-[1dvw] flex justify-center items-center' onSubmit={(e) => {
                         e.preventDefault(); // Prevent the default form submission
-                        messageSubmit();
+                        messageSubmit(newMessage.replace(/\\n/g, "\n"));
                     }}>
 
-                        <FormTextarea icon={<FontAwesomeIcon icon={faCirclePlus} className="text-gray-400 text-2"/>} title={''}
-                                   valueProp={newMessage} onChangeFn={(e) => setNewMessage(convertText(e.target.value))} required={true}
+                        <FormTextarea
+                            icon={<FontAwesomeIcon icon={faCirclePlus} className="text-gray-400 text-2" />}
+                            title={''}
+                            valueProp={newMessage}
+                            onChangeFn={(value) => setNewMessage(convertText(value))}
+                            gifValue={gifValue}
+                            setGifValue={(value) => setGifValue(value)}
+                            required={false}
                         />
 
                     </form>

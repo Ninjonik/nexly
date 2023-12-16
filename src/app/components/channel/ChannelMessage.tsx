@@ -2,6 +2,9 @@ import React, { FC } from 'react';
 import ProfileIcon from "@/app/components/ProfileIcon";
 import MessageInterface from "@/app/utils/interfaces/MessageInterface";
 import convertTimestamp from "@/app/utils/convertTimestamp";
+import ImagePreview from "@/app/components/client/ImagePreview";
+import {isValidImageUrl} from "@/app/utils/isValidImageUrl";
+import EmojiConversion from "@/app/components/client/EmojiConversion";
 
 interface ChannelMessageProps {
     typing?: boolean,
@@ -10,6 +13,9 @@ interface ChannelMessageProps {
 }
 
 const ChannelMessage: FC<ChannelMessageProps> = ({ typing, message, localUser }) => {
+
+    const isImage = isValidImageUrl(message.message)
+    console.log(isImage)
 
     return(
         <>
@@ -21,10 +27,10 @@ const ChannelMessage: FC<ChannelMessageProps> = ({ typing, message, localUser })
                             <span className='text-lightly text-md'>{convertTimestamp(message.$updatedAt)}</span>
                         </div>
                         <span
-                            className='w-full text-md break-words bg-blue p-2 rounded-b-lg rounded-l-lg'
+                            className={!isImage ? 'w-full text-md break-words bg-blue p-2 rounded-b-lg rounded-l-lg' : 'max-w-full'}
                             style={{ whiteSpace: 'pre-line' }}
                         >
-                            {message.message}
+                            {isImage ? <img src={message.message} /> : <span>{message.message}</span>}
                         </span>
                     </div>
                     <ProfileIcon imageUrl={`/images/users/${message.author?.avatarPath}`} customClass={'self-start'}/>
@@ -41,7 +47,7 @@ const ChannelMessage: FC<ChannelMessageProps> = ({ typing, message, localUser })
                             className='w-full text-md break-words bg-gray p-2 rounded-b-lg rounded-r-lg'
                             style={{ whiteSpace: 'pre-line' }}
                         >
-                            {message.message}
+                            {isValidImageUrl(message.message) ? <img src={message.message} /> : <span>message.message</span>}
                         </span>
                     </div>
                 </div>

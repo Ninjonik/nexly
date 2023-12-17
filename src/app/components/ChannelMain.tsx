@@ -17,17 +17,20 @@ import ChannelMessage from "@/app/components/channel/ChannelMessage";
 import {faCommentDots, faFileLines, faUser} from "@fortawesome/free-regular-svg-icons";
 import FormInput from "@/app/components/form/FormInput";
 import User from "@/app/utils/interfaces/User";
-import GroupInterface from "@/app/utils/interfaces/GroupInterface";
 import {client, database, databases, ID} from "@/app/appwrite";
 import {Models, Query} from "appwrite";
-import Loading from "@/app/loading";
-import MessageInterface from "@/app/utils/interfaces/MessageInterface";
-import {Permission, Role} from "node-appwrite";
-import groupInterface from "@/app/utils/interfaces/GroupInterface";
 import UserInterface from "@/app/utils/interfaces/UserInterface";
 import ChannelMainSkeleton from "@/app/components/skeletons/ChannelMain";
 import FormTextarea from "@/app/components/form/FormTextarea";
 import emojiNameMap from "emoji-name-map";
+import '@livekit/components-styles';
+import {
+    LiveKitRoom,
+    VideoConference,
+    GridLayout,
+    ParticipantTile, RoomAudioRenderer, ControlBar, useTracks, CarouselLayout,
+} from '@livekit/components-react';
+import {Track} from "livekit-client";
 
 interface ChannelMainProps {
     loggedInUser: User,
@@ -42,6 +45,7 @@ const ChannelMain: FC<ChannelMainProps> = ({ loggedInUser, activeGroup }) => {
     const [messages, setMessages] = useState<any>([])
     const [group, setGroup] = useState<any>([])
     const [submitting, setSubmitting] = useState(false)
+    const [token, setToken] = useState("");
 
     const [usersShown, setUsersShown] = useState<boolean>(true)
 
@@ -82,6 +86,18 @@ const ChannelMain: FC<ChannelMainProps> = ({ loggedInUser, activeGroup }) => {
             const res: any = response.payload
             setMessages((oldMessages: any) => [res, ...oldMessages])
         });
+
+        (async () => {
+            try {
+                const resp = await fetch(
+                    `/api/getParticipantToken?room=${group.$id}&username=${loggedInUser.$id}`
+                );
+                const data = await resp.json();
+                setToken(data.token);
+            } catch (e) {
+                console.error(e);
+            }
+        })();
 
         setLoading(false)
 
@@ -155,7 +171,7 @@ const ChannelMain: FC<ChannelMainProps> = ({ loggedInUser, activeGroup }) => {
         });
     };
 
-    if (loading || !group?.users) {
+    if (loading || !group?.users || token === "") {
         return <ChannelMainSkeleton />;
     }
 
@@ -179,7 +195,20 @@ const ChannelMain: FC<ChannelMainProps> = ({ loggedInUser, activeGroup }) => {
                 </div>
             </header>
 
-
+            {/*<div className='h-4/10 w-full bg-light'>*/}
+            {/*    <LiveKitRoom*/}
+            {/*        video={true}*/}
+            {/*        audio={true}*/}
+            {/*        token={token}*/}
+            {/*        serverUrl={process.env.NEXT_PUBLIC_LIVEKIT_URL}*/}
+            {/*        // Use the default LiveKit theme for nice styles.*/}
+            {/*        data-lk-theme="default"*/}
+            {/*    >*/}
+            {/*        <MyVideoConference />*/}
+            {/*        <RoomAudioRenderer />*/}
+            {/*        <ControlBar />*/}
+            {/*    </LiveKitRoom>*/}
+            {/*</div>*/}
 
             <article className='h-0 w-full flex flex-row flex-grow'>
 
@@ -257,3 +286,22 @@ const ChannelMain: FC<ChannelMainProps> = ({ loggedInUser, activeGroup }) => {
 };
 
 export default ChannelMain;
+
+function MyVideoConference() {
+    // `useTracks` returns all camera and screen share tracks. If a user
+    // joins without a published camera track, a placeholder track is returned.
+    const tracks = useTracks(
+        [
+            { source: Track.Source.Camera, withPlaceholder: true },
+            { source: Track.Source.ScreenShare, withPlaceholder: false },
+        ],
+        { onlySubscribed: false },
+    );
+    return (
+        <CarouselLayout tracks={tracks}>
+            {/* The GridLayout accepts zero or one child. The child is used
+      as a template to render all passed in tracks. */}
+            <ParticipantTile />
+        </CarouselLayout>
+    );
+}

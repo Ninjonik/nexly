@@ -46,7 +46,7 @@ const ChannelMessage: FC<ChannelMessageProps> = ({ typing, message, localUser })
                             className='w-full text-md break-words bg-gray p-2 rounded-b-lg rounded-r-lg'
                             style={{ whiteSpace: 'pre-line' }}
                         >
-                            {isValidImageUrl(message.message) ? <img src={message.message} /> : <span>message.message</span>}
+                            {isValidImageUrl(message.message) ? <img src={message.message} /> : <span>{message.message}</span>}
                         </span>
                     </div>
                 </div>

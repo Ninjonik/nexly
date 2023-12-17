@@ -94,34 +94,36 @@ const ChannelMain: FC<ChannelMainProps> = ({ loggedInUser, activeGroup }) => {
     // TODO: fixnúť to, aby bol cooldown, keď sa niečo napíše a aby to teda stále neupdatovalo state cez setNewMessage
 
     const messageSubmit = async (messageToSubmit: string) => {
-        try {
-            setSubmitting(true);
+        if(messageToSubmit && messageToSubmit !== ""){
+            try {
+                setSubmitting(true);
 
-            const dbID = loggedInUser.dbID;
-            const constructedBody = JSON.stringify({
-                "dbID": dbID,
-                "activeGroup": activeGroup,
-                "message": messageToSubmit
-            });
+                const dbID = loggedInUser.dbID;
+                const constructedBody = JSON.stringify({
+                    "dbID": dbID,
+                    "activeGroup": activeGroup,
+                    "message": messageToSubmit
+                });
 
-            const response = await fetch(`/api/sendMessage`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: constructedBody
-            });
+                const response = await fetch(`/api/sendMessage`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: constructedBody
+                });
 
-            if (!response.ok) {
-                throw new Error('Failed to submit message');
+                if (!response.ok) {
+                    throw new Error('Failed to submit message');
+                }
+
+                setNewMessage("")
+
+            } catch (err: any) {
+                console.error(err);
+            } finally {
+                setSubmitting(false);
             }
-
-            setNewMessage("")
-
-        } catch (err: any) {
-            console.error(err);
-        } finally {
-            setSubmitting(false);
         }
     };
 
@@ -141,7 +143,7 @@ const ChannelMain: FC<ChannelMainProps> = ({ loggedInUser, activeGroup }) => {
     }, [messageSubmit]);
 
     useEffect(() => {
-        messageSubmit(gifValue)
+        if(gifValue !== "") messageSubmit(gifValue)
     }, [gifValue]);
 
     const convertText = (inputText: string) => {

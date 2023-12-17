@@ -27,7 +27,7 @@ const FormTextArea = forwardRef<HTMLTextAreaElement, FormTextAreaProps>(
             if (textareaRef.current) {
                 textareaRef.current.style.height = 'auto';
                 let heightValue: number
-                if(event.target.scrollHeight > window.innerHeight / 2){
+                if(event.target.scrollHeight > window.innerHeight / 5 * 2){
                     heightValue = window.innerHeight / 2
                 } else {
                     heightValue = event.target.scrollHeight

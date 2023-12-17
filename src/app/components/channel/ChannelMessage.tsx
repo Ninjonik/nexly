@@ -15,7 +15,6 @@ interface ChannelMessageProps {
 const ChannelMessage: FC<ChannelMessageProps> = ({ typing, message, localUser }) => {
 
     const isImage = isValidImageUrl(message.message)
-    console.log(isImage)
 
     return(
         <>

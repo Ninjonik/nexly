@@ -162,7 +162,7 @@ const ChannelMain: FC<ChannelMainProps> = ({ loggedInUser, activeGroup }) => {
     return (
         <section className="w-8/10 bg-gray h-full flex flex-col text-white">
 
-            <header className='h-1/10 w-full bg-light flex flex-row justify-between p-4 px-8'>
+            <header className='h-1/10 w-full bg-light flex flex-row justify-between px-8'>
                 <div className='flex flex-row gap-2 w-1/2 items-center'>
                     <ProfileIcon imageUrl={`/images/groups/${group.avatarPath}`} size={'3dvw'}/>
                     <div className='flex flex-col justify-center'>
@@ -179,24 +179,29 @@ const ChannelMain: FC<ChannelMainProps> = ({ loggedInUser, activeGroup }) => {
                 </div>
             </header>
 
-            <article className='h-9/10 w-full flex flex-row'>
+
+
+            <article className='h-0 w-full flex flex-row flex-grow'>
 
                 <div className='h-full w-full flex flex-col'>
 
+                    {/* First div */}
                     <div
-                        className='h-full w-full bg-gray-dark p-[2dvw] flex flex-col-reverse gap-[2dvw] overflow-y-scroll no-scrollbar'>
-
+                        className='h-full w-full bg-gray-dark p-[2dvw] flex flex-col-reverse gap-[2dvw] overflow-y-scroll no-scrollbar'
+                    >
                         {messages.map((message: any) => (
-                            <ChannelMessage message={message} key={message.$id} localUser={(message.author.$id === loggedInUser.dbID)}/>
+                            <ChannelMessage message={message} key={message.$id} localUser={(message.author.$id === loggedInUser.dbID)} />
                         ))}
-
                     </div>
 
-                    <form className='min-h-1/10 w-full bg-light p-[1dvw] flex justify-center items-center' onSubmit={(e) => {
-                        e.preventDefault(); // Prevent the default form submission
-                        messageSubmit(newMessage.replace(/\\n/g, "\n"));
-                    }}>
-
+                    {/* Second div */}
+                    <form
+                        className='max-h-4/10 flex-grow w-full bg-light p-[1dvw] flex justify-center items-center'
+                        onSubmit={(e) => {
+                            e.preventDefault();
+                            messageSubmit(newMessage.replace(/\\n/g, "\n"));
+                        }}
+                    >
                         <FormTextarea
                             icon={<FontAwesomeIcon icon={faCirclePlus} className="text-gray-400 text-2" />}
                             title={''}
@@ -206,7 +211,6 @@ const ChannelMain: FC<ChannelMainProps> = ({ loggedInUser, activeGroup }) => {
                             setGifValue={(value) => setGifValue(value)}
                             required={false}
                         />
-
                     </form>
 
                 </div>

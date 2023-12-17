@@ -5,9 +5,10 @@ import ProfileIcon from "@/app/components/ProfileIcon";
 import SmallIcon from "@/app/components/SmallIcon";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {
-    faCirclePlus,
-    faEllipsisVertical,
-    faMagnifyingGlass, faMicrophone,
+    faArrowDown,
+    faArrowUp,
+    faCirclePlus, faDisplay,
+    faEllipsisVertical, faMicrophone,
     faPhone,
     faThumbtack,
     faUsers,
@@ -17,7 +18,7 @@ import ChannelMessage from "@/app/components/channel/ChannelMessage";
 import {faCommentDots, faFileLines, faUser} from "@fortawesome/free-regular-svg-icons";
 import FormInput from "@/app/components/form/FormInput";
 import User from "@/app/utils/interfaces/User";
-import {client, database, databases, ID} from "@/app/appwrite";
+import {client, database, databases} from "@/app/appwrite";
 import {Models, Query} from "appwrite";
 import UserInterface from "@/app/utils/interfaces/UserInterface";
 import ChannelMainSkeleton from "@/app/components/skeletons/ChannelMain";
@@ -25,12 +26,15 @@ import FormTextarea from "@/app/components/form/FormTextarea";
 import emojiNameMap from "emoji-name-map";
 import '@livekit/components-styles';
 import {
+    CarouselLayout, DisconnectButton, GridLayout,
     LiveKitRoom,
-    VideoConference,
-    GridLayout,
-    ParticipantTile, RoomAudioRenderer, ControlBar, useTracks, CarouselLayout,
+    ParticipantTile,
+    RoomAudioRenderer,
+    TrackToggle,
+    useTracks,
 } from '@livekit/components-react';
 import {Track} from "livekit-client";
+import Source = Track.Source;
 
 interface ChannelMainProps {
     loggedInUser: User,
@@ -46,6 +50,9 @@ const ChannelMain: FC<ChannelMainProps> = ({ loggedInUser, activeGroup }) => {
     const [group, setGroup] = useState<any>([])
     const [submitting, setSubmitting] = useState(false)
     const [token, setToken] = useState("");
+    const [inCall, setInCall] = useState<boolean>(false);
+    const [hiddenCall, hideCall] = useState<boolean>(false);
+
 
     const [usersShown, setUsersShown] = useState<boolean>(true)
 
@@ -87,22 +94,16 @@ const ChannelMain: FC<ChannelMainProps> = ({ loggedInUser, activeGroup }) => {
             setMessages((oldMessages: any) => [res, ...oldMessages])
         });
 
-        (async () => {
-            try {
-                const resp = await fetch(
-                    `/api/getParticipantToken?room=${group.$id}&username=${loggedInUser.$id}`
-                );
-                const data = await resp.json();
-                setToken(data.token);
-            } catch (e) {
-                console.error(e);
-            }
-        })();
+        const unsubscribeGroup = client.subscribe(`databases.${database}.collections.groups.documents`, response => {
+            const res: any = response.payload
+            setGroup(res)
+        });
 
         setLoading(false)
 
         return () => {
             unsubscribe()
+            unsubscribeGroup()
         };
 
     }, []);
@@ -162,6 +163,60 @@ const ChannelMain: FC<ChannelMainProps> = ({ loggedInUser, activeGroup }) => {
         if(gifValue !== "") messageSubmit(gifValue)
     }, [gifValue]);
 
+    useEffect(() => {
+
+        if(group.call){
+            console.log(group.call)
+            fetchCallData()
+        }
+
+    }, [group.call]);
+
+    const fetchCallData = async () => {
+        try {
+            const resp = await fetch(
+                `/api/getParticipantToken?room=${group.$id}&username=${loggedInUser.name}`
+            );
+            const data = await resp.json();
+            setToken(data.token);
+        } catch (e) {
+            console.error(e);
+        }
+    };
+
+
+    const call = async (status: boolean) => {
+
+        try {
+            setSubmitting(true);
+
+            const dbID = loggedInUser.dbID;
+            const constructedBody = JSON.stringify({
+                "dbID": dbID,
+                "activeGroup": activeGroup,
+                "status": status
+            });
+
+            const response = await fetch(`/api/call`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: constructedBody
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to call');
+            }
+
+        } catch (err: any) {
+            console.error(err);
+        } finally {
+            setSubmitting(false);
+        }
+
+    }
+
     const convertText = (inputText: string) => {
         // Use emoji-name-map to replace emoji placeholders with actual emojis
         return inputText.replace(/:\w+:/g, (match) => {
@@ -171,7 +226,7 @@ const ChannelMain: FC<ChannelMainProps> = ({ loggedInUser, activeGroup }) => {
         });
     };
 
-    if (loading || !group?.users || token === "") {
+    if (loading || !group?.users) {
         return <ChannelMainSkeleton />;
     }
 
@@ -187,7 +242,7 @@ const ChannelMain: FC<ChannelMainProps> = ({ loggedInUser, activeGroup }) => {
                     </div>
                 </div>
                 <div className='flex flex-row gap-6 justify-center items-center'>
-                    <SmallIcon icon={<FontAwesomeIcon icon={faPhone}/>} size={'3'}/>
+                    <SmallIcon icon={<FontAwesomeIcon icon={faPhone}/>} size={'3'} onClickFn={() => call(true)} />
                     <SmallIcon icon={<FontAwesomeIcon icon={faVideo}/>} size={'3'}/>
                     <SmallIcon icon={<FontAwesomeIcon icon={faThumbtack}/>} size={'3'}/>
                     <SmallIcon icon={<FontAwesomeIcon icon={faUsers}/>} size={'3'} onClickFn={() => setUsersShown(!usersShown)} />
@@ -195,24 +250,43 @@ const ChannelMain: FC<ChannelMainProps> = ({ loggedInUser, activeGroup }) => {
                 </div>
             </header>
 
-            {/*<div className='h-4/10 w-full bg-light'>*/}
-            {/*    <LiveKitRoom*/}
-            {/*        video={true}*/}
-            {/*        audio={true}*/}
-            {/*        token={token}*/}
-            {/*        serverUrl={process.env.NEXT_PUBLIC_LIVEKIT_URL}*/}
-            {/*        // Use the default LiveKit theme for nice styles.*/}
-            {/*        data-lk-theme="default"*/}
-            {/*    >*/}
-            {/*        <MyVideoConference />*/}
-            {/*        <RoomAudioRenderer />*/}
-            {/*        <ControlBar />*/}
-            {/*    </LiveKitRoom>*/}
-            {/*</div>*/}
-
             <article className='h-0 w-full flex flex-row flex-grow'>
 
                 <div className='h-full w-full flex flex-col'>
+
+                    { (group.call && !hiddenCall) ? (
+                        <div className='flex flex-col gap-[1dvw] h-4/10 w-full bg-light'>
+                            <LiveKitRoom
+                                video={false}
+                                audio={false}
+                                connect={inCall}
+                                token={token}
+                                serverUrl={process.env.NEXT_PUBLIC_LIVEKIT_URL}
+                                // Use the default LiveKit theme for nice styles.
+                                data-lk-theme="default"
+                                className='flex flex-col h-full'
+                                onDisconnected={() => setInCall(false)}
+                            >
+                                <MyVideoConference />
+                                <RoomAudioRenderer />
+
+                                <div className='flex flex-row justify-center items-center w-full h-3/10 text-2 gap-[1dvw] p-[1dvw] bg-light z-50'>
+                                    {inCall ? (
+                                        <>
+                                            <TrackToggle source={Source.Camera} className='h-[2dvw] w-[4dvw] p-[1dvw]' showIcon={false}><FontAwesomeIcon icon={faVideo} /></TrackToggle>
+                                            <TrackToggle source={Source.Microphone} className='h-[2dvw] w-[4dvw] p-[1dvw]' showIcon={false}><FontAwesomeIcon icon={faMicrophone} /></TrackToggle>
+                                            <TrackToggle source={Source.ScreenShare} className='h-[2dvw] w-[4dvw] p-[1dvw]' showIcon={false}><FontAwesomeIcon icon={faDisplay} /></TrackToggle>
+                                            <DisconnectButton className='h-[2dvw] w-[4dvw] p-[1dvw]'>Leave</DisconnectButton>
+                                        </>
+                                    ) : (
+                                        <button className='h-[2dvw] w-[4dvw] p-[1dvw] bg-green-400 hover:bg-green-600 transition-all flex justify-center items-center text-center rounded-xl' onClick={() => setInCall(true)}>Join</button>
+                                    )}
+                                    <button className='right-10 h-[2dvw] w-[4dvw] p-[1dvw] bg-green-400 hover:bg-green-600 transition-all flex justify-center items-center text-center rounded-xl' onClick={() => hideCall(!hiddenCall)}>Hide</button>
+                                </div>
+
+                            </LiveKitRoom>
+                        </div>
+                    ) : null}
 
                     {/* First div */}
                     <div
@@ -298,10 +372,10 @@ function MyVideoConference() {
         { onlySubscribed: false },
     );
     return (
-        <CarouselLayout tracks={tracks}>
+        <GridLayout tracks={tracks} className=''>
             {/* The GridLayout accepts zero or one child. The child is used
       as a template to render all passed in tracks. */}
             <ParticipantTile />
-        </CarouselLayout>
+        </GridLayout>
     );
 }

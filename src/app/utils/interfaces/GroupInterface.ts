@@ -3,6 +3,7 @@ interface GroupInterface {
     users: string[];
     ownerID: string;
     avatarPath: string;
+    call: boolean;
     $id: string;
     $createdAt: string;
     $updatedAt: string;

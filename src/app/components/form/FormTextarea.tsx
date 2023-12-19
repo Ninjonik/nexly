@@ -51,7 +51,7 @@ const FormTextArea: FC<FormTextAreaProps> = ({
 
     return (
         <div className="h-full w-full flex flex-col">
-            <div className="relative text-lightly text-2 h-full w-full flex flex-row bg-gray rounded-lg overflow-y-scroll">
+            <div className="relative text-lightly text-2 h-full w-full flex flex-row bg-gray rounded-lg overflow-y-scroll overflow-x-hidden">
                 <div className="h-full w-0.5/10 flex items-center justify-center pointer-events-none rounded-lg">
                     {icon}
                 </div>
@@ -65,23 +65,30 @@ const FormTextArea: FC<FormTextAreaProps> = ({
                           placeholder={title}
                       />
                     <div className="replicated-value overflow-hidden" data-replicated-value={valueProp}></div>
+                </div>                
+
+                <div className='h-full w-0.5/10'>
+                    <Tippy content={
+                        <GifPicker tenorApiKey={tenorKey} onGifClick={(e: {url: string}) => setGifValue(e.url) } />
+                    } trigger={'click'} interactive={true} appendTo={document.body} >
+                        <button type={'button'} className='h-full w-0.5/10 flex items-center justify-center rounded-lg'>
+                            <FontAwesomeIcon icon={faImages} />
+                        </button>
+                    </Tippy>
                 </div>
-                <Tippy content={
-                    <GifPicker tenorApiKey={tenorKey} onGifClick={(e: {url: string}) => setGifValue(e.url) } />
-                } trigger={'click'} interactive={true}>
-                    <button type={'button'} className='h-full w-0.5/10 flex items-center justify-center rounded-lg'>
-                        <FontAwesomeIcon icon={faImages} />
-                    </button>
-                </Tippy>
-                <Tippy content={
-                    <Picker data={data} onEmojiSelect={(e: any) => onChangeFn(valueProp + " " + e.native)} />
-                } trigger={'click'} interactive={true}>
-                    <button type={'button'} className='h-full w-0.5/10 flex items-center justify-center rounded-lg'>
-                        <FontAwesomeIcon icon={faFaceSmileWink} />
-                    </button>
-                </Tippy>
+
+                <div className='h-full w-0.5/10'>
+                    <Tippy content={
+                        <Picker data={data} onEmojiSelect={(e: any) => onChangeFn(valueProp + " " + e.native)} />
+                    } trigger={'click'} interactive={true} appendTo={document.body}>
+                        <button type={'button'} className='h-full w-full flex items-center justify-center rounded-lg'>
+                            <FontAwesomeIcon icon={faFaceSmileWink} />
+                        </button>
+                    </Tippy>
                 </div>
+                
             </div>
+        </div>
     );
 }
 

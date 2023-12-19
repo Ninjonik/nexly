@@ -32,6 +32,8 @@ import {
     RoomAudioRenderer,
     TrackToggle,
     useTracks,
+    VideoConference,
+    PreJoin,
 } from '@livekit/components-react';
 import {Track} from "livekit-client";
 import Source = Track.Source;
@@ -254,7 +256,7 @@ const ChannelMain: FC<ChannelMainProps> = ({ loggedInUser, activeGroup }) => {
 
                 <div className='h-full w-full flex flex-col'>
 
-                    { (group.call && !hiddenCall) ? (
+                    { (group.call && !hiddenCall && inCall) ? (
                         <div className='flex flex-col gap-[1dvw] h-4/10 w-full bg-light'>
                             <LiveKitRoom
                                 video={false}
@@ -267,7 +269,8 @@ const ChannelMain: FC<ChannelMainProps> = ({ loggedInUser, activeGroup }) => {
                                 className='flex flex-col h-full'
                                 onDisconnected={() => setInCall(false)}
                             >
-                                <MyVideoConference />
+                                <VideoConference />
+                                {/* <MyVideoConference />
                                 <RoomAudioRenderer />
 
                                 <div className='flex flex-row justify-center items-center w-full h-3/10 text-2 gap-[1dvw] p-[1dvw] bg-light z-50'>
@@ -282,11 +285,21 @@ const ChannelMain: FC<ChannelMainProps> = ({ loggedInUser, activeGroup }) => {
                                         <button className='h-[2dvw] w-[4dvw] p-[1dvw] bg-green-400 hover:bg-green-600 transition-all flex justify-center items-center text-center rounded-xl' onClick={() => setInCall(true)}>Join</button>
                                     )}
                                     <button className='right-10 h-[2dvw] w-[4dvw] p-[1dvw] bg-green-400 hover:bg-green-600 transition-all flex justify-center items-center text-center rounded-xl' onClick={() => hideCall(!hiddenCall)}>Hide</button>
-                                </div>
+                                </div> */}
 
                             </LiveKitRoom>
+
                         </div>
-                    ) : null}
+                    ) : (
+                        <div className='flex flex-row justify-center items-center w-full h-3/10 text-2 gap-[1dvw] p-[1dvw] bg-light z-50'>
+                            {inCall ? (
+                                null
+                            ) : (
+                                <button className='h-[2dvw] w-[4dvw] p-[1dvw] bg-green-400 hover:bg-green-600 transition-all flex justify-center items-center text-center rounded-xl' onClick={() => setInCall(true)}>Join</button>
+                            )}
+                            <button className='right-10 h-[2dvw] w-[4dvw] p-[1dvw] bg-green-400 hover:bg-green-600 transition-all flex justify-center items-center text-center rounded-xl' onClick={() => hideCall(!hiddenCall)}>Hide</button>
+                        </div>
+                    )}
 
                     {/* First div */}
                     <div

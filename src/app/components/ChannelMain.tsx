@@ -169,7 +169,6 @@ const ChannelMain: FC<ChannelMainProps> = ({ loggedInUser, activeGroup }) => {
     useEffect(() => {
 
         if(group.call){
-            console.log(group.call)
             fetchCallData()
         }
 
@@ -212,6 +211,8 @@ const ChannelMain: FC<ChannelMainProps> = ({ loggedInUser, activeGroup }) => {
                 throw new Error('Failed to call');
             }
 
+            setInCall(true)
+
         } catch (err: any) {
             console.error(err);
         } finally {
@@ -228,6 +229,31 @@ const ChannelMain: FC<ChannelMainProps> = ({ loggedInUser, activeGroup }) => {
             return emoji || match; // Return the emoji if found, otherwise return the original placeholder
         });
     };
+
+    const onDisconnectedFn = async () => {
+
+        try {
+            setInCall(false)
+
+            const response = await fetch(`/api/checkRoomStatus?room=${activeGroup}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to call');
+            }
+
+            console.log(response)
+
+        } catch (err: any) {
+            console.error(err);
+        } finally {
+            setSubmitting(false);
+        }
+    }
 
     if (loading || !group?.users) {
         return <ChannelMainSkeleton />;
@@ -257,53 +283,36 @@ const ChannelMain: FC<ChannelMainProps> = ({ loggedInUser, activeGroup }) => {
 
                 <div className='h-full w-full flex flex-col'>
 
-                    { (group.call && !hiddenCall && inCall) ? (
-                        <div className={`flex flex-col gap-[1dvw] bg-light ${fullscreen ? 'absolute w-[100dvw] h-[100dvh] top-0 left-0 z-50' : 'relative w-full h-4/10'}`}>
-                            <LiveKitRoom
-                                video={false}
-                                audio={false}
-                                connect={inCall}
-                                token={token}
-                                serverUrl={process.env.NEXT_PUBLIC_LIVEKIT_URL}
-                                // Use the default LiveKit theme for nice styles.
-                                data-lk-theme="default"
-                                className='flex flex-col h-full'
-                                onDisconnected={() => setInCall(false)}
-                            >
-                                <VideoConference />
-                                <button className='h-[2dvw] w-[2dvw] p-[1dvw] text-lightly hover:text-white transition-all flex justify-center items-center text-center rounded-xl absolute right-[0.5dvw] bottom-[0.5dvw]' onClick={() => setFullscreen(!fullscreen)}>{fullscreen ? <FontAwesomeIcon icon={faMinimize} /> : <FontAwesomeIcon icon={faMaximize} />}</button>
-                                {/* <MyVideoConference />
-                                <RoomAudioRenderer />
+                    {group.call && (
+                        <>
+                            { (!hiddenCall && inCall) ? (
+                                <div className={`flex flex-col gap-[1dvw] bg-light transition-all duration-100 ${fullscreen ? 'absolute w-[100dvw] h-[100dvh] top-0 left-0 z-50' : 'relative w-full h-4/10'}`}>
+                                    <LiveKitRoom
+                                        video={false}
+                                        audio={false}
+                                        connect={inCall}
+                                        token={token}
+                                        serverUrl={process.env.NEXT_PUBLIC_LIVEKIT_URL}
+                                        data-lk-theme="default"
+                                        className='flex flex-col h-full'
+                                        onDisconnected={onDisconnectedFn}
+                                    >
+                                        <VideoConference />
+                                        <button className='h-[2dvw] w-[2dvw] p-[1dvw] text-lightly hover:text-white transition-all flex justify-center items-center text-center rounded-xl absolute right-[0.5dvw] bottom-[0.5dvw]' onClick={() => setFullscreen(!fullscreen)}>{fullscreen ? <FontAwesomeIcon icon={faMinimize} /> : <FontAwesomeIcon icon={faMaximize} />}</button>
 
+                                    </LiveKitRoom>
+                                </div>
+                            ) : (
                                 <div className='flex flex-row justify-center items-center w-full h-3/10 text-2 gap-[1dvw] p-[1dvw] bg-light z-50'>
-                                    {inCall ? (
-                                        <>
-                                            <TrackToggle source={Source.Camera} className='h-[2dvw] w-[4dvw] p-[1dvw]' showIcon={false}><FontAwesomeIcon icon={faVideo} /></TrackToggle>
-                                            <TrackToggle source={Source.Microphone} className='h-[2dvw] w-[4dvw] p-[1dvw]' showIcon={false}><FontAwesomeIcon icon={faMicrophone} /></TrackToggle>
-                                            <TrackToggle source={Source.ScreenShare} className='h-[2dvw] w-[4dvw] p-[1dvw]' showIcon={false}><FontAwesomeIcon icon={faDisplay} /></TrackToggle>
-                                            <DisconnectButton className='h-[2dvw] w-[4dvw] p-[1dvw]'>Leave</DisconnectButton>
-                                        </>
-                                    ) : (
+                                    {(!inCall && !hiddenCall) && (
                                         <button className='h-[2dvw] w-[4dvw] p-[1dvw] bg-green-400 hover:bg-green-600 transition-all flex justify-center items-center text-center rounded-xl' onClick={() => setInCall(true)}>Join</button>
                                     )}
-                                    <button className='right-10 h-[2dvw] w-[4dvw] p-[1dvw] bg-green-400 hover:bg-green-600 transition-all flex justify-center items-center text-center rounded-xl' onClick={() => hideCall(!hiddenCall)}>Hide</button>
-                                </div> */}
-
-                            </LiveKitRoom>
-
-                        </div>
-                    ) : (
-                        <div className='flex flex-row justify-center items-center w-full h-3/10 text-2 gap-[1dvw] p-[1dvw] bg-light z-50'>
-                            {inCall ? (
-                                null
-                            ) : (
-                                <button className='h-[2dvw] w-[4dvw] p-[1dvw] bg-green-400 hover:bg-green-600 transition-all flex justify-center items-center text-center rounded-xl' onClick={() => setInCall(true)}>Join</button>
+                                    <button className='right-10 h-[2dvw] w-[4dvw] p-[1dvw] bg-green-400 hover:bg-green-600 transition-all flex justify-center items-center text-center rounded-xl' onClick={() => hideCall(!hiddenCall)}>{hiddenCall ? 'Show' : 'Hide'}</button>
+                                </div>
                             )}
-                            <button className='right-10 h-[2dvw] w-[4dvw] p-[1dvw] bg-green-400 hover:bg-green-600 transition-all flex justify-center items-center text-center rounded-xl' onClick={() => hideCall(!hiddenCall)}>Hide</button>
-                        </div>
+                        </>
                     )}
 
-                    {/* First div */}
                     <div
                         className='h-full w-full bg-gray-dark p-[2dvw] flex flex-col-reverse gap-[2dvw] overflow-y-scroll no-scrollbar'
                     >
@@ -312,7 +321,6 @@ const ChannelMain: FC<ChannelMainProps> = ({ loggedInUser, activeGroup }) => {
                         ))}
                     </div>
 
-                    {/* Second div */}
                     <form
                         className='max-h-4/10 flex-grow w-full bg-light p-[1dvw] flex justify-center items-center'
                         onSubmit={(e) => {
@@ -333,39 +341,40 @@ const ChannelMain: FC<ChannelMainProps> = ({ loggedInUser, activeGroup }) => {
 
                 </div>
 
-                <aside className={`h-full w-3/10 bg-light border-t-2 border-blue flex flex-col p-[2dvw] gap-[2dvw] ${usersShown ? '' : 'hidden'}`}>
+                <aside className={`h-full bg-light border-t-2 border-blue flex flex-col gap-[2dvw] transition-all ${usersShown ? 'w-3/10 p-[2dvw]' : 'w-0'}`}>
+                    {usersShown && (
+                        <>
+                            <h3 className='text-xl font-bold'>{group.title}</h3>
 
-                    <h3 className='text-xl font-bold'>{group.title}</h3>
-
-                    <FormInput icon={<FontAwesomeIcon icon={faFileLines} className="text-gray-400"/>}
-                               title={'Description'}/>
+                            <FormInput icon={<FontAwesomeIcon icon={faFileLines} className="text-gray-400"/>}
+                                       title={'Description'}/>
 
 
-                    <div className='flex flex-col gap-[0.5dvw] text-2'>
-                        <div className='flex flex-row justify-between'>
-                            <div className=""><FontAwesomeIcon icon={faUser} className="text-blue pr-[0.5dvw]"/> Members ({group.users.length})
-                            </div>
-                            <a href='#' className='text-blue hover:text-lightly transition-all'>Add</a>
-                        </div>
-
-                        {group.users.map((user: UserInterface) => (
-                            <div className='flex justify-between items-center' key={user.dbID}>
-                                <div className='flex flex-row gap-[0.5dvw] items-center'>
-                                    <ProfileIcon imageUrl={`/images/users/${user.avatarPath}`} status={'online'} />
-                                    <h3 className='font-bold'>{user.username}</h3>
+                            <div className='flex flex-col gap-[0.5dvw] text-2'>
+                                <div className='flex flex-row justify-between'>
+                                    <div className=""><FontAwesomeIcon icon={faUser} className="text-blue pr-[0.5dvw]"/> Members ({group.users.length})
+                                    </div>
+                                    <a href='#' className='text-blue hover:text-lightly transition-all'>Add</a>
                                 </div>
-                                <div className='flex flex-row gap-[0.5dvw]'>
-                                    <SmallIcon icon={<FontAwesomeIcon icon={faPhone} />} />
-                                    <SmallIcon icon={<FontAwesomeIcon icon={faCommentDots} />} />
-                                </div>
+
+                                {group.users.map((user: UserInterface) => (
+                                    <div className='flex justify-between items-center' key={user.dbID}>
+                                        <div className='flex flex-row gap-[0.5dvw] items-center'>
+                                            <ProfileIcon imageUrl={`/images/users/${user.avatarPath}`} status={'online'} />
+                                            <h3 className='font-bold'>{user.username}</h3>
+                                        </div>
+                                        <div className='flex flex-row gap-[0.5dvw]'>
+                                            <SmallIcon icon={<FontAwesomeIcon icon={faPhone} />} />
+                                            <SmallIcon icon={<FontAwesomeIcon icon={faCommentDots} />} />
+                                        </div>
+                                    </div>
+                                ))}
+
+
+                                {/*<a href='#' className='text-blue text-md hover:text-lightly transition-all text-center'>Show More</a>*/}
                             </div>
-                        ))}
-
-
-                        {/*<a href='#' className='text-blue text-md hover:text-lightly transition-all text-center'>Show More</a>*/}
-                    </div>
-
-
+                        </>
+                    )}
                 </aside>
 
             </article>

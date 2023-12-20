@@ -22,11 +22,11 @@ const Home: React.FC<HomeProps> = () => {
         // TODO: spraviť aby sa v cookies ukladali celé userData
         // TODO: po update sa vymažú a spravia nové
 
-        const loginCookies = async (storedEmail: string, storedPassword: string) => {
+        const loginCookies = async (storedEmail: string | undefined, storedPassword: string | undefined) => {
             setLoggedInUser(await login(storedEmail, storedPassword));
         };
 
-        if (storedEmail && storedPassword && !loggedInUser) {
+        if (!loggedInUser) {
             loginCookies(storedEmail, storedPassword).then(r => setLoading(false))
         } else {
             setLoading(false);

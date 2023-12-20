@@ -2,17 +2,19 @@ import {account, databases} from "@/app/appwrite";
 import Cookies from "js-cookie";
 import UsersInterface from "@/app/utils/interfaces/UsersInterface";
 
-const login = async (email: string, password: string) => {
+const login = async (email: string | undefined, password: string | undefined) => {
 
     let authAccount: any
 
     try {
         authAccount = await account.get()
     } catch (e) {
-        await account.createEmailSession(email, password)
-        authAccount = await account.get()
-        Cookies.set("email", email, { expires: 7 })
-        Cookies.set("password", password, { expires: 7 })
+        if(email && password){
+            await account.createEmailSession(email, password)
+            authAccount = await account.get()
+            Cookies.set("email", email, { expires: 7 })
+            Cookies.set("password", password, { expires: 7 })
+        }
     }
 
     try {

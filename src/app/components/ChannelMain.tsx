@@ -8,7 +8,7 @@ import {
     faArrowDown,
     faArrowUp,
     faCirclePlus, faDisplay,
-    faEllipsisVertical, faMicrophone,
+    faEllipsisVertical, faExpand, faMaximize, faMicrophone, faMinimize,
     faPhone,
     faThumbtack,
     faUsers,
@@ -54,6 +54,7 @@ const ChannelMain: FC<ChannelMainProps> = ({ loggedInUser, activeGroup }) => {
     const [token, setToken] = useState("");
     const [inCall, setInCall] = useState<boolean>(false);
     const [hiddenCall, hideCall] = useState<boolean>(false);
+    const [fullscreen, setFullscreen] = useState<boolean>(false);
 
 
     const [usersShown, setUsersShown] = useState<boolean>(true)
@@ -257,7 +258,7 @@ const ChannelMain: FC<ChannelMainProps> = ({ loggedInUser, activeGroup }) => {
                 <div className='h-full w-full flex flex-col'>
 
                     { (group.call && !hiddenCall && inCall) ? (
-                        <div className='flex flex-col gap-[1dvw] h-4/10 w-full bg-light'>
+                        <div className={`flex flex-col gap-[1dvw] bg-light ${fullscreen ? 'absolute w-[100dvw] h-[100dvh] top-0 left-0 z-50' : 'relative w-full h-4/10'}`}>
                             <LiveKitRoom
                                 video={false}
                                 audio={false}
@@ -270,6 +271,7 @@ const ChannelMain: FC<ChannelMainProps> = ({ loggedInUser, activeGroup }) => {
                                 onDisconnected={() => setInCall(false)}
                             >
                                 <VideoConference />
+                                <button className='h-[2dvw] w-[2dvw] p-[1dvw] text-lightly hover:text-white transition-all flex justify-center items-center text-center rounded-xl absolute right-[0.5dvw] bottom-[0.5dvw]' onClick={() => setFullscreen(!fullscreen)}>{fullscreen ? <FontAwesomeIcon icon={faMinimize} /> : <FontAwesomeIcon icon={faMaximize} />}</button>
                                 {/* <MyVideoConference />
                                 <RoomAudioRenderer />
 

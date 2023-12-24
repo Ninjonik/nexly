@@ -8,32 +8,15 @@ import login from "@/app/utils/login";
 import Loading from "@/app/loading";
 
 import User from "@/app/utils/interfaces/User";
+import {useUserContext} from "@/app/UserContext";
 
 interface HomeProps {}
 
 const Home: React.FC<HomeProps> = () => {
 
-    const [loading, setLoading] = useState<boolean>(true);
-    const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
-    useEffect( () => {
-        const storedEmail = Cookies.get("email");
-        const storedPassword = Cookies.get("password");
+    const { loggedInUser, setLoggedInUser } = useUserContext();
 
-        // TODO: spraviť aby sa v cookies ukladali celé userData
-        // TODO: po update sa vymažú a spravia nové
-
-        const loginCookies = async (storedEmail: string | undefined, storedPassword: string | undefined) => {
-            setLoggedInUser(await login(storedEmail, storedPassword));
-        };
-
-        if (!loggedInUser) {
-            loginCookies(storedEmail, storedPassword).then(r => setLoading(false))
-        } else {
-            setLoading(false);
-        }
-    }, []);
-
-    if (loading) {
+    if (!loggedInUser && loggedInUser != undefined) {
         return <Loading />;
     }
 

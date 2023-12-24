@@ -14,7 +14,11 @@ const login = async (email: string | undefined, password: string | undefined) =>
             authAccount = await account.get()
             Cookies.set("email", email, { expires: 7 })
             Cookies.set("password", password, { expires: 7 })
+
+        } else {
+            return undefined
         }
+
     }
 
     try {

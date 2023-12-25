@@ -7,6 +7,7 @@ import '@fortawesome/fontawesome-svg-core/styles.css'
 config.autoAddCss = false
 import './globals.css'
 import 'tippy.js/dist/tippy.css';
+import 'react-toastify/dist/ReactToastify.css';
 import {UserContextProvider} from "@/app/UserContext";
 
 const inter = Inter({ subsets: ['latin'] })

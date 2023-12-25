@@ -1,6 +1,7 @@
 import {account, databases} from "@/app/appwrite";
 import Cookies from "js-cookie";
 import UsersInterface from "@/app/utils/interfaces/UsersInterface";
+import fireToast from "@/app/utils/toast";
 
 const login = async (email: string | undefined, password: string | undefined) => {
 

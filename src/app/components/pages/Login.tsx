@@ -6,10 +6,11 @@ import FormInput from "@/app/components/form/FormInput";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import PrimaryButton from "@/app/components/form/buttons/PrimaryButton";
 import login from "@/app/utils/login";
-
+import { ToastContainer, toast } from 'react-toastify';
 import User from "@/app/utils/interfaces/User";
 import register from "@/app/utils/register";
 import {account} from "@/app/appwrite";
+import fireToast from "@/app/utils/toast";
 
 interface LoginProps {
     loggedInUser: User | null,
@@ -38,7 +39,11 @@ const Login: FC<LoginProps> = ({ loggedInUser, setLoggedInUser }) => {
         } else {
             try {
                 result = await login(email, password)
+                if(result === undefined){
+                    fireToast('error', "Wrong username/password!", "top-right", 2000)
+                }
             } catch (e) {
+                fireToast('error', "Unknown error! Report to the developers please.", "top-right", 2000)
                 return 'error'
             }
         }
@@ -49,6 +54,7 @@ const Login: FC<LoginProps> = ({ loggedInUser, setLoggedInUser }) => {
 
     return (
         <main className='h-screen w-screen flex justify-center items-center bg-no-repeat bg-center bg-cover bg-[url("/banners/logoBanner.jpg")]'>
+            <ToastContainer />
             <form
                 className='bg-light flex flex-col rounded-md justify-center gap-[2dvh] w-1/3 py-8 px-16'
             >

@@ -15,19 +15,8 @@ interface HomeProps {}
 
 const Home: React.FC<HomeProps> = () => {
 
-    const { loggedInUser, setLoggedInUser } = useUserContext();
-
-    if (!loggedInUser && loggedInUser != undefined) {
-        return <Loading />;
-    }
-
     return (
-        loggedInUser ? (
-            <Main setLoggedInUser={setLoggedInUser} loggedInUser={loggedInUser} />
-          ) : (
-            <LoginPage setLoggedInUser={setLoggedInUser} loggedInUser={loggedInUser} />
-          )
-
+        <Main />
       );
 };
 

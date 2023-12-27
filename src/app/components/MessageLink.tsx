@@ -8,6 +8,7 @@ import {client, database, databases} from "@/app/appwrite";
 import {Models, Query} from 'appwrite';
 import MessageInterface from "@/app/utils/interfaces/MessageInterface";
 import formatTimestampToTime from "@/app/utils/convertTimestamp";
+import { useRouter } from 'next/navigation';
 
 
 interface MessageLinkProps {
@@ -15,13 +16,14 @@ interface MessageLinkProps {
     time: number,
     notifications: number,
     group: GroupInterface,
-    setActiveGroup: Dispatch<SetStateAction<string | null>>
 }
 
-const MessageLink: FC<MessageLinkProps> = ({ typing, time, notifications, group, setActiveGroup }) => {
+const MessageLink: FC<MessageLinkProps> = ({ typing, time, notifications, group }) => {
 
     const [loading, setLoading] = useState<boolean>(true)
     const [message, setMessage] = useState<MessageInterface | {}>({});
+
+    const router = useRouter();
 
     useEffect(() => {
         if(database){
@@ -60,7 +62,7 @@ const MessageLink: FC<MessageLinkProps> = ({ typing, time, notifications, group,
     }
 
     return (
-        <button className="flex flex-row justify-between text-start items-center gap-4 group" onClick={() => setActiveGroup(group.$id)}>
+        <button className="flex flex-row justify-between text-start items-center gap-4 group" onClick={() => router.push(`/group/${group.$id}`)}>
             <ProfileIcon imageUrl={`/images/groups/${group.avatarPath}`}
                          // status={'online'}
             />

@@ -43,10 +43,10 @@ const ChannelMessage: FC<ChannelMessageProps> = ({ typing, message, localUser })
                             <span className='text-lightly text-md'>{convertTimestamp(message.$updatedAt)}</span>
                         </div>
                         <span
-                            className='w-full text-md break-words bg-gray p-2 rounded-b-lg rounded-r-lg'
+                            className={!isImage ? 'w-full text-md break-words bg-blue p-2 rounded-b-lg rounded-l-lg' : 'max-w-full'}
                             style={{ whiteSpace: 'pre-line' }}
                         >
-                            {isValidImageUrl(message.message) ? <img src={message.message} /> : <span>{message.message}</span>}
+                            {isImage ? <img src={message.message} /> : <span>{message.message}</span>}
                         </span>
                     </div>
                 </div>

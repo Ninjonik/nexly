@@ -1,5 +1,6 @@
 import React, { FC, ReactNode, RefObject, forwardRef, ChangeEvent } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import PrimaryButton from "@/app/components/form/buttons/PrimaryButton";
 
 interface FormInputProps {
     title: string;

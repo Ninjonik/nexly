@@ -57,6 +57,9 @@ const Login: FC<LoginProps> = ({ loggedInUser, setLoggedInUser }) => {
             <ToastContainer />
             <form
                 className='bg-light flex flex-col rounded-md justify-center gap-[2dvh] w-1/3 py-8 px-16'
+                onSubmit={(e) => {
+                    e.preventDefault();
+                }}
             >
                 <div className='flex flex-col gap-[2dvh]'>
                     <h1 className='text-4 text-white'>{page ? "Welcome to Nexly!" : "Welcome Back!"}</h1>
@@ -68,13 +71,13 @@ const Login: FC<LoginProps> = ({ loggedInUser, setLoggedInUser }) => {
                 </div>
                 {page ? (
                     <div className='py-2 flex flex-col gap-[1dvh] h-[10dvh]'>
-                        <PrimaryButton title={'Register'} type='button' onClickFn={() => handleSubmit(true)} />
+                        <PrimaryButton title={'Register'} type='submit' onClickFn={() => handleSubmit(true)} />
                         <a className={'text-blue hover:text-blue-hover transition-all ease-in hover:cursor-pointer'} onClick={() => setPage(false)}>Already have an account? Log in now!</a>
                     </div>
 
                 ) : (
                     <div className='py-2 flex flex-col gap-[1dvh] h-[10dvh]'>
-                        <PrimaryButton title={'Log In'} type='button' onClickFn={() => handleSubmit(false)} />
+                        <PrimaryButton title={'Log In'} type='submit' onClickFn={() => handleSubmit(false)} />
                         <a className={'text-blue hover:text-blue-hover transition-all ease-in hover:cursor-pointer'} onClick={() => setPage(true)}>Not registered yet? Create a free account now!</a>
                     </div>
                 )}

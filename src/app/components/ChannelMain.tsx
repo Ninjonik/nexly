@@ -37,13 +37,15 @@ import {
 } from '@livekit/components-react';
 import {Track} from "livekit-client";
 import Source = Track.Source;
+import {useUserContext} from "@/app/UserContext";
 
 interface ChannelMainProps {
-    loggedInUser: User,
     activeGroup: string
 }
 
-const ChannelMain: FC<ChannelMainProps> = ({ loggedInUser, activeGroup }) => {
+const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
+
+    const { loggedInUser, setLoggedInUser } = useUserContext();
 
     const [loading, setLoading] = useState<boolean>(true)
     const [newMessage, setNewMessage] = useState<string>("")

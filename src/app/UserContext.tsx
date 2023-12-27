@@ -10,7 +10,8 @@ interface UserContextProps {
 }
 
 interface UserContextValue {
-    loggedInUser: User | null;
+    // loggedInUser: User;
+    loggedInUser: any;
     setLoggedInUser: React.Dispatch<React.SetStateAction<User | null>>;
 }
 

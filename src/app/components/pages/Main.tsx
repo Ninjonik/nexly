@@ -5,7 +5,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faDiscord} from "@fortawesome/free-brands-svg-icons";
 import {
     faBell, faEnvelope,
-    faGear, faHeadphones,
+    faGear, faHeadphones, faImages,
     faInbox,
     faMagnifyingGlass, faMicrophone,
     faPenToSquare,
@@ -24,6 +24,9 @@ import User from "@/app/utils/interfaces/User";
 import getAvatar from "@/app/utils/getAvatar";
 import {act} from "react-dom/test-utils";
 import GroupInterface from "@/app/utils/interfaces/GroupInterface";
+import PrimaryButton from "@/app/components/form/buttons/PrimaryButton";
+import GifPicker from "gif-picker-react";
+import Tippy from "@tippyjs/react";
 
 interface MainProps {
     loggedInUser: User,
@@ -100,9 +103,17 @@ const Main: FC<MainProps> = ({ loggedInUser, setLoggedInUser }) => {
 
 
                     <header className='h-1/10 flex flex-col justify-center gap-8 p-6'>
-                        <div className="flex flex-row justify-between">
+                        <div className="flex flex-row justify-between items-center">
                             <h2 className="text-3">Messages</h2>
-                            <FontAwesomeIcon icon={faPenToSquare} className="text-blue text-3"/>
+                            <Tippy content={
+                                <div>
+                                    asda
+                                </div>
+                            } trigger={'click'} interactive={true} appendTo={document.body} placement={'right'} >
+                                <button>
+                                    <SmallIcon icon={<FontAwesomeIcon icon={faPenToSquare} className="text-blue text-3 hover:text-blue-hover"/>} />
+                                </button>
+                            </Tippy>
                         </div>
                     </header>
 

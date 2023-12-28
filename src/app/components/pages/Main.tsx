@@ -1,39 +1,14 @@
 "use client"
 
-import SidebarIcon from "@/app/components/sidebar/SidebarIcon";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faDiscord} from "@fortawesome/free-brands-svg-icons";
-import {
-    faBell, faCirclePlus, faEllipsisVertical, faEnvelope,
-    faGear, faHeadphones, faImages,
-    faInbox,
-    faMagnifyingGlass, faMaximize, faMicrophone, faMinimize,
-    faPenToSquare, faPhone,
-    faThumbtack,
-    faUsers, faVideo
-} from "@fortawesome/free-solid-svg-icons";
-import Image from "next/image";
-import ProfileIcon from "@/app/components/ProfileIcon";
 import FormInput from "@/app/components/form/FormInput";
-import MessagesSection from "@/app/components/MessagesSection";
-import SmallIcon from "@/app/components/SmallIcon";
 import ChannelMain from "@/app/components/ChannelMain";
-import React, {FC, useState} from "react";
-import logout from "@/app/utils/logout";
-import User from "@/app/utils/interfaces/User";
-import getAvatar from "@/app/utils/getAvatar";
-import {act} from "react-dom/test-utils";
-import GroupInterface from "@/app/utils/interfaces/GroupInterface";
+import React, {FC, useRef, useState} from "react";
 import PrimaryButton from "@/app/components/form/buttons/PrimaryButton";
-import GifPicker from "gif-picker-react";
-import Tippy from "@tippyjs/react";
-import Sidebar from "@/app/components/Sidebar";
-import ChannelSidebar from "@/app/components/ChannelSidebar";
-import {LiveKitRoom, VideoConference} from "@livekit/components-react";
-import ChannelMessage from "@/app/components/channel/ChannelMessage";
-import FormTextarea from "@/app/components/form/FormTextarea";
 import {faCommentDots, faFileLines, faUser} from "@fortawesome/free-regular-svg-icons";
-import UserInterface from "@/app/utils/interfaces/UserInterface";
+import {database, databases, ID} from "@/app/appwrite";
+import {useUserContext} from "@/app/UserContext";
+import {Permission, Query, Role} from "appwrite";
 
 interface MainProps {
     group?: string | null
@@ -41,7 +16,42 @@ interface MainProps {
 
 const Main: FC<MainProps> = ({ group }) => {
 
-    const [activeGroup, setActiveGroup] = useState<string | null>(null)
+    const { loggedInUser, setLoggedInUser } = useUserContext();
+    const searchRef = useRef<HTMLInputElement>(null);
+    const [error, setError] = useState<string>("");
+
+    const searchUser = async () => {
+
+        const dest = searchRef?.current?.value
+        console.log(dest)
+        if(dest){
+
+            if(dest === loggedInUser.name){
+                setError("😥 You can't add yourself to your friendlist!")
+                return
+            }
+
+            const res = await databases.listDocuments(database, 'users', [Query.equal('username', dest)]);
+            if(res.documents.length === 0){
+                setError("Provided user doesn't exist.")
+                return
+            }
+
+            const friendRequestResponse = await fetch('/api/sendFriendRequest', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ source: loggedInUser.dbID, dest: res.documents[0].$id })
+            });
+
+            if (!friendRequestResponse.ok) {
+                throw new Error('Failed to send friend request');
+            }
+
+            setError("")
+        }
+    }
 
     return (
         <>
@@ -58,15 +68,16 @@ const Main: FC<MainProps> = ({ group }) => {
 
                         <div className='h-2/10 w-full flex flex-col gap-[1dvw]'>
                             <h2 className='text-3'>Add Friend</h2>
-                            <h3 className='text-2'>You can add friend using their @username</h3>
+                            <h3 className='text-2'>You can add friend using their Username</h3>
                             <div className='w-full flex flex-row gap-2'>
                                 <div className='w-8/10'>
-                                    <FormInput title={'Friend username - @username'} icon={<FontAwesomeIcon icon={faUser}/>} />
+                                    <FormInput title={"Friend's username"} icon={<FontAwesomeIcon icon={faUser}/>} ref={searchRef} />
                                 </div>
-                                <div className='w-2/10'>
-                                    <PrimaryButton title={'Send Request'} />
+                                <div className='w-2/10 h-full'>
+                                    <PrimaryButton title={'Send Request'} onClickFn={searchUser} />
                                 </div>
                             </div>
+                            <h3 className='text-2 text-red-500'>{error}</h3>
 
                         </div>
 

@@ -12,7 +12,7 @@ interface UserContextProps {
 interface UserContextValue {
     // loggedInUser: User;
     loggedInUser: any;
-    setLoggedInUser: React.Dispatch<React.SetStateAction<User | null>>;
+    setLoggedInUser: React.Dispatch<React.SetStateAction<User | null | "pending">>;
 }
 
 const UserContext = createContext<UserContextValue | undefined>(undefined);
@@ -26,19 +26,21 @@ export const useUserContext = () => {
 };
 
 export const UserContextProvider = ({ children }: UserContextProps) => {
-    const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
+    const [loggedInUser, setLoggedInUser] = useState<User | null | "pending">("pending");
 
     useEffect(() => {
         const storedEmail = Cookies.get('email');
         const storedPassword = Cookies.get('password');
 
         const loginCookies = async (storedEmail: string | undefined, storedPassword: string | undefined) => {
-            setLoggedInUser(await login(storedEmail, storedPassword));
+            const res = await login(storedEmail, storedPassword)
+            setLoggedInUser(res);
         };
 
-        if (!loggedInUser) {
+        if (!loggedInUser || loggedInUser == "pending") {
             loginCookies(storedEmail, storedPassword);
         }
+
     }, [loggedInUser]);
 
     return (

@@ -14,7 +14,7 @@ import fireToast from "@/app/utils/toast";
 
 interface LoginProps {
     loggedInUser: User | null,
-    setLoggedInUser:  React.Dispatch<React.SetStateAction<User | null>>
+    setLoggedInUser:  React.Dispatch<React.SetStateAction<User | null | "pending">>
 }
 
 const Login: FC<LoginProps> = ({ loggedInUser, setLoggedInUser }) => {

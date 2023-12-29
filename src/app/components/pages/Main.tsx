@@ -3,12 +3,13 @@
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import FormInput from "@/app/components/form/FormInput";
 import ChannelMain from "@/app/components/ChannelMain";
-import React, {FC, useRef, useState} from "react";
+import React, {FC, useEffect, useRef, useState} from "react";
 import PrimaryButton from "@/app/components/form/buttons/PrimaryButton";
 import {faCommentDots, faFileLines, faUser} from "@fortawesome/free-regular-svg-icons";
 import {database, databases, ID} from "@/app/appwrite";
 import {useUserContext} from "@/app/UserContext";
 import {Permission, Query, Role} from "appwrite";
+import ProfileIcon from "@/app/components/ProfileIcon";
 
 interface MainProps {
     group?: string | null
@@ -19,6 +20,15 @@ const Main: FC<MainProps> = ({ group }) => {
     const { loggedInUser, setLoggedInUser } = useUserContext();
     const searchRef = useRef<HTMLInputElement>(null);
     const [error, setError] = useState<string>("");
+    // const friendRequests: FriendRequests
+
+    useEffect(() => {
+        const fetchFriendRequests = async () => {
+            const friendRequests = await databases.listDocuments(database, 'usersRelations', [Query.equal('destination', loggedInUser.dbID), Query.equal('type', 11)]);
+            console.log(friendRequests)
+        }
+
+    }, []);
 
     const searchUser = async () => {
 
@@ -78,7 +88,10 @@ const Main: FC<MainProps> = ({ group }) => {
                                 </div>
                             </div>
                             <h3 className='text-2 text-red-500'>{error}</h3>
+                        </div>
 
+                        <div className='h-2/10 w-full flex-row gap-[1dvw] overflow-y-scroll no-scrollbar'>
+                            {/*<ProfileIcon imageUrl={`/images/users/${message.author?.avatarPath}`} />*/}
                         </div>
 
                         <div className='h-8/10 w-full flex flex-col'>

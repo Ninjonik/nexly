@@ -19,7 +19,6 @@ const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
                     <input
                         required={required ?? false}
                         type={inputType ?? 'text'}
-                        ref={ref}
                         value={valueProp}
                         onChange={onChangeFn}
                         className="pl-[3dvw] pr-[1dvw] py-[1dvh] border rounded-md bg-gray border-none w-full focus:outline-none text-white"

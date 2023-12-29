@@ -17,7 +17,7 @@ export default async ({ req, res, log, error }) => {
       await database.createDocument(
           'nexly',
           'users',
-          ID.unique(),
+          authID,
           {
             "authID": authID,
             "username": name,

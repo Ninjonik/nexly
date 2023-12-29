@@ -38,8 +38,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 function InnerLayout({ children }: { children: React.ReactNode }) {
     const { loggedInUser, setLoggedInUser } = useUserContext();
 
-    console.log(loggedInUser)
-
     if (loggedInUser == "pending") {
         return <Loading />;
     }

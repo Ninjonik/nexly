@@ -24,9 +24,11 @@ const Main: FC<MainProps> = ({ group }) => {
 
     useEffect(() => {
         const fetchFriendRequests = async () => {
-            const friendRequests = await databases.listDocuments(database, 'usersRelations', [Query.equal('destination', loggedInUser.dbID), Query.equal('type', 11)]);
-            console.log(friendRequests)
+            const sentFriendRequests = await databases.listDocuments(database, 'usersRelations', [Query.equal('source', loggedInUser.dbID), Query.equal('type', 10)]);
+            const friendRequests = await databases.listDocuments(database, 'usersRelations', [Query.equal('destination', loggedInUser.dbID), Query.equal('type', 10)]);
+            console.log("Friend requests: ", sentFriendRequests, friendRequests)
         }
+        fetchFriendRequests()
 
     }, []);
 

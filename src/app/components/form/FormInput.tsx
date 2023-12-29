@@ -15,13 +15,13 @@ const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
     ({ title, icon, inputType, required, valueProp = "", onChangeFn = () => {} }, ref) => {
         return (
             <div className="relative text-lightly text-2 w-full">
-                {(valueProp && onChangeFn) ? (
+                {(!ref) ? (
                     <input
                         required={required ?? false}
                         type={inputType ?? 'text'}
                         value={valueProp}
                         onChange={onChangeFn}
-                        className="pl-[3dvw] pr-[1dvw] py-[1dvh] border rounded-md bg-gray border-none w-full focus:outline-none text-white"
+                        className="pl-[3dvw] pr-[1dvw] py-[1dvh] border rounded-md border-none bg-gray w-full focus:outline-none text-white"
                         placeholder={title}
                     />
                 ) : (
@@ -29,7 +29,7 @@ const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
                         required={required ?? false}
                         type={inputType ?? 'text'}
                         ref={ref}
-                        className="pl-[3dvw] pr-[1dvw] py-[1dvh] border rounded-md bg-gray border-none w-full focus:outline-none text-white"
+                        className="pl-[3dvw] pr-[1dvw] py-[1dvh] border rounded-md border-none bg-gray w-full focus:outline-none text-white"
                         placeholder={title}
                     />
                 )}

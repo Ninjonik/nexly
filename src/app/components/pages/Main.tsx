@@ -142,9 +142,9 @@ const Main: FC<MainProps> = ({ group }) => {
                                         console.log(friendRequest)
                                         if (friendRequest.type == 10) {
                                             if (friendRequest.source === loggedInUser.$id) {
-                                                return <div key={friendRequest.$id}><ProfileIcon imageUrl={`/images/users/${savedUsers[friendRequest.destination].avatarPath}`} /></div>;
+                                                return <div key={friendRequest.$id}><ProfileIcon imageUrl={`/images/users/${savedUsers[friendRequest.destination].avatarPath}`} actionColor={'blue'} /></div>;
                                             } else {
-                                                return <div key={friendRequest.$id}><ProfileIcon imageUrl={`/images/users/${savedUsers[friendRequest.source].avatarPath}`} /></div>;
+                                                return <div key={friendRequest.$id}><ProfileIcon imageUrl={`/images/users/${savedUsers[friendRequest.source].avatarPath}`} actionColor={'blue'} /></div>;
                                             }
                                         } else {
                                             return <div>c</div>;

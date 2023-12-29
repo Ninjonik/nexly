@@ -43,6 +43,8 @@ const config: Config = {
       },
       fontSize: {
         '1': '1dvh',
+        '1.25': '1.25dvh',
+        '1.5': '1.5dvh',
         '2': '2dvh',
         '3': '3dvh',
         '4': '4dvh',

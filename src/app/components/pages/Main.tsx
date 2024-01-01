@@ -12,6 +12,9 @@ import {Permission, Query, Role} from "appwrite";
 import ProfileIcon from "@/app/components/ProfileIcon";
 import FriendRequestInterface from "@/app/utils/interfaces/FriendRequestInterface";
 import UserInterface from "@/app/utils/interfaces/UserInterface";
+import {faXmark} from "@fortawesome/free-solid-svg-icons";
+import fireToast from "@/app/utils/toast";
+import friendRequestInterface from "@/app/utils/interfaces/FriendRequestInterface";
 
 interface MainProps {
     group?: string | null
@@ -29,16 +32,46 @@ const Main: FC<MainProps> = ({ group }) => {
         const fetchFriendRequests = async () => {
             const sentFriendRequestsRes = await databases.listDocuments(database, 'usersRelations', [Query.equal('source', loggedInUser.dbID), Query.equal('type', 10)]);
             const friendRequestsRes = await databases.listDocuments(database, 'usersRelations', [Query.equal('destination', loggedInUser.dbID), Query.equal('type', 10)]);
-            const merge = {...sentFriendRequestsRes.documents, ...friendRequestsRes.documents}
-            setFriendRequests(merge)
-            console.log("Friend requests: ", merge)
+
+            const combinedDocuments = [...sentFriendRequestsRes.documents, ...friendRequestsRes.documents];
+
+            const combinedObject: Record<string, FriendRequestInterface> = combinedDocuments.reduce((acc, document) => {
+                acc[document.$id as any] = document as FriendRequestInterface;
+                return acc;
+            }, {} as Record<string, FriendRequestInterface>);
+
+            setFriendRequests(combinedObject);
         }
+
         fetchFriendRequests()
 
         const unsubscribe = client.subscribe(`databases.${database}.collections.usersRelations.documents`, response => {
             const res: any = response.payload
-            console.log(res)
-            setFriendRequests({...friendRequests, res})
+            const resId: string = res.$id
+            const events: any = response.events
+            console.log("New request", response)
+            console.log(events)
+            console.log(friendRequests)
+
+
+            if(events.includes(`databases.${database}.collections.usersRelations.documents.*.create`)){
+                let newFriendRequests = {...friendRequests}
+                const newObject = {
+                    resId: res
+                }
+                newFriendRequests = {...newFriendRequests, ...newObject}
+                setFriendRequests(newFriendRequests)
+                console.log("New friend requests:", friendRequests)
+            } else if (events.includes(`databases.${database}.collections.usersRelations.documents.*.delete`)){
+                console.log(friendRequests)
+                // const updatedFriendRequests = { ...friendRequests };
+                // console.log(updatedFriendRequests)
+                // delete updatedFriendRequests[resId];
+                // console.log(updatedFriendRequests)
+                // setFriendReques  ts(updatedFriendRequests);
+            }
+
+
         });
 
         return () => {
@@ -49,20 +82,20 @@ const Main: FC<MainProps> = ({ group }) => {
 
     useEffect(() => {
         const friends = friendRequests;
+        setSavedUsers('loading')
 
         const fetchFriendRequests = async () => {
             const friendsIds = [...new Set([
                 ...(Object.values(friends) as FriendRequestInterface[]).map(item => item.source),
                 ...(Object.values(friends) as FriendRequestInterface[]).map(item => item.destination)
             ])];
-            console.log(friendsIds);
             const savedUsersRes = await databases.listDocuments(database, 'users', [Query.equal('$id', friendsIds)]);
             const savedUsersMap = savedUsersRes.documents.reduce((accumulator: { [key: string]: any }, user) => {
                 accumulator[user.$id] = user;
                 return accumulator;
             }, {});
+            console.log("Saved users map:", savedUsersMap)
             setSavedUsers(savedUsersMap);
-            console.log("Saved users: ", savedUsersMap);
         }
 
         if(Object.keys(friends).length > 0){
@@ -74,7 +107,6 @@ const Main: FC<MainProps> = ({ group }) => {
     const searchUser = async () => {
 
         const dest = searchRef?.current?.value
-        console.log(dest)
         if(dest){
 
             if(dest === loggedInUser.name){
@@ -104,6 +136,43 @@ const Main: FC<MainProps> = ({ group }) => {
         }
     }
 
+    const handleFriendAction = async (documentId: string, currentType: number, newType: number) => {
+
+        /*
+
+        0 - remove from database
+        10 - friend request
+        11 - friends
+
+         */
+
+        if(currentType == 10){
+
+            if(newType == 0){
+
+                const promise = databases.deleteDocument(database, 'usersRelations', documentId);
+                promise.then(function (response) {
+                    fireToast("success", "Friend request has been declined.")
+                }, function (error) {
+                    fireToast("error", "There has been an error while declining your friend request.")
+                    console.log(error);
+                });
+
+            } else if (newType == 11) {
+
+
+
+            }
+
+        }
+
+    }
+
+    console.log("-----------------------------")
+    console.log("Requests:", friendRequests)
+    console.log("Users:", savedUsers)
+    console.log("-----------------------------")
+
     return (
         <>
             {group ? (
@@ -132,19 +201,18 @@ const Main: FC<MainProps> = ({ group }) => {
                         </div>
 
                         <div className='h-2/10 w-full flex flex-row gap-[1dvw] items-center overflow-y-scroll no-scrollbar'>
-                            {friendRequests === 'loading' ? (
+                            {friendRequests === 'loading' || savedUsers === 'loading' ? (
                                 <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
                                 />
                             ) : (
                                 (Object.keys(friendRequests).length > 0 && Object.keys(savedUsers).length > 0) && (
                                     Object.keys(friendRequests).map((key) => {
                                         let friendRequest = friendRequests[key];
-                                        console.log(friendRequest)
                                         if (friendRequest.type == 10) {
                                             if (friendRequest.source === loggedInUser.$id) {
-                                                return <div key={friendRequest.$id}><ProfileIcon imageUrl={`/images/users/${savedUsers[friendRequest.destination].avatarPath}`} actionColor={'blue'} /></div>;
+                                                return <div key={friendRequest.$id}><ProfileIcon imageUrl={`/images/users/${savedUsers[friendRequest.destination].avatarPath}`} actionColor={'red-500'} actionIcon={<FontAwesomeIcon icon={faXmark} />} actionTitle={'Cancel'} actionFn={() => handleFriendAction(friendRequest.$id, 10, 0)} /></div>;
                                             } else {
-                                                return <div key={friendRequest.$id}><ProfileIcon imageUrl={`/images/users/${savedUsers[friendRequest.source].avatarPath}`} actionColor={'blue'} /></div>;
+                                                return <div key={friendRequest.$id}><ProfileIcon imageUrl={`/images/users/${savedUsers[friendRequest.source].avatarPath}`} actionColor={'red-500'} actionIcon={<FontAwesomeIcon icon={faXmark} />} actionTitle={'Decline'} /></div>;
                                             }
                                         } else {
                                             return <div>c</div>;

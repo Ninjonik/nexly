@@ -16,7 +16,6 @@ type User = {
     accessedAt: string;
     avatarPath: string;
     groups: string[];
-
     // TODO: Add more fields there
 };
 

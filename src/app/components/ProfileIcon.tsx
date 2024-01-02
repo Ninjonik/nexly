@@ -43,21 +43,25 @@ const ProfileIcon: FC<ProfileIconProps> = ({ imageUrl, status, size, customClass
                                                actionTitle = "",  actionColor = "", actionIcon = <FontAwesomeIcon icon={faUsers} />, actionFn = () => {},
                                                actionTitle2 = "",  actionColor2 = "", actionIcon2 = <FontAwesomeIcon icon={faUsers} />, actionFn2 = () => {}
                                            }, ) => (
-    <div className={`w-[${size ?? '3dvw'}] h-[${size ?? '3dvw'}] ${customClass ?? ''} relative group`} title={divTitle}>
-        {actionColor && (
-            <button title={actionTitle} onClick={actionFn} className={`w-[1dvw] h-[1dvw] bottom-[0.1dvw] right-[2dvw] hover:border-blue absolute border-2 border-light rounded-full text-sm flex justify-center items-center bg-${actionColor}`} >{actionIcon}</button>
-        )}
+    <div className='flex flex-col items-center'>
+        <div className={`w-[${size ?? '3dvw'}] h-[${size ?? '3dvw'}] ${customClass ?? ''} relative group`} title={divTitle}>
+            {actionColor && (
+                <button title={actionTitle} onClick={actionFn} className={`w-[1dvw] h-[1dvw] bottom-[0.1dvw] right-[2dvw] hover:border-blue absolute border-2 border-light rounded-full text-sm flex justify-center items-center bg-${actionColor}`} >{actionIcon}</button>
+            )}
 
-        <Image src={imageUrl} width="0" height="0" sizes={`${size ?? '3dvw'}`} className="w-full h-full rounded-full" alt={'user icon'}/>
+            <Image src={imageUrl} width="0" height="0" sizes={`${size ?? '3dvw'}`} className="w-full h-full rounded-full" alt={'user icon'}/>
 
-        {actionColor2 && (
-            <button title={actionTitle2} onClick={actionFn2} className={`w-[1dvw] h-[1dvw] bottom-[0.1dvw] left-[2dvw] hover:border-blue absolute border-2 border-light rounded-full text-sm flex justify-center items-center bg-${actionColor2}`} >{actionIcon2}</button>
-        )}
+            {actionColor2 && (
+                <button title={actionTitle2} onClick={actionFn2} className={`w-[1dvw] h-[1dvw] bottom-[0.1dvw] left-[2dvw] hover:border-blue absolute border-2 border-light rounded-full text-sm flex justify-center items-center bg-${actionColor2}`} >{actionIcon2}</button>
+            )}
 
-        {status && (
-            <div className={`w-[1dvw] h-[1dvw] bottom-[0.1dvw] left-[2dvw] group-hover:border-blue absolute border-2 border-light rounded-full ${handleStatusColor(status)}`} ></div>
-        )}
+            {status && (
+                <div className={`w-[1dvw] h-[1dvw] bottom-[0.1dvw] left-[2dvw] group-hover:border-blue absolute border-2 border-light rounded-full ${handleStatusColor(status)}`} ></div>
+            )}
+        </div>
+        <div>{divTitle}</div>
     </div>
+
 );
 
 

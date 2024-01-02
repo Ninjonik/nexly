@@ -27,7 +27,6 @@ const Main: FC<MainProps> = ({ group }) => {
     const [friendRequests, setFriendRequests] = useState<any>("loading")
     const [savedUsers, setSavedUsers] = useState<any>({})
     const friendRequestsRef = useRef<any>(friendRequests);
-    const savedUsersRef = useRef<any>(savedUsers);
 
     const updateUsers = async (friendRequestsCopy: any) => {
         setSavedUsers('loading')
@@ -45,24 +44,25 @@ const Main: FC<MainProps> = ({ group }) => {
         } else {
             setSavedUsers({})
         }
-        savedUsersRef.current = savedUsers
+    }
+
+    const fetchFriendRequests = async () => {
+        const sentFriendRequestsRes = await databases.listDocuments(database, 'usersRelations', [Query.equal('source', loggedInUser.dbID), Query.equal('type', 10)]);
+        const friendRequestsRes = await databases.listDocuments(database, 'usersRelations', [Query.equal('destination', loggedInUser.dbID), Query.equal('type', 10)]);
+        const friendsRes = await databases.listDocuments(database, 'usersRelations', [Query.equal('destination', loggedInUser.dbID), Query.equal('type', 11)]);
+        const combinedDocuments = [...friendsRes.documents, ...sentFriendRequestsRes.documents, ...friendRequestsRes.documents];
+
+        const combinedObject: Record<string, FriendRequestInterface> = combinedDocuments.reduce((acc, document) => {
+            acc[document.$id as any] = document as FriendRequestInterface;
+            return acc;
+        }, {} as Record<string, FriendRequestInterface>);
+
+        setFriendRequests(combinedObject);
+        friendRequestsRef.current = combinedObject
+        updateUsers(combinedObject)
     }
 
     useEffect(() => {
-        const fetchFriendRequests = async () => {
-            const sentFriendRequestsRes = await databases.listDocuments(database, 'usersRelations', [Query.equal('source', loggedInUser.dbID), Query.equal('type', 10)]);
-            const friendRequestsRes = await databases.listDocuments(database, 'usersRelations', [Query.equal('destination', loggedInUser.dbID), Query.equal('type', 10)]);
-            const friendsRes = await databases.listDocuments(database, 'usersRelations', [Query.equal('destination', loggedInUser.dbID), Query.equal('type', 11)]);
-            const combinedDocuments = [...friendsRes.documents, ...sentFriendRequestsRes.documents, ...friendRequestsRes.documents];
-
-            const combinedObject: Record<string, FriendRequestInterface> = combinedDocuments.reduce((acc, document) => {
-                acc[document.$id as any] = document as FriendRequestInterface;
-                return acc;
-            }, {} as Record<string, FriendRequestInterface>);
-
-            setFriendRequests(combinedObject);
-            updateUsers(combinedObject)
-        }
 
         fetchFriendRequests()
 
@@ -71,25 +71,9 @@ const Main: FC<MainProps> = ({ group }) => {
             const resId: string = res.$id
             const events: any = response.events
 
-            if(events.includes(`databases.${database}.collections.usersRelations.documents.*.create`)){
-                let newFriendRequests = {...friendRequestsRef.current}
-                const newObject = {
-                    [resId]: res,
-                };
-                newFriendRequests = {...newFriendRequests, ...newObject}
-                setFriendRequests(newFriendRequests)
-                console.log("New friend requests:", friendRequestsRef.current, "+" , newObject, "=")
-                updateUsers(newFriendRequests)
-            } else if (events.includes(`databases.${database}.collections.usersRelations.documents.*.delete`)){
-                const updatedFriendRequests = { ...friendRequestsRef.current };
-                console.log(updatedFriendRequests)
-                delete updatedFriendRequests[resId];
-                console.log(updatedFriendRequests)
-                setFriendRequests(updatedFriendRequests);
-                updateUsers(updatedFriendRequests)
-            }
+            console.log("New event:", res)
 
-
+            fetchFriendRequests()
         });
 
         return () => {
@@ -97,10 +81,6 @@ const Main: FC<MainProps> = ({ group }) => {
         };
 
     }, []);
-
-    useEffect(() => {
-        friendRequestsRef.current = friendRequests
-    }, [friendRequests]);
 
     const searchUser = async () => {
 
@@ -197,6 +177,8 @@ const Main: FC<MainProps> = ({ group }) => {
             });
         }
 
+        fetchFriendRequests()
+
     }
 
     console.log("-----------------------------")
@@ -232,7 +214,7 @@ const Main: FC<MainProps> = ({ group }) => {
                             <h3 className='text-2 text-red-500'>{error}</h3>
                         </div>
 
-                        <div className='h-2/10 w-full flex flex-row gap-[1dvw] items-center overflow-y-scroll no-scrollbar'>
+                        <div className='h-2/10 w-full flex flex-row gap-[1dvw] items-center overflow-y-scroll no-scrollbar text-lightly'>
                             {friendRequests === 'loading' || savedUsers === 'loading' ? (
                                 <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
                                 />

@@ -13,7 +13,7 @@ export async function sendFriendRequest({ source, dest }: { source: string, dest
         );
 
         if (existingRelations.documents.length === 1) {
-            await databases.createDocument(
+            const res1 = await databases.createDocument(
                 database,
                 'usersRelations',
                 ID.unique(),
@@ -32,7 +32,7 @@ export async function sendFriendRequest({ source, dest }: { source: string, dest
                 ]
             )
 
-            await databases.updateDocument(
+            const res2 = await databases.updateDocument(
                 database,
                 'usersRelations',
                 existingRelations.documents[0].$id,
@@ -40,6 +40,8 @@ export async function sendFriendRequest({ source, dest }: { source: string, dest
                     type: 11
                 }
             )
+
+            console.log("RESY:", res1, res2)
 
             return "Friend request accepted."
         }

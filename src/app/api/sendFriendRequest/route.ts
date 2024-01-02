@@ -2,21 +2,49 @@ import {NextApiRequest, NextApiResponse} from 'next';
 import {ID, Permission, Role, Query} from 'node-appwrite';
 import {databases} from '@/app/appwrite_server';
 import {database} from '@/app/appwrite';
+import {NextResponse} from "next/server";
 
 export async function sendFriendRequest({ source, dest }: { source: string, dest: string }) {
     try {
         const existingRelations = await databases.listDocuments(
             database,
             'usersRelations',
-            [Query.equal('source', source), Query.equal('destination', dest), Query.equal('type', 10)]
+            [Query.equal('source', dest), Query.equal('destination', source), Query.equal('type', 10)]
         );
 
-        if (existingRelations.documents.length > 0) {
-            await databases.deleteDocument(database, 'usersRelations', existingRelations.documents[0].$id);
-            return { message: 'Friend request cancelled.' };
+        if (existingRelations.documents.length === 1) {
+            await databases.createDocument(
+                database,
+                'usersRelations',
+                ID.unique(),
+                {
+                    source: source,
+                    destination: dest,
+                    type: 11,
+                },
+                [
+                    Permission.read(Role.user(source)),
+                    Permission.read(Role.user(dest)),
+                    Permission.update(Role.user(source)),
+                    Permission.update(Role.user(dest)),
+                    Permission.delete(Role.user(source)),
+                    Permission.delete(Role.user(dest)),
+                ]
+            )
+
+            await databases.updateDocument(
+                database,
+                'usersRelations',
+                existingRelations.documents[0].$id,
+                {
+                    type: 11
+                }
+            )
+
+            return "Friend request accepted."
         }
 
-        return await databases.createDocument(
+        await databases.createDocument(
             database,
             'usersRelations',
             ID.unique(),
@@ -34,6 +62,8 @@ export async function sendFriendRequest({ source, dest }: { source: string, dest
                 Permission.delete(Role.user(dest)),
             ]
         );
+
+        return "New friend request added."
     } catch (error) {
         console.error('Error sending friend request:', error);
         throw error;
@@ -46,14 +76,14 @@ export async function POST(req: Request, res: NextApiResponse) {
         const { source, dest } = reqRes;
 
         if (!source || !dest) {
-            return Response.json({ error: 'Invalid request body' }, { status: 400 })
+            return NextResponse.json({ error: 'Invalid request body' }, { status: 400 })
         }
 
         const result = await sendFriendRequest({ source, dest });
 
-        return Response.json({ result })
+        return NextResponse.json({ report: result })
     } catch (error) {
         console.error('Error sending friend request:', error);
-        return Response.json({ error: 'Internal Server Error' }, { status: 500 })
+        return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })
     }
 }

@@ -56,7 +56,7 @@ const ProfileIcon: FC<ProfileIconProps> = ({ imageUrl, status, size, customClass
             )}
 
             {status && (
-                <div className={`w-[1dvw] h-[1dvw] bottom-[0.1dvw] left-[2dvw] group-hover:border-blue absolute border-2 border-light rounded-full ${handleStatusColor(status)}`} ></div>
+                <div className={`w-[1dvw] h-[1dvw] bottom-[0.1dvw] left-[2dvw] hover:border-blue absolute border-2 border-light rounded-full ${handleStatusColor(status)}`} title={status}></div>
             )}
         </div>
         <div>{divTitle}</div>

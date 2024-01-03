@@ -9,13 +9,14 @@ import {Models, Query} from 'appwrite';
 import MessageInterface from "@/app/utils/interfaces/MessageInterface";
 import formatTimestampToTime from "@/app/utils/convertTimestamp";
 import { useRouter } from 'next/navigation';
+import MessageLinkInterface from "@/app/utils/interfaces/MessageLinkInterface";
 
 
 interface MessageLinkProps {
     typing: boolean,
     time: number,
     notifications: number,
-    group: GroupInterface,
+    group: MessageLinkInterface,
 }
 
 const MessageLink: FC<MessageLinkProps> = ({ typing, time, notifications, group }) => {
@@ -26,26 +27,24 @@ const MessageLink: FC<MessageLinkProps> = ({ typing, time, notifications, group 
     const router = useRouter();
 
     useEffect(() => {
-        if(database){
-            const fetchMessage = async () => {
-                const fetchedMessage = await databases.listDocuments(database, 'messages', [Query.equal('group', group.$id), Query.orderDesc("$updatedAt"), Query.limit(1)]);
-                if(fetchedMessage){
-                    setMessage(fetchedMessage.documents[0]);
-                }
+        const fetchMessage = async () => {
+            const fetchedMessage = await databases.listDocuments(database, 'messages', [Query.equal('group', group.$id), Query.orderDesc("$updatedAt"), Query.limit(1)]);
+            if(fetchedMessage){
+                setMessage(fetchedMessage.documents[0]);
             }
-            fetchMessage();
-
-            setLoading(false)
-
-            const unsubscribe = client.subscribe(`databases.${database}.collections.messages.documents`, response => {
-                const res: any = response.payload
-                setMessage(res)
-            });
-
-            return () => {
-                unsubscribe()
-            };
         }
+        fetchMessage();
+
+        setLoading(false)
+
+        const unsubscribe = client.subscribe(`databases.${database}.collections.messages.documents`, response => {
+            const res: any = response.payload
+            setMessage(res)
+        });
+
+        return () => {
+            unsubscribe()
+        };
 
         setLoading(false)
 
@@ -59,6 +58,10 @@ const MessageLink: FC<MessageLinkProps> = ({ typing, time, notifications, group 
                 <span className="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">Loading...</span>
             </div>
         )
+    }
+
+    if(!group){
+        return <div></div>
     }
 
     return (

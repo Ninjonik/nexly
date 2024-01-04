@@ -105,6 +105,8 @@ export const Homepage = () => {
             }
 
             setError("")
+
+            fireToast("success", "Friend request has been sent", "top-right", 2000)
         }
     }
 
@@ -132,7 +134,6 @@ export const Homepage = () => {
 
             } else if (newType === 11 && destination) {
 
-                console.log("accepting friend")
                 const friendRequestResponse = await fetch('/api/sendFriendRequest', {
                     method: 'POST',
                     headers: {
@@ -140,8 +141,6 @@ export const Homepage = () => {
                     },
                     body: JSON.stringify({ source: loggedInUser.dbID, dest: destination })
                 });
-
-                console.log("Friend Request Response:", friendRequestResponse)
 
                 if (!friendRequestResponse.ok) {
                     throw new Error('Failed to send friend request');
@@ -198,33 +197,6 @@ export const Homepage = () => {
                     <h3 className='text-2 text-red-500'>{error}</h3>
                 </div>
 
-                <div className='h-4/10 w-full flex flex-row gap-[1dvw] items-center overflow-y-scroll no-scrollbar text-lightly'>
-                    {friendRequests === 'loading' || savedUsers === 'loading' ? (
-                        <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
-                        />
-                    ) : (
-                        (Object.keys(friendRequests).length > 0 && Object.keys(savedUsers).length > 0) && (
-                            Object.keys(friendRequests).map((key) => {
-                                let friendRequest = friendRequests[key];
-                                if (friendRequest?.source !== null && friendRequest?.destination !== null){
-                                    if (friendRequest.type === 10) {
-                                        if (friendRequest.source === loggedInUser.$id) {
-                                            return <div key={friendRequest.$id}><ProfileIcon divTitle={savedUsers[friendRequest.destination].username} imageUrl={`/images/users/${savedUsers[friendRequest.destination].avatarPath}`} actionColor={'red-500'} actionIcon={<FontAwesomeIcon icon={faXmark} />} actionTitle={'Cancel'} actionFn={() => handleFriendAction(friendRequest.$id, 10, 0)} /></div>;
-                                        } else {
-                                            return <div key={friendRequest.$id}><ProfileIcon divTitle={savedUsers[friendRequest.source].username} imageUrl={`/images/users/${savedUsers[friendRequest.source].avatarPath}`} actionColor={'red-500'} actionIcon={<FontAwesomeIcon icon={faXmark} />} actionTitle={'Decline'} actionFn={() => handleFriendAction(friendRequest.$id, 10, 0)} actionColor2={'green-500'} actionIcon2={<FontAwesomeIcon icon={faCheck} />} actionTitle2={'Accept'} actionFn2={() => handleFriendAction(friendRequest.$id, 10, 11, friendRequest.source)}  /></div>;
-                                        }
-                                    } else if (friendRequest.type === 11 && friendRequest.source !== loggedInUser.$id) {
-                                        return <div key={friendRequest.$id}><ProfileIcon divTitle={savedUsers[friendRequest.source].username} imageUrl={`/images/users/${savedUsers[friendRequest.source].avatarPath}`} actionColor={'red-500'} actionIcon={<FontAwesomeIcon icon={faXmark} />} actionTitle={'Remove from friends'} actionFn={() => handleFriendAction(friendRequest.$id, 11, 0, friendRequest.source)} status={"online"} /></div>;
-                                    }
-                                } else {
-                                    return <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]" />
-                                }
-                            })
-                        )
-                    )}
-
-                </div>
-
                 {friendRequests === 'loading' || savedUsers === 'loading' ? (
                     <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]" />
                 ) : (
@@ -238,15 +210,34 @@ export const Homepage = () => {
                                         <>
                                             <div key={key} className="flex flex-row justify-between text-start items-center gap-4 group">
                                                 <div className='flex flex-row gap-1/10'>
-                                                    <ProfileIcon imageUrl={`/images/users/${savedUsers[friendRequest.source].avatarPath}`} />
+                                                    <ProfileIcon imageUrl={`/images/users/${friendRequest.source === loggedInUser.$id ? savedUsers[friendRequest.destination].avatarPath : savedUsers[friendRequest.source].avatarPath}`} />
                                                     <div className="flex flex-col justify-center w-7/10">
-                                                        <h3 className="text-lg font-bold">{savedUsers[friendRequest.source].username}</h3>
+                                                        <h3 className="text-lg font-bold">{friendRequest.source === loggedInUser.$id ? savedUsers[friendRequest.destination].username : savedUsers[friendRequest.source].username}</h3>
                                                         {/*<span className="italic text-md text-blue">...</span>*/}
                                                     </div>
                                                 </div>
                                                 <div className="flex flex-row justify-center items-end w-3/10 items-center gap-0.5/10">
-                                                    <SmallIcon icon={<FontAwesomeIcon icon={faXmark}/>} size={'3'}  />
-                                                    <SmallIcon icon={<FontAwesomeIcon icon={faCheck}/>} size={'3'}  />
+                                                    {(friendRequest?.source !== null && friendRequest?.destination !== null) ? (
+
+                                                            friendRequest.type === 10 ? (
+
+                                                                friendRequest.source === loggedInUser.$id ? (
+                                                                    <SmallIcon className={'text-red-500'} icon={<FontAwesomeIcon icon={faXmark}/>} title={'Cancel'} onClickFn={() => handleFriendAction(friendRequest.$id, 10, 0)} size={'3'}  />
+                                                                ) : (
+
+                                                                    <>
+                                                                        <SmallIcon className={'text-red-500'} icon={<FontAwesomeIcon icon={faXmark}/>} title={'Decline'} onClickFn={() => handleFriendAction(friendRequest.$id, 10, 0)} size={'3'} />
+                                                                        <SmallIcon className={'text-green-500'} icon={<FontAwesomeIcon icon={faCheck}/>} title={'Accept'} onClickFn={() => handleFriendAction(friendRequest.$id, 10, 11, friendRequest.source)} size={'3'}  />
+                                                                    </>
+
+                                                                )
+
+                                                            ) : (
+                                                                    <SmallIcon className={'text-red-500'} icon={<FontAwesomeIcon icon={faXmark}/>} title={'Remove from friends'} onClickFn={() => handleFriendAction(friendRequest.$id, 11, 0, friendRequest.source)} size={'3'} />
+                                                            )
+                                                    ) : (
+                                                        <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]" />
+                                                    )}
                                                 </div>
                                             </div>
                                             <hr className="w-full text-heavily my-2 text-2"/>

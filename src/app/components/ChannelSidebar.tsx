@@ -1,3 +1,5 @@
+"use client"
+
 import SidebarIcon from "@/app/components/sidebar/SidebarIcon";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faDiscord} from "@fortawesome/free-brands-svg-icons";
@@ -7,14 +9,14 @@ import {
     faGear, faHeadphones,
     faInbox,
     faMagnifyingGlass, faMicrophone,
-    faPenToSquare,
+    faPenToSquare, faPlus,
     faThumbtack,
     faUsers, faVideo
 } from "@fortawesome/free-solid-svg-icons";
 import Image from "next/image";
 import ProfileIcon from "@/app/components/ProfileIcon";
 import getAvatar from "@/app/utils/getAvatar";
-import React, {FC} from "react";
+import React, {FC, useState} from "react";
 import User from "@/app/utils/interfaces/User";
 import {useUserContext} from "@/app/UserContext";
 import Loading from "@/app/loading";
@@ -23,6 +25,7 @@ import SmallIcon from "@/app/components/SmallIcon";
 import FormInput from "@/app/components/form/FormInput";
 import MessagesSection from "@/app/components/MessagesSection";
 import {useRouter} from "next/navigation";
+import PrimaryButton from "@/app/components/form/buttons/PrimaryButton";
 
 interface SidebarProps {
 }
@@ -30,6 +33,7 @@ interface SidebarProps {
 const Sidebar: FC<SidebarProps> = ({}) => {
 
     const { loggedInUser, setLoggedInUser } = useUserContext();
+    const [groupDialog, setGroupDialog] = useState<boolean>(false)
     const router = useRouter();
 
     return (
@@ -39,8 +43,8 @@ const Sidebar: FC<SidebarProps> = ({}) => {
                 <div className="flex flex-row justify-between items-center">
                     <a className="text-3 hover:text-blue transition-all ease-in" onClick={() => router.push(`/`)} href={'#'}>Messages</a>
                     <Tippy content={
-                        <div>
-                            asda
+                        <div className='flex flex-col'>
+                            <SmallIcon icon={<FontAwesomeIcon icon={faPlus} />} description={'New group'} />
                         </div>
                     } trigger={'click'} interactive={true} appendTo={document.body} placement={'right'} >
                         <button>
@@ -49,6 +53,26 @@ const Sidebar: FC<SidebarProps> = ({}) => {
                     </Tippy>
                 </div>
             </header>
+
+            <div className="absolute inset-0 z-30 bg-black bg-opacity-50 backdrop-blur-sm">
+
+            </div>
+
+            <dialog className='flex flex-col mt-0.25/10 w-3/10 h-5/10 bg-gray-dark border-blue border-2 rounded-md z-50' open>
+
+                <div className='w-full h-2/10 pt-[1dvw]'>
+                    <h2 className='text-white pl-[0.5dvw] text-2'>Create new group</h2>
+                </div>
+
+                <div className='w-full h-full'>
+                </div>
+
+                <div className='w-full h-2/10 bg-light rounded-md flex justify-end items-center py-[0.5dvw] px-[2dvw]'>
+                    <PrimaryButton title={'Submit'} width={'3/10'} height={'7/10'} />
+                </div>
+
+            </dialog>
+
 
             <article className='h-9/10 w-full'>
 

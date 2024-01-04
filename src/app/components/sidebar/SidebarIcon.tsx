@@ -15,7 +15,7 @@ const SidebarIcon: FC<SidebarIconProps> = ({ title, icon, onClickFn = () => {} }
             {icon}
         </div>
         {title && (
-            <div className="absolute w-auto p-2 m-4 min-w-max left-[2.25dvw] rounded-md shadow-md text-white bg-gray text-xs font-bold transition-all duration-100 scale-0 origin-left group-hover:scale-100 z-20">
+            <div className="absolute w-auto p-2 m-4 min-w-max left-[2.25dvw] rounded-md shadow-md text-white bg-gray text-xs font-bold transition-all duration-100 scale-0 origin-left group-hover:scale-100 z-10">
                 {title}
             </div>
         )}

@@ -305,7 +305,7 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
                                     </LiveKitRoom>
                                 </div>
                             ) : (
-                                <div className='flex flex-row justify-center items-center w-full h-3/10 text-2 gap-[1dvw] p-[1dvw] bg-light z-50'>
+                                <div className='flex flex-row justify-center items-center w-full h-3/10 text-2 gap-[1dvw] p-[1dvw] bg-light z-10'>
                                     {(!inCall && !hiddenCall) && (
                                         <button className='h-[2dvw] w-[4dvw] p-[1dvw] bg-green-400 hover:bg-green-600 transition-all flex justify-center items-center text-center rounded-xl' onClick={() => setInCall(true)}>Join</button>
                                     )}

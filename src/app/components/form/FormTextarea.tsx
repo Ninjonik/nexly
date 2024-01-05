@@ -55,6 +55,7 @@ const FormTextArea: FC<FormTextAreaProps> = ({
                 <div className="h-full w-0.5/10 flex items-center justify-center pointer-events-none rounded-lg">
                     {icon}
                 </div>
+
                 <div className="grow-wrap w-full">
                       <textarea
                           required={required || false}
@@ -65,7 +66,7 @@ const FormTextArea: FC<FormTextAreaProps> = ({
                           placeholder={title}
                       />
                     <div className="replicated-value overflow-hidden" data-replicated-value={valueProp}></div>
-                </div>                
+                </div>
 
                 <div className='h-full w-0.5/10'>
                     <Tippy content={

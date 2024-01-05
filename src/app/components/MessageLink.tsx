@@ -77,7 +77,7 @@ const MessageLink: FC<MessageLinkProps> = ({ typing, time, notifications, group 
                         <span className="italic text-md text-blue">Typing...</span>
                         :
                         (
-                            (Object.keys(message).length > 0) && (
+                            (message && Object.keys(message).length > 0) && (
                                 <div className={'flex flex-row gap-[0.25dvw]'}>
                                     {/*<span className='text-blue'>*/}
                                     {/*    {message.author.username}:*/}
@@ -93,7 +93,7 @@ const MessageLink: FC<MessageLinkProps> = ({ typing, time, notifications, group 
                 </div>
 
                 <div className="flex flex-col justify-between items-end w-3/10">
-                    {(Object.keys(message).length > 0) && <h3 className="text-md text-lightly font-bold">{formatTimestampToTime("$updatedAt" in message ? message.$updatedAt : "")}</h3>}
+                    {(message && Object.keys(message).length > 0) && <h3 className="text-md text-lightly font-bold">{formatTimestampToTime("$updatedAt" in message ? message.$updatedAt : "")}</h3>}
                     {/*{notifications && <span className="text-center bg-blue h-[1dvw] w-[1dvw] text-md rounded-full text-white">{ notifications }</span>}*/}
                 </div>
             </div>

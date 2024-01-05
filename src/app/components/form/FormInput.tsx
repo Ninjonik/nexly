@@ -9,6 +9,7 @@ interface FormInputProps {
     required?: boolean;
     valueProp?: string;
     onChangeFn?: (event: ChangeEvent<HTMLInputElement>) => void;
+    ref?: RefObject<HTMLInputElement>;
 }
 
 const FormInput = forwardRef<HTMLInputElement, FormInputProps>(

@@ -5,6 +5,8 @@ import PrimaryButton from "@/app/components/form/buttons/PrimaryButton";
 interface FormInputProps {
     title: string;
     icon: ReactNode;
+    min?: number,
+    max?: number,
     inputType?: string;
     required?: boolean;
     valueProp?: string;
@@ -13,7 +15,7 @@ interface FormInputProps {
 }
 
 const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
-    ({ title, icon, inputType, required, valueProp = "", onChangeFn = () => {} }, ref) => {
+    ({ title, icon, min = undefined, max = undefined, inputType, required, valueProp = "", onChangeFn = () => {} }, ref) => {
         return (
             <div className="relative text-lightly text-2 w-full">
                 {(!ref) ? (
@@ -24,6 +26,8 @@ const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
                         onChange={onChangeFn}
                         className="pl-[3dvw] pr-[1dvw] py-[1dvh] border rounded-md border-none bg-gray w-full focus:outline-none text-white"
                         placeholder={title}
+                        min={min}
+                        max={max}
                     />
                 ) : (
                     <input
@@ -32,6 +36,8 @@ const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
                         ref={ref}
                         className="pl-[3dvw] pr-[1dvw] py-[1dvh] border rounded-md border-none bg-gray w-full focus:outline-none text-white"
                         placeholder={title}
+                        min={min}
+                        max={max}
                     />
                 )}
                 <div className="absolute inset-y-0 left-0 pl-[1dvw] flex items-center pointer-events-none bg-gray rounded-lg">

@@ -1,12 +1,12 @@
 "use client"
 
-import React, {FC, useEffect, useState} from 'react';
+import React, {FC, useEffect, useRef, useState} from 'react';
 import ProfileIcon from "@/app/components/ProfileIcon";
 import SmallIcon from "@/app/components/SmallIcon";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {
     faArrowDown,
-    faArrowUp, faCheck,
+    faArrowUp, faArrowUp91, faCalendar, faCheck,
     faCirclePlus, faDisplay,
     faEllipsisVertical, faExpand, faHeading, faMaximize, faMicrophone, faMinimize,
     faPhone, faPlus,
@@ -36,10 +36,12 @@ import {
     PreJoin,
 } from '@livekit/components-react';
 import {Track} from "livekit-client";
-import Source = Track.Source;
 import {useUserContext} from "@/app/UserContext";
 import FormModal from "@/app/components/form/FormModal";
 import fireToast from "@/app/utils/toast";
+import sha256 from "@/app/utils/sha256";
+import {ID, Permission, Role} from "appwrite";
+import {Md5} from "ts-md5";
 
 interface ChannelMainProps {
     activeGroup: string
@@ -61,6 +63,9 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
     const [fullscreen, setFullscreen] = useState<boolean>(false);
     const [dialog, setDialog] = useState<boolean>(false)
 
+    const [dateLimit, setDateLimit] = useState<string>("7")
+    const limitRef = useRef<HTMLInputElement>(null)
+    const [inviteLink, setInviteLink] = useState<string>("")
 
     const [usersShown, setUsersShown] = useState<boolean>(true)
 
@@ -90,6 +95,7 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
                     const transformedMessages: Models.Document[] = fetchedMessage.documents;
                     setMessages(transformedMessages);
                 }
+                
             } catch (error) {
                 console.error('Error fetching messages:', error);
             }
@@ -260,28 +266,43 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
         }
     }
 
-    const addUserToGroup = async (userId: string) => {
+    const generateInviteLink = async () => {
+
+        let amountLimit: number = 0
+        if (limitRef?.current?.value) amountLimit = parseInt(limitRef.current.value)
+
+        let data = {
+            inviter: loggedInUser.$id,
+            group: activeGroup,
+            validAmount: amountLimit,
+            validDate: dateLimit !== "0" ? new Date(Date.now() + parseInt(dateLimit) * 24 * 60 * 60 * 1000) : undefined,
+        };
+
+        const generatedId: string = Md5.hashStr(`${activeGroup}${Date.now()}${loggedInUser.$id}`)
+
 
         try {
-            const res =  await databases.updateDocument(
+            const res = await databases.createDocument(
                 database,
-                'groups',
-                activeGroup,
-                {
-                    users: [
-                        ...group.users,
-                        userId
-                    ]
-                }
-            );
-            console.log(res)
-        } catch (error) {
-            console.error('Error adding user to the group:', error);
-            const res = error;
-            fireToast("error", "There has been an error with adding user to the group...", "top-right", 2000)
+                'invites',
+                generatedId,
+                data,
+                [
+                    Permission.read(Role.user(loggedInUser.$id)),
+                    Permission.read(Role.any()),
+                    Permission.update(Role.user(loggedInUser.$id)),
+                    Permission.delete(Role.user(loggedInUser.$id)),
+                ]
+            )
+
+            setInviteLink(generatedId)
+
+            fireToast('success', 'Your invite link has been created.', "top-right", 2000)
+        } catch (e) {
+            console.log(e)
+            fireToast('error', 'There has been an error while creating your invite link. Try again later.', "top-right", 2000)
         }
 
-        fireToast("success", "User added to the group.", "top-right", 2000)
 
     }
 
@@ -387,9 +408,27 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
                                     <a href='#' className='text-blue hover:text-lightly transition-all' onClick={() => setDialog(true)}>Add</a>
                                 </div>
 
-                                <FormModal title={"Add people"} modalState={dialog} setModalState={setDialog}>
+                                <FormModal title={"Add people"} modalState={dialog} setModalState={setDialog} onSubmit={generateInviteLink} submitText={'Generate'}>
 
-                                    <div className='text-white'>Group's invite link: <a className='hover:text-blue transition-all ease-in' href="#">aiosdjasiodjoiajdioasjdio</a></div>
+                                    {inviteLink && (
+                                        <span className='text-white'>Generated invite link:
+                                            <a target={'_blank'} href={`${process.env.NEXT_PUBLIC_HOSTNAME}/invite/${inviteLink}`} className='text-blue hover:text-blue-hover transition-all ease-in hover:cursor-pointer'> {`${process.env.NEXT_PUBLIC_HOSTNAME}/invite/${inviteLink}`}</a>
+                                        </span>
+                                    )}
+
+                                    <div>
+                                        <label
+                                            htmlFor="customRange1"
+                                            className="mb-2 inline-block text-neutral-700 dark:text-neutral-200"
+                                        >{dateLimit === "0" ? ('No expiration') : (dateLimit + " Days till expiration")}</label
+                                        >
+                                        <input
+                                            type="range" min={0} max={7}
+                                            className="transparent h-[4px] w-full cursor-pointer appearance-none border-transparent bg-neutral-600"
+                                            id="customRange1" onChange={(e) => setDateLimit(e.target.value)} value={dateLimit} required={true}/>
+                                    </div>
+
+                                    <FormInput title={'Maximum amount of uses'} icon={<FontAwesomeIcon icon={faArrowUp91} /> } inputType={'number'} ref={limitRef} required={true} min={0} max={100} />
 
                                 </FormModal>
 

@@ -39,7 +39,6 @@ const FormTextArea: FC<FormTextAreaProps> = ({
         onChangeFn(event.target.value);
     };
 
-    // Use useEffect to recalculate height when the component mounts or when the content changes
     useEffect(() => {
         if (textareaRef.current) {
             const newHeight = textareaRef.current.scrollHeight;
@@ -51,7 +50,7 @@ const FormTextArea: FC<FormTextAreaProps> = ({
 
     return (
         <div className="h-full w-full flex flex-col">
-            <div className="relative text-lightly text-2 h-full w-full flex flex-row bg-gray rounded-lg overflow-y-scroll overflow-x-hidden">
+            <div className="relative text-lightly text-2 h-full w-full flex flex-row bg-gray rounded-lg overflow-x-hidden">
                 <div className="h-full w-0.5/10 flex items-center justify-center pointer-events-none rounded-lg">
                     {icon}
                 </div>

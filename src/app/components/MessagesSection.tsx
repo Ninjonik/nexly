@@ -3,7 +3,7 @@
 import React, {Dispatch, FC, ReactNode, SetStateAction, useEffect, useState} from 'react';
 import MessageLink from "@/app/components/MessageLink";
 import User from "@/app/utils/interfaces/User";
-import {database, databases} from "@/app/appwrite";
+import {client, database, databases} from "@/app/appwrite";
 import { Query } from 'appwrite';
 import {useUserContext} from "@/app/UserContext";
 import MessageLinkInterface from "@/app/utils/interfaces/MessageLinkInterface";

@@ -1,3 +1,5 @@
+"use client"
+
 import FormInput from "@/app/components/form/FormInput";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faHeading, faXmark} from "@fortawesome/free-solid-svg-icons";
@@ -7,13 +9,13 @@ import SmallIcon from "@/app/components/SmallIcon";
 
 interface FormModalProps {
     title?: string;
-    onSubmit: () => void;
+    onSubmit?: () => void;
     modalState: boolean;
     setModalState: React.Dispatch<React.SetStateAction<boolean>>;
     children?: ReactNode;
 }
 
-export const FormModal: FC<FormModalProps> = ({children, onSubmit, title = "", modalState, setModalState}) => {
+export const FormModal: FC<FormModalProps> = ({children, onSubmit = null, title = "", modalState, setModalState}) => {
 
     return (
         <>
@@ -23,7 +25,7 @@ export const FormModal: FC<FormModalProps> = ({children, onSubmit, title = "", m
 
             <dialog className={`flex flex-col mt-0.25/10 w-3/10 max-h-5/10 bg-gray-dark border-blue border-2 rounded-md z-50 gap-[0.5dvw] ${!modalState && 'hidden'}`}>
 
-                <div className={'absolute text-lightly right-[0.2dvw] top-[0.2dvw] flex justify-center items-center'}>
+                <div className={'absolute text-lightly right-[0.2dvw] top-0 flex justify-center items-center'}>
                     <SmallIcon icon={<FontAwesomeIcon icon={faXmark} />} size={'2'} onClickFn={() => setModalState(false)} />
                 </div>
 
@@ -32,14 +34,18 @@ export const FormModal: FC<FormModalProps> = ({children, onSubmit, title = "", m
                     <h2 className='text-white pl-[0.5dvw] text-2'>{title}</h2>
                 </div>
 
-                <form method={"dialog"} className='flex flex-col gap-[0.5dvw]' onSubmit={(e) => { e.preventDefault(); onSubmit(); }}>
+                <form method={"dialog"} className='flex flex-col gap-[0.5dvw] py-[0.25dvw]' onSubmit={(e) => { e.preventDefault(); onSubmit && onSubmit(); }}>
                     <div className='w-full h-full flex flex-col gap-[0.5dvw] px-[0.5dvw]'>
                         {children}
                     </div>
 
-                    <div className='w-full h-2/10 bg-light rounded-md flex justify-end items-center py-[1dvw] px-[2dvw]'>
-                        <PrimaryButton title={'Submit'} width={'3/10'} type={"submit"} />
-                    </div>
+                    {onSubmit && (
+                        <div className='w-full h-2/10 bg-light rounded-md flex justify-end items-center py-[1dvw] px-[2dvw]'>
+                            <PrimaryButton title={'Submit'} width={'3/10'} type={"submit"} />
+                        </div>
+                    )}
+
+
                 </form>
 
 

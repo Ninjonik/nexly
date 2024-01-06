@@ -6,13 +6,13 @@ import SmallIcon from "@/app/components/SmallIcon";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {
     faArrowDown,
-    faArrowUp,
+    faArrowUp, faCheck,
     faCirclePlus, faDisplay,
-    faEllipsisVertical, faExpand, faMaximize, faMicrophone, faMinimize,
-    faPhone,
+    faEllipsisVertical, faExpand, faHeading, faMaximize, faMicrophone, faMinimize,
+    faPhone, faPlus,
     faThumbtack,
     faUsers,
-    faVideo
+    faVideo, faXmark
 } from "@fortawesome/free-solid-svg-icons";
 import ChannelMessage from "@/app/components/channel/ChannelMessage";
 import {faCommentDots, faFileLines, faUser} from "@fortawesome/free-regular-svg-icons";
@@ -38,6 +38,8 @@ import {
 import {Track} from "livekit-client";
 import Source = Track.Source;
 import {useUserContext} from "@/app/UserContext";
+import FormModal from "@/app/components/form/FormModal";
+import fireToast from "@/app/utils/toast";
 
 interface ChannelMainProps {
     activeGroup: string
@@ -57,6 +59,7 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
     const [inCall, setInCall] = useState<boolean>(false);
     const [hiddenCall, hideCall] = useState<boolean>(false);
     const [fullscreen, setFullscreen] = useState<boolean>(false);
+    const [dialog, setDialog] = useState<boolean>(false)
 
 
     const [usersShown, setUsersShown] = useState<boolean>(true)
@@ -96,12 +99,12 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
 
         const unsubscribe = client.subscribe(`databases.${database}.collections.messages.documents`, response => {
             const res: any = response.payload
-            setMessages((oldMessages: any) => [res, ...oldMessages])
+            if(res.group.$id === activeGroup) setMessages((oldMessages: any) => [res, ...oldMessages])
         });
 
         const unsubscribeGroup = client.subscribe(`databases.${database}.collections.groups.documents`, response => {
             const res: any = response.payload
-            setGroup(res)
+            if(res.$id === activeGroup) setGroup(res)
         });
 
         setLoading(false)
@@ -179,7 +182,7 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
     const fetchCallData = async () => {
         try {
             const resp = await fetch(
-                `/api/getParticipantToken?room=${group.$id}&username=${loggedInUser.name}`
+                `/api/getParticipantToken?room=${group.$id}&username=${loggedInUser.username}`
             );
             const data = await resp.json();
             setToken(data.token);
@@ -255,6 +258,31 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
         } finally {
             setSubmitting(false);
         }
+    }
+
+    const addUserToGroup = async (userId: string) => {
+
+        try {
+            const res =  await databases.updateDocument(
+                database,
+                'groups',
+                activeGroup,
+                {
+                    users: [
+                        ...group.users,
+                        userId
+                    ]
+                }
+            );
+            console.log(res)
+        } catch (error) {
+            console.error('Error adding user to the group:', error);
+            const res = error;
+            fireToast("error", "There has been an error with adding user to the group...", "top-right", 2000)
+        }
+
+        fireToast("success", "User added to the group.", "top-right", 2000)
+
     }
 
     if (loading || !group?.users) {
@@ -356,8 +384,14 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
                                 <div className='flex flex-row justify-between'>
                                     <div className=""><FontAwesomeIcon icon={faUser} className="text-blue pr-[0.5dvw]"/> Members ({group.users.length})
                                     </div>
-                                    <a href='#' className='text-blue hover:text-lightly transition-all'>Add</a>
+                                    <a href='#' className='text-blue hover:text-lightly transition-all' onClick={() => setDialog(true)}>Add</a>
                                 </div>
+
+                                <FormModal title={"Add people"} modalState={dialog} setModalState={setDialog}>
+
+                                    <div className='text-white'>Group's invite link: <a className='hover:text-blue transition-all ease-in' href="#">aiosdjasiodjoiajdioasjdio</a></div>
+
+                                </FormModal>
 
                                 {group.users.map((user: UserInterface) => (
                                     <div className='flex justify-between items-center' key={user.dbID}>

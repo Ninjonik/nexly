@@ -39,7 +39,8 @@ const MessageLink: FC<MessageLinkProps> = ({ typing, time, notifications, group 
 
         const unsubscribe = client.subscribe(`databases.${database}.collections.messages.documents`, response => {
             const res: any = response.payload
-            setMessage(res)
+
+            if(res.group.$id === group.$id) setMessage(res)
         });
 
         return () => {

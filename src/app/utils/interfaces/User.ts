@@ -4,6 +4,7 @@ type User = {
     "$updatedAt": string;
     dbID: string;
     name: string;
+    username: string;
     registration: string;
     status: boolean;
     labels: string[];

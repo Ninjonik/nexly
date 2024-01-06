@@ -4,6 +4,7 @@ import { createContext, useContext, ReactNode, useState, useEffect } from 'react
 import Cookies from 'js-cookie';
 import login from '@/app/utils/login';
 import User from '@/app/utils/interfaces/User';
+import {client, database} from "@/app/appwrite";
 
 interface UserContextProps {
     children: ReactNode;
@@ -32,15 +33,27 @@ export const UserContextProvider = ({ children }: UserContextProps) => {
         const storedEmail = Cookies.get('email');
         const storedPassword = Cookies.get('password');
 
-        const loginCookies = async (storedEmail: string | undefined, storedPassword: string | undefined) => {
-            const res = await login(storedEmail, storedPassword)
+        const loginCookies = async (email: string | undefined, password: string | undefined) => {
+            const res = await login(email, password);
             setLoggedInUser(res);
         };
 
-        if (!loggedInUser || loggedInUser == "pending") {
+        if (!loggedInUser || loggedInUser === "pending") {
             loginCookies(storedEmail, storedPassword);
         }
+    }, [loggedInUser]);
 
+    useEffect(() => {
+        const unsubscribe = client.subscribe(`databases.${database}.collections.users.documents`, response => {
+            const res: any = response.payload;
+            if (loggedInUser !== "pending" && loggedInUser && loggedInUser.$id && res.$id === loggedInUser.$id) {
+                setLoggedInUser(res);
+            }
+        });
+
+        return () => {
+            unsubscribe();
+        };
     }, [loggedInUser]);
 
     return (
@@ -49,3 +62,4 @@ export const UserContextProvider = ({ children }: UserContextProps) => {
         </UserContext.Provider>
     );
 };
+

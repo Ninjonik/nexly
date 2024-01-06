@@ -81,9 +81,9 @@ const Sidebar: FC<SidebarProps> = ({}) => {
                 <FormInput title={"Group's name"} icon={<FontAwesomeIcon icon={faHeading} />} ref={groupName} required={true} />
             </FormModal>
 
-            <article className='h-9/10 w-full'>
+            <article className='h-9/10 w-full flex flex-col justify-between'>
 
-                <div className="h-9/10 flex flex-col gap-8 text-white pt-[2dvh] px-6">
+                <div className="max-h-9/10 flex flex-col gap-8 text-white pt-[2dvh] px-6 overflow-y-scroll no-scrollbar">
 
                     <FormInput icon={<FontAwesomeIcon icon={faMagnifyingGlass} className="text-gray-400"/>}
                                title={'Search'}/>
@@ -101,7 +101,7 @@ const Sidebar: FC<SidebarProps> = ({}) => {
                     <div className="flex flex-row items-center justify-center gap-2">
                         <ProfileIcon imageUrl={getAvatar(loggedInUser.avatarPath)} status={'online'}/>
                         <div className="flex flex-col justify-between text-start text-2">
-                            <span>{loggedInUser.name}</span>
+                            <span>{loggedInUser.username ? loggedInUser.username : loggedInUser.name}</span>
                             <span className="text-lightly">#{loggedInUser.$id.slice(0, 4)}</span>
                         </div>
                     </div>

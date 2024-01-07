@@ -59,12 +59,12 @@ const Group = () => {
             body: constructedBody
         });
 
-        const resBody = await response.json()
-
         if (!response.ok) {
             fireToast('error', 'There has been an error while joining group...', 'top-right', 2000)
             throw new Error('Failed to join group');
         }
+
+        const resBody = await response.json()
 
         fireToast('success', 'Successfully joined the group!', 'top-right', 2000)
 

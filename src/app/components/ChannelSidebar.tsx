@@ -27,6 +27,7 @@ import MessagesSection from "@/app/components/MessagesSection";
 import {useRouter} from "next/navigation";
 import PrimaryButton from "@/app/components/form/buttons/PrimaryButton";
 import {FormModal} from "@/app/components/form/FormModal";
+import fireToast from "@/app/utils/toast";
 
 interface SidebarProps {
 }
@@ -59,9 +60,18 @@ const Sidebar: FC<SidebarProps> = ({}) => {
             });
 
             if (!response.ok) {
+                fireToast('error', 'There has been an error while creating a group...', 'top-right', 2000)
                 throw new Error('Failed to create group');
             }
 
+            const resBody = await response.json()
+
+            fireToast('success', 'Successfully created a group!', 'top-right', 2000)
+
+            let newLoggedInUser = {...loggedInUser}
+            newLoggedInUser.groups = [...loggedInUser.groups, resBody.result]
+            setLoggedInUser(newLoggedInUser)
+            router.push(`/group/${resBody.result.$id}`)
             setGroupDialog(false)
         }
 

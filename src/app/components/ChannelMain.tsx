@@ -339,7 +339,7 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
     }
 
 
-    if (loading || !group?.users) {
+    if (loading || !group || !group?.users) {
         return <ChannelMainSkeleton />;
     }
 

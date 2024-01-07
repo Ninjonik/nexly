@@ -22,7 +22,7 @@ const MessagesSection: FC<MessagesSectionProps> = ({ title, icon }) => {
 
     useEffect(() => {
         setGroups(loggedInUser.groups)
-    }, []);
+    }, [loggedInUser.groups]);
 
 
     if(groups === 'loading'){

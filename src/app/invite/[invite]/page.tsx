@@ -59,12 +59,18 @@ const Group = () => {
             body: constructedBody
         });
 
+        const resBody = await response.json()
+
         if (!response.ok) {
             fireToast('error', 'There has been an error while joining group...', 'top-right', 2000)
             throw new Error('Failed to join group');
         }
 
         fireToast('success', 'Successfully joined the group!', 'top-right', 2000)
+
+        let newLoggedInUser = {...loggedInUser}
+        newLoggedInUser.groups = [...loggedInUser.groups, resBody.result]
+        setLoggedInUser(newLoggedInUser)
         router.push(`/group/${invite.groupId}`)
 
     }

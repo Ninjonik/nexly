@@ -1,5 +1,5 @@
-import {NextApiRequest, NextApiResponse} from 'next';
-import {ID, Permission, Role} from 'node-appwrite';
+import {NextApiResponse} from 'next';
+import {Permission, Role} from 'node-appwrite';
 import {databases} from '@/app/appwrite_server';
 import {database} from '@/app/appwrite';
 import InviteInterface from "@/app/utils/interfaces/InviteInterface";
@@ -28,7 +28,7 @@ const joinGroup = async ({ dbID, groupId, inviteId }: { dbID: string, groupId: s
             );
         }
 
-        await databases.updateDocument(
+        return await databases.updateDocument(
             database,
             'groups',
             groupId,
@@ -39,11 +39,10 @@ const joinGroup = async ({ dbID, groupId, inviteId }: { dbID: string, groupId: s
                 ]
             },
             [
+                ...groupCheck.$permissions,
                 Permission.read(Role.user(dbID)),
             ]
-        );
-
-        return "success"
+        )
 
     } catch (error) {
         console.error('Error joining group:', error);
@@ -61,6 +60,7 @@ export async function POST(req: Request, res: NextApiResponse) {
         }
 
         const result = await joinGroup({ dbID, groupId, inviteId });
+        console.log(result)
 
         return Response.json({ result })
     } catch (error) {

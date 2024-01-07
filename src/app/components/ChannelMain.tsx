@@ -42,6 +42,7 @@ import fireToast from "@/app/utils/toast";
 import sha256 from "@/app/utils/sha256";
 import {ID, Permission, Role} from "appwrite";
 import {Md5} from "ts-md5";
+import {useRouter} from "next/navigation";
 
 interface ChannelMainProps {
     activeGroup: string
@@ -62,6 +63,8 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
     const [hiddenCall, hideCall] = useState<boolean>(false);
     const [fullscreen, setFullscreen] = useState<boolean>(false);
     const [dialog, setDialog] = useState<boolean>(false)
+
+    const router = useRouter();
 
     const [dateLimit, setDateLimit] = useState<string>("7")
     const limitRef = useRef<HTMLInputElement>(null)
@@ -306,6 +309,36 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
 
     }
 
+    const leaveGroup = async () => {
+        const constructedBody = JSON.stringify({
+            dbID: loggedInUser.$id,
+            groupId: activeGroup
+        })
+
+        const response = await fetch(`/api/leaveGroup`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: constructedBody
+        });
+
+        if (!response.ok) {
+            fireToast('error', 'There has been an error while leaving group...', 'top-right', 2000)
+            throw new Error('Failed to leave group');
+        }
+
+        let newLoggedInUser = {...loggedInUser}
+        newLoggedInUser.groups = newLoggedInUser.groups.filter((group: any) => group.$id !== activeGroup);
+
+        console.log(loggedInUser, newLoggedInUser)
+        setLoggedInUser(newLoggedInUser)
+
+        fireToast('success', 'Successfully left the group.', 'top-right', 2000)
+        router.push(`/`)
+    }
+
+
     if (loading || !group?.users) {
         return <ChannelMainSkeleton />;
     }
@@ -326,7 +359,7 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
                     <SmallIcon icon={<FontAwesomeIcon icon={faVideo}/>} size={'3'}/>
                     <SmallIcon icon={<FontAwesomeIcon icon={faThumbtack}/>} size={'3'}/>
                     <SmallIcon icon={<FontAwesomeIcon icon={faUsers}/>} size={'3'} onClickFn={() => setUsersShown(!usersShown)} />
-                    <SmallIcon icon={<FontAwesomeIcon icon={faEllipsisVertical}/>} size={'3'} />
+                    <SmallIcon icon={<FontAwesomeIcon icon={faEllipsisVertical}/>} size={'3'} onClickFn={leaveGroup} />
                 </div>
             </header>
 

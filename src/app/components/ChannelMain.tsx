@@ -268,12 +268,12 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
 
     const generateInviteLink = async () => {
 
-        let amountLimit: number = 0
+        let amountLimit: number = -1
         if (limitRef?.current?.value) amountLimit = parseInt(limitRef.current.value)
 
         let data = {
             inviter: loggedInUser.$id,
-            group: activeGroup,
+            groupId: activeGroup,
             validAmount: amountLimit,
             validDate: dateLimit !== "0" ? new Date(Date.now() + parseInt(dateLimit) * 24 * 60 * 60 * 1000) : undefined,
         };

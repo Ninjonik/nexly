@@ -191,7 +191,7 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
     const fetchCallData = async () => {
         try {
             const resp = await fetch(
-                `/api/getParticipantToken?room=${group.$id}&username=${loggedInUser.username}`
+                `/api/getParticipantToken?room=${group.$id}&username=${loggedInUser.name}`
             );
             const data = await resp.json();
             setToken(data.token);

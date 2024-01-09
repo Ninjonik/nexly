@@ -207,8 +207,8 @@ export const Homepage = () => {
                                 let friendRequest = friendRequests[key];
                                 if (friendRequest?.source !== null && friendRequest?.destination !== null) {
                                     return (
-                                        <>
-                                            <div key={key} className="flex flex-row justify-between text-start items-center gap-4 group">
+                                        <div className='h-full w-full' key={friendRequest.$id}>
+                                            <div className="flex flex-row justify-between text-start items-center gap-4 group">
                                                 <div className='flex flex-row gap-1/10'>
                                                     <ProfileIcon imageUrl={`/images/users/${friendRequest.source === loggedInUser.$id ? savedUsers[friendRequest.destination].avatarPath : savedUsers[friendRequest.source].avatarPath}`} />
                                                     <div className="flex flex-col justify-center w-7/10">
@@ -241,11 +241,10 @@ export const Homepage = () => {
                                                 </div>
                                             </div>
                                             <hr className="w-full text-heavily my-2 text-2"/>
-                                        </>
-
+                                        </div>
                                     );
                                 } else {
-                                    return <div key={key} className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]" />;
+                                    return <div key={friendRequest.$id} className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]" />;
                                 }
                             })
                         )}

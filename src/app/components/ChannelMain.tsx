@@ -466,7 +466,7 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
                                 </FormModal>
 
                                 {group.users.map((user: UserInterface) => (
-                                    <div className='flex justify-between items-center' key={user.dbID}>
+                                    <div className='flex justify-between items-center' key={user.$id}>
                                         <div className='flex flex-row gap-[0.5dvw] items-center'>
                                             <ProfileIcon imageUrl={`/images/users/${user.avatarPath}`} status={'online'} />
                                             <h3 className='font-bold'>{user.username}</h3>

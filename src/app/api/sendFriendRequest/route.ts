@@ -4,7 +4,7 @@ import {databases} from '@/app/appwrite_server';
 import {database} from '@/app/appwrite';
 import {NextResponse} from "next/server";
 
-export async function sendFriendRequest({ source, dest }: { source: string, dest: string }) {
+async function sendFriendRequest({ source, dest }: { source: string, dest: string }) {
     try {
         const existingRelations = await databases.listDocuments(
             database,

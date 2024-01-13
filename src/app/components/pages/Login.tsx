@@ -26,7 +26,6 @@ const Login: FC<LoginProps> = ({ loggedInUser, setLoggedInUser }) => {
     const handleSubmit = async (submitType: boolean) => {
 
         let result
-        console.log(name)
         if(submitType){
             try {
                 result = await register(name, email, password)

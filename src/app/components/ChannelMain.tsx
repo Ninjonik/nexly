@@ -18,7 +18,7 @@ import ChannelMessage from "@/app/components/channel/ChannelMessage";
 import {faCommentDots, faFileLines, faUser} from "@fortawesome/free-regular-svg-icons";
 import FormInput from "@/app/components/form/FormInput";
 import User from "@/app/utils/interfaces/User";
-import {client, database, databases} from "@/app/appwrite";
+import {client, database, databases, storage} from "@/app/appwrite";
 import {Models, Query} from "appwrite";
 import UserInterface from "@/app/utils/interfaces/UserInterface";
 import ChannelMainSkeleton from "@/app/components/skeletons/ChannelMain";
@@ -43,6 +43,7 @@ import sha256 from "@/app/utils/sha256";
 import {ID, Permission, Role} from "appwrite";
 import {Md5} from "ts-md5";
 import {useRouter} from "next/navigation";
+import messageInterface from "@/app/utils/interfaces/MessageInterface";
 
 interface ChannelMainProps {
     activeGroup: string
@@ -71,38 +72,52 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
     const [inviteLink, setInviteLink] = useState<string>("")
 
     const [usersShown, setUsersShown] = useState<boolean>(true)
+    const [lastLoadedMessageId, setLastLoadedMessageId] = useState<string>('')
+
+    const fetchData = async (refreshInfinite: boolean = false) => {
+        try {
+            const fetchedGroup = await databases.listDocuments(
+                database,
+                'groups',
+                [Query.equal('$id', activeGroup)]
+            );
+
+            let query = [Query.equal('group', activeGroup), Query.orderDesc("$updatedAt"), Query.limit(10)];
+            if (lastLoadedMessageId && refreshInfinite) {
+                query.push(Query.cursorAfter(lastLoadedMessageId))
+            }
+
+            const fetchedMessage = await databases.listDocuments(
+                database,
+                'messages',
+                query
+            );
+
+            if(fetchedGroup) {
+                const transformedGroup: Models.Document[] = fetchedGroup.documents;
+                setGroup(transformedGroup[0]);
+            }
+
+            if (fetchedMessage) {
+                const transformedMessages: Models.Document[] = fetchedMessage.documents;
+                if(lastLoadedMessageId && refreshInfinite){
+                    setMessages((prevMessages: messageInterface[]) => [...prevMessages, ...transformedMessages]);
+                } else {
+                    setMessages(transformedMessages)
+                }
+
+
+                if (transformedMessages.length > 0) {
+                    setLastLoadedMessageId(transformedMessages[transformedMessages.length - 1].$id);
+                }
+            }
+
+        } catch (error) {
+            console.error('Error fetching messages:', error);
+        }
+    };
 
     useEffect(() => {
-
-        const fetchData = async () => {
-            try {
-
-                const fetchedGroup = await databases.listDocuments(
-                    database,
-                    'groups',
-                    [Query.equal('$id', activeGroup)]
-                );
-
-                const fetchedMessage = await databases.listDocuments(
-                    database,
-                    'messages',
-                    [Query.equal('group', activeGroup), Query.orderDesc("$updatedAt"), Query.limit(10)]
-                );
-
-                if(fetchedGroup) {
-                    const transformedGroup: Models.Document[] = fetchedGroup.documents;
-                    setGroup(transformedGroup[0]);
-                }
-
-                if (fetchedMessage) {
-                    const transformedMessages: Models.Document[] = fetchedMessage.documents;
-                    setMessages(transformedMessages);
-                }
-                
-            } catch (error) {
-                console.error('Error fetching messages:', error);
-            }
-        };
 
         fetchData();
 
@@ -127,17 +142,29 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
 
     // TODO: fixnúť to, aby bol cooldown, keď sa niečo napíše a aby to teda stále neupdatovalo state cez setNewMessage
 
-    const messageSubmit = async (messageToSubmit: string) => {
+    const messageSubmit = async (messageToSubmit: string, fileId?: string) => {
         if(messageToSubmit && messageToSubmit !== ""){
             try {
                 setSubmitting(true);
 
                 const dbID = loggedInUser.dbID;
-                const constructedBody = JSON.stringify({
-                    "dbID": dbID,
-                    "activeGroup": activeGroup,
-                    "message": messageToSubmit
-                });
+                let constructedBody
+
+                if(messageToSubmit === 'file' && fileId){
+                    constructedBody = JSON.stringify({
+                        "dbID": dbID,
+                        "activeGroup": activeGroup,
+                        "message": messageToSubmit,
+                        "attachments": [fileId]
+                    });
+                } else {
+                    constructedBody = JSON.stringify({
+                        "dbID": dbID,
+                        "activeGroup": activeGroup,
+                        "message": messageToSubmit,
+                        "attachments": []
+                    });
+                }
 
                 const response = await fetch(`/api/sendMessage`, {
                     method: 'POST',
@@ -260,8 +287,6 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
                 throw new Error('Failed to call');
             }
 
-            console.log(response)
-
         } catch (err: any) {
             console.error(err);
         } finally {
@@ -338,6 +363,29 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
         router.push(`/`)
     }
 
+    const handleTextAreaPaste = async (file: File) => {
+
+        try {
+            const res = await storage.createFile(
+                'messageAttachments',
+                ID.unique(),
+                file,
+                [
+                    Permission.read(Role.user('658ed5a9933deecd0ab9')),
+                    Permission.update(Role.user('658ed5a9933deecd0ab9')),
+                    Permission.delete(Role.user('658ed5a9933deecd0ab9')),
+                ]
+            );
+
+            messageSubmit('file', res.$id)
+
+            fireToast('success', 'File uploaded.')
+
+        } catch (e) {
+            fireToast('error', 'Cannot upload your image!')
+            return console.log(e)
+        }
+    }
 
     if (loading || !group || !group?.users) {
         return <ChannelMainSkeleton />;
@@ -397,12 +445,11 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
                         </>
                     )}
 
-                    <div
-                        className='h-full w-full bg-gray-dark p-[2dvw] flex flex-col-reverse gap-[2dvw] overflow-y-scroll no-scrollbar'
-                    >
+                    <div className='h-full w-full bg-gray-dark p-[2dvw] flex flex-col-reverse gap-[2dvw] overflow-y-scroll no-scrollbar'>
                         {messages.map((message: any) => (
-                            <ChannelMessage message={message} key={message.$id} localUser={(message.author.$id === loggedInUser.dbID)} />
+                            <ChannelMessage message={message} key={message.$id} localUser={(message.author.$id === loggedInUser.$id)} />
                         ))}
+                        <a href='#' className='text-blue text-md hover:text-lightly transition-all text-center' onClick={async () => fetchData}>Show More</a>
                     </div>
 
                     <form
@@ -417,6 +464,7 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
                             title={''}
                             valueProp={newMessage}
                             onChangeFn={(value) => setNewMessage(convertText(value))}
+                            handlePasteFn={handleTextAreaPaste}
                             gifValue={gifValue}
                             setGifValue={(value) => setGifValue(value)}
                             required={false}

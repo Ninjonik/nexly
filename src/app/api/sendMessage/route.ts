@@ -4,7 +4,7 @@ import {databases} from '@/app/appwrite_server';
 import {database} from '@/app/appwrite';
 import {NextRequest} from "next/server";
 
-const createMessage = async ({ dbID, activeGroup, message }: { dbID: string, activeGroup: string, message: string }) => {
+const createMessage = async ({ dbID, activeGroup, message, attachments }: { dbID: string, activeGroup: string, message: string, attachments: string[] }) => {
     try {
         return await databases.createDocument(
             database,
@@ -14,6 +14,7 @@ const createMessage = async ({ dbID, activeGroup, message }: { dbID: string, act
                 author: dbID,
                 group: activeGroup,
                 message: message,
+                attachments: attachments,
             },
             [
                 Permission.read(Role.any()),
@@ -30,13 +31,13 @@ const createMessage = async ({ dbID, activeGroup, message }: { dbID: string, act
 export async function POST(req: Request, res: NextApiResponse) {
     try {
         const reqRes = await req.json()
-        const { dbID, activeGroup, message } = reqRes
+        let { dbID, activeGroup, message, attachments } = reqRes
 
-        if (!dbID || !activeGroup || !message) {
+        if (!dbID || !activeGroup || !message || !attachments) {
             return Response.json({ error: 'Invalid request body' }, { status: 400 })
         }
 
-        const result = await createMessage({ dbID, activeGroup, message });
+        const result = await createMessage({ dbID, activeGroup, message, attachments });
 
         return Response.json({ result })
     } catch (error) {

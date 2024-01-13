@@ -5,6 +5,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFaceSmileWink, faImages } from "@fortawesome/free-solid-svg-icons";
 import Tippy from "@tippyjs/react";
 import GifPicker from "gif-picker-react";
+import {storage} from "@/app/appwrite";
+import {ID, Permission, Role} from "appwrite";
 
 interface FormTextAreaProps {
     title: string;
@@ -13,6 +15,7 @@ interface FormTextAreaProps {
     required?: boolean;
     valueProp?: string;
     onChangeFn?: (value: string) => void;
+    handlePasteFn?: (value: File) => void;
     gifValue: string;
     setGifValue: (value: string) => void;
 }
@@ -24,6 +27,7 @@ const FormTextArea: FC<FormTextAreaProps> = ({
                                                  required,
                                                  valueProp = '',
                                                  onChangeFn = () => {},
+                                                 handlePasteFn = () => {},
                                                  gifValue,
                                                  setGifValue,
                                              }) => {
@@ -46,6 +50,20 @@ const FormTextArea: FC<FormTextAreaProps> = ({
         }
     }, [valueProp]);
 
+    const handlePaste = async (event: React.ClipboardEvent<HTMLTextAreaElement>) => {
+        const items = event.clipboardData.items;
+        for (const item of items) {
+            if (item.type.indexOf('image') === 0) {
+                event.preventDefault();
+                const file = item.getAsFile();
+                if (file) {
+                    await handlePasteFn(file)
+                }
+                return;
+            }
+        }
+    };
+
     const tenorKey = process.env.NEXT_PUBLIC_TENOR_KEY || 'tenorapikeynotentered';
 
     return (
@@ -63,6 +81,7 @@ const FormTextArea: FC<FormTextAreaProps> = ({
                           onChange={handleTextareaChange}
                           className="border bg-gray rounded-md border-none w-full focus:outline-none text-white h-full resize-none overflow-hidden"
                           placeholder={title}
+                          onPaste={handlePaste}
                       />
                     <div className="replicated-value overflow-hidden" data-replicated-value={valueProp}></div>
                 </div>

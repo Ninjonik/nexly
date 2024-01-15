@@ -2,7 +2,7 @@ import SidebarIcon from "@/app/components/sidebar/SidebarIcon";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faDiscord} from "@fortawesome/free-brands-svg-icons";
 import logout from "@/app/utils/logout";
-import {faBell, faGear, faInbox, faUsers} from "@fortawesome/free-solid-svg-icons";
+import {faBell, faGear, faInbox, faRightFromBracket, faUsers} from "@fortawesome/free-solid-svg-icons";
 import Image from "next/image";
 import ProfileIcon from "@/app/components/ProfileIcon";
 import getAvatar from "@/app/utils/getAvatar";
@@ -21,7 +21,7 @@ const Sidebar: FC<SidebarProps> = ({}) => {
     return (
         <aside className="w-0.5/10 h-screen flex flex-col py-4 bg-heavy text-white text-4">
             <div className="flex flex-col gap-4 h-2/10 text-center justify-center items-center">
-                <SidebarIcon title={'🏠 Home'} icon={<FontAwesomeIcon icon={faDiscord}
+                <SidebarIcon title={'↪️ Logout'} icon={<FontAwesomeIcon icon={faRightFromBracket}
                                                                      onClick={async () => setLoggedInUser(await logout())}/>}/>
                 <hr className="w-1/3 text-heavily"/>
                 <SidebarIcon title={'✉️ Inbox'} icon={<FontAwesomeIcon icon={faInbox}/>}/>

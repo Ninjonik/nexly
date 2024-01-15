@@ -9,7 +9,7 @@ import {
     faArrowUp, faArrowUp91, faCalendar, faCheck,
     faCirclePlus, faDisplay,
     faEllipsisVertical, faExpand, faHeading, faMaximize, faMicrophone, faMinimize,
-    faPhone, faPlus,
+    faPhone, faPlus, faRightFromBracket,
     faThumbtack,
     faUsers,
     faVideo, faXmark
@@ -407,7 +407,7 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
                     <SmallIcon icon={<FontAwesomeIcon icon={faVideo}/>} size={'3'}/>
                     <SmallIcon icon={<FontAwesomeIcon icon={faThumbtack}/>} size={'3'}/>
                     <SmallIcon icon={<FontAwesomeIcon icon={faUsers}/>} size={'3'} onClickFn={() => setUsersShown(!usersShown)} />
-                    <SmallIcon icon={<FontAwesomeIcon icon={faEllipsisVertical}/>} size={'3'} onClickFn={leaveGroup} />
+                    <SmallIcon icon={<FontAwesomeIcon icon={faRightFromBracket}/>} size={'3'} onClickFn={leaveGroup} />
                 </div>
             </header>
 

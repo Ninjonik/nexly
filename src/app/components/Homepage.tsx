@@ -201,7 +201,7 @@ export const Homepage = () => {
                 {friendRequests === 'loading' || savedUsers === 'loading' ? (
                     <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]" />
                 ) : (
-                    <div className='w-full flex flex-col'>
+                    <div className='w-full flex flex-col overflow-y-scroll'>
                         <hr className="w-full text-heavily my-2 text-2"/>
                         {(Object.keys(friendRequests).length > 0 && Object.keys(savedUsers).length > 0) && (
                             Object.keys(friendRequests).map((key) => {

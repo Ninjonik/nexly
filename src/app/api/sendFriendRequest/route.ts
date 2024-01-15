@@ -12,7 +12,13 @@ async function sendFriendRequest({ source, dest }: { source: string, dest: strin
             [Query.equal('source', dest), Query.equal('destination', source), Query.equal('type', 10)]
         );
 
-        if (existingRelations.documents.length === 1) {
+        const alreadySentFriendRequests = await databases.listDocuments(
+            database,
+            'usersRelations',
+            [Query.equal('source', source), Query.equal('destination', dest), Query.equal('type', 10)]
+        );
+
+        if (existingRelations.documents.length === 1 && alreadySentFriendRequests.documents.length === 0) {
             const res1 = await databases.createDocument(
                 database,
                 'usersRelations',

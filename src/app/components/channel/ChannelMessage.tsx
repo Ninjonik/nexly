@@ -37,7 +37,6 @@ const ChannelMessage: FC<ChannelMessageProps> = ({ typing, message, localUser })
         setIsImage(isValidImageUrl(message));
         setAlignmentClass(localUser ? 'self-end items-end' : '');
         setProfileIconAlignment(localUser ? 'self-start' : '');
-        console.log(localUser, profileIconAlignment)
     }, [message]);
 
     return (

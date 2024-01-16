@@ -60,7 +60,6 @@ export async function POST(req: Request, res: NextApiResponse) {
         }
 
         const result = await joinGroup({ dbID, groupId, inviteId });
-        console.log(result)
 
         return Response.json({ result })
     } catch (error) {

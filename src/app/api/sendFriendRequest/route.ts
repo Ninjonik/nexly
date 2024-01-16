@@ -47,8 +47,6 @@ async function sendFriendRequest({ source, dest }: { source: string, dest: strin
                 }
             )
 
-            console.log("RESY:", res1, res2)
-
             return "Friend request accepted."
         }
 

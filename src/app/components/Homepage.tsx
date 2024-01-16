@@ -66,8 +66,6 @@ export const Homepage = () => {
             const resId: string = res.$id
             const events: any = response.events
 
-            console.log("New event:", res)
-
             fetchFriendRequests()
         });
 

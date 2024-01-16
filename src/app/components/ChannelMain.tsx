@@ -438,11 +438,8 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
                 fireToast('error', 'There has been an error while pinning the group.')
             }
         }
-        console.log(loggedInUser.pinnedGroups)
 
     }
-
-    console.log(loggedInUser.pinnedGroups)
 
     if (loading || !group || !group?.users) {
         return <ChannelMainSkeleton />;
@@ -460,11 +457,11 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
                     </div>
                 </div>
                 <div className='flex flex-row gap-6 justify-center items-center'>
-                    <SmallIcon icon={<FontAwesomeIcon icon={faPhone}/>} size={'3'} onClickFn={() => call(true)} />
-                    <SmallIcon icon={<FontAwesomeIcon icon={faVideo}/>} size={'3'}/>
-                    <SmallIcon icon={<FontAwesomeIcon icon={faThumbtack}/>} size={'3'} onClickFn={pinGroup}/>
-                    <SmallIcon icon={<FontAwesomeIcon icon={faUsers}/>} size={'3'} onClickFn={() => setUsersShown(!usersShown)} />
-                    <SmallIcon icon={<FontAwesomeIcon icon={faRightFromBracket}/>} size={'3'} onClickFn={leaveGroup} />
+                    <SmallIcon icon={<FontAwesomeIcon icon={faPhone}/>} size={'3'} onClickFn={() => call(true)} title={'Start a call'} />
+                    {/*<SmallIcon icon={<FontAwesomeIcon icon={faVideo}/>} size={'3'}/>*/}
+                    <SmallIcon icon={<FontAwesomeIcon icon={faThumbtack}/>} size={'3'} onClickFn={pinGroup} title={'Pin/Unpin group'}/>
+                    <SmallIcon icon={<FontAwesomeIcon icon={faUsers}/>} size={'3'} onClickFn={() => setUsersShown(!usersShown)} title={'Show/Hide users'} />
+                    <SmallIcon icon={<FontAwesomeIcon icon={faRightFromBracket}/>} size={'3'} onClickFn={leaveGroup} title={'Leave group'} />
                 </div>
             </header>
 

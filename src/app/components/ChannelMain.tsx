@@ -598,21 +598,21 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
 
 export default ChannelMain;
 
-function MyVideoConference() {
-    // `useTracks` returns all camera and screen share tracks. If a user
-    // joins without a published camera track, a placeholder track is returned.
-    const tracks = useTracks(
-        [
-            { source: Track.Source.Camera, withPlaceholder: true },
-            { source: Track.Source.ScreenShare, withPlaceholder: false },
-        ],
-        { onlySubscribed: false },
-    );
-    return (
-        <GridLayout tracks={tracks} className=''>
-            {/* The GridLayout accepts zero or one child. The child is used
-      as a template to render all passed in tracks. */}
-            <ParticipantTile />
-        </GridLayout>
-    );
-}
+// function MyVideoConference() {
+//     // `useTracks` returns all camera and screen share tracks. If a user
+//     // joins without a published camera track, a placeholder track is returned.
+//     const tracks = useTracks(
+//         [
+//             { source: Track.Source.Camera, withPlaceholder: true },
+//             { source: Track.Source.ScreenShare, withPlaceholder: false },
+//         ],
+//         { onlySubscribed: false },
+//     );
+//     return (
+//         <GridLayout tracks={tracks} className=''>
+//             {/* The GridLayout accepts zero or one child. The child is used
+//       as a template to render all passed in tracks. */}
+//             <ParticipantTile />
+//         </GridLayout>
+//     );
+// }

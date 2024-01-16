@@ -35,7 +35,13 @@ const MessagesSection: FC<MessagesSectionProps> = ({ title, icon }) => {
             <div className="text-lightly text-2">{icon} {title}</div>
 
             {groups?.map((group: MessageLinkInterface) =>
-                <MessageLink notifications={1} time={Date.now()} typing={false} group={group} key={group.$id} />
+                (title === 'Pinned' && loggedInUser.pinnedGroups.includes(group.$id)) ? (
+                    <MessageLink notifications={1} time={Date.now()} typing={false} group={group} key={group.$id} />
+                ) : (
+                    !loggedInUser.pinnedGroups.includes(group.$id) ?? (
+                        <MessageLink notifications={1} time={Date.now()} typing={false} group={group} key={group.$id} />
+                    )
+                )
             )}
 
             <hr className="w-full text-heavily my-2 text-2"/>

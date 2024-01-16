@@ -387,6 +387,63 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
         }
     }
 
+    const pinGroup = async () => {
+
+        if(loggedInUser.pinnedGroups.includes(group.$id)){
+            try {
+                let updatedArray = [...loggedInUser.pinnedGroups]
+                const index = updatedArray.indexOf(group.$id);
+                if (index > -1) {
+                    updatedArray.splice(index, 1);
+                }
+
+                await databases.updateDocument(
+                    database,
+                    'users',
+                    loggedInUser.$id,
+                    {
+                        pinnedGroups: updatedArray
+                    },
+                );
+
+                let newLoggedInUser = {...loggedInUser}
+                newLoggedInUser.pinnedGroups = updatedArray
+                setLoggedInUser(newLoggedInUser)
+
+                fireToast('success', 'Group unpinned.')
+            } catch (e) {
+                console.log(e)
+                fireToast('error', 'There has been an error while unpinning the group.')
+            }
+        } else {
+            try {
+                let updatedArray = [group.$id, ...loggedInUser.pinnedGroups]
+
+                await databases.updateDocument(
+                    database,
+                    'users',
+                    loggedInUser.$id,
+                    {
+                        pinnedGroups: updatedArray
+                    },
+                );
+
+                let newLoggedInUser = {...loggedInUser}
+                newLoggedInUser.pinnedGroups = updatedArray
+                setLoggedInUser(newLoggedInUser)
+
+                fireToast('success', 'Group pinned.')
+            } catch (e) {
+                console.log(e)
+                fireToast('error', 'There has been an error while pinning the group.')
+            }
+        }
+        console.log(loggedInUser.pinnedGroups)
+
+    }
+
+    console.log(loggedInUser.pinnedGroups)
+
     if (loading || !group || !group?.users) {
         return <ChannelMainSkeleton />;
     }
@@ -405,7 +462,7 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
                 <div className='flex flex-row gap-6 justify-center items-center'>
                     <SmallIcon icon={<FontAwesomeIcon icon={faPhone}/>} size={'3'} onClickFn={() => call(true)} />
                     <SmallIcon icon={<FontAwesomeIcon icon={faVideo}/>} size={'3'}/>
-                    <SmallIcon icon={<FontAwesomeIcon icon={faThumbtack}/>} size={'3'}/>
+                    <SmallIcon icon={<FontAwesomeIcon icon={faThumbtack}/>} size={'3'} onClickFn={pinGroup}/>
                     <SmallIcon icon={<FontAwesomeIcon icon={faUsers}/>} size={'3'} onClickFn={() => setUsersShown(!usersShown)} />
                     <SmallIcon icon={<FontAwesomeIcon icon={faRightFromBracket}/>} size={'3'} onClickFn={leaveGroup} />
                 </div>
@@ -492,7 +549,7 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
                                 <FormModal title={"Add people"} modalState={dialog} setModalState={setDialog} onSubmit={generateInviteLink} submitText={'Generate'}>
 
                                     {inviteLink && (
-                                        <span className='text-white'>Generated invite link:
+                                        <span className='text-white break-normal'>Generated invite link:
                                             <a target={'_blank'} href={`${process.env.NEXT_PUBLIC_HOSTNAME}/invite/${inviteLink}`} className='text-blue hover:text-blue-hover transition-all ease-in hover:cursor-pointer'> {`${process.env.NEXT_PUBLIC_HOSTNAME}/invite/${inviteLink}`}</a>
                                         </span>
                                     )}

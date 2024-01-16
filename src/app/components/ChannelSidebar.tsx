@@ -83,7 +83,7 @@ const Sidebar: FC<SidebarProps> = ({}) => {
             <header className='h-1/10 flex flex-col justify-center gap-8 p-6'>
                 <div className="flex flex-row justify-between items-center">
                     <a className="text-3 hover:text-blue transition-all ease-in" onClick={() => router.push(`/`)} href={'#'}>Messages</a>
-                    <SmallIcon title={'New group'} icon={<FontAwesomeIcon icon={faPenToSquare} className="text-blue text-3 hover:text-blue-hover"/>} onClickFn={() => setGroupDialog(true)} />
+                    <SmallIcon title={'New group'} icon={<FontAwesomeIcon icon={faPlus} className="text-blue text-3 hover:text-blue-hover"/>} onClickFn={() => setGroupDialog(true)} />
                 </div>
             </header>
 

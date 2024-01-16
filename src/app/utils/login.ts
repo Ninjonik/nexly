@@ -32,7 +32,8 @@ const login = async (email: string | undefined, password: string | undefined) =>
 
         const data: UsersInterface = await response.json()
         authAccount.avatarPath = data.user.avatarPath
-        authAccount.groups = data.user.groups
+        authAccount.groups = data.user.groups ?? []
+        authAccount.pinnedGroups = data.user.pinnedGroups
         authAccount.dbID = data.user.$id
         // TODO: add more fields there
     } catch (error) {

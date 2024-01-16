@@ -77,7 +77,7 @@ const Group = () => {
 
     return (
         <div className='h-full w-full bg-light flex justify-center items-center'>
-            <div className='h-3/10 w-1/3 bg-gray-dark border-blue border rounded-md flex flex-col justify-center items-center p-1/5 gap-1/10'>
+            <div className='h-3/10 w-1/3 bg-gray-dark border-blue border rounded-md flex flex-col justify-center items-center p-1/5 gap-0.5/10'>
                 {error === 'loading' ? (
                     <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]" role="status"></div>
                 ) : (
@@ -90,7 +90,9 @@ const Group = () => {
                                 <h3 className='text-white text-2'>Invited to a group
                                     {/*<span className='text-blue'>{invite.group.title}</span>*/}
                                 </h3>
-                                <PrimaryButton title={'Join group'} onClickFn={joinGroup} customClass={'w-1/4 h-1/5'} />
+                                <PrimaryButton title={'Join group'} onClickFn={joinGroup} height={'2/10'}
+                                               width={'7/10'}/>
+                                <a className={'text-blue hover:text-blue-hover transition-all ease-in hover:cursor-pointer'} onClick={() => router.push(`/`)}>Decline</a>
                             </>
                         )
                     )

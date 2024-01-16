@@ -36,7 +36,7 @@ export const FormModal: FC<FormModalProps> = ({children, submitText = "Submit", 
                 </div>
 
                 <form method={"dialog"} className='flex flex-col gap-[0.5dvw] pt-[1dvw]' onSubmit={(e) => { e.preventDefault(); onSubmit && onSubmit(); }}>
-                    <div className='w-full h-full flex flex-col gap-[0.5dvw] px-[0.5dvw]'>
+                    <div className='w-full h-full flex flex-col gap-[0.5dvw] px-[1.5dvw]'>
                         {children}
                     </div>
 

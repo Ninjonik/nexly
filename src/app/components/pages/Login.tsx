@@ -30,10 +30,12 @@ const Login: FC<LoginProps> = ({ loggedInUser, setLoggedInUser }) => {
             try {
                 result = await register(name, email, password)
                 if(!result){
+                    fireToast('error', 'Failed to register')
                     return 'error'
-                    // TODO: handle registration error
                 }
-            } catch (e) {
+                fireToast('success', 'Registration successful')
+            } catch (e: any) {
+                fireToast('error', e.message)
                 return 'error'
             }
         } else {
@@ -42,8 +44,9 @@ const Login: FC<LoginProps> = ({ loggedInUser, setLoggedInUser }) => {
                 if(result === undefined){
                     fireToast('error', "Wrong username/password!", "top-right", 2000)
                 }
-            } catch (e) {
-                fireToast('error', "Unknown error! Report to the developers please.", "top-right", 2000)
+                fireToast('success', 'Login successful')
+            } catch (e: any) {
+                fireToast('error', e.message, "top-right", 2000)
                 return 'error'
             }
         }

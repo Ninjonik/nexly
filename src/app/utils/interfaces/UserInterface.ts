@@ -5,6 +5,7 @@ interface UserInterface {
     username: string;
     avatarPath: string;
     dbID: string;
+    pinnedGroups: string[];
     $id: string;
     $createdAt: string;
     $updatedAt: string;

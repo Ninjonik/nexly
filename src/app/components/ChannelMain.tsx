@@ -44,6 +44,7 @@ import {ID, Permission, Role} from "appwrite";
 import {Md5} from "ts-md5";
 import {useRouter} from "next/navigation";
 import messageInterface from "@/app/utils/interfaces/MessageInterface";
+import AnchorLink from "@/app/components/AnchorLink";
 
 interface ChannelMainProps {
     activeGroup: string
@@ -503,7 +504,7 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
                         {messages.map((message: any) => (
                             <ChannelMessage message={message} key={message.$id} localUser={(message.author.$id === loggedInUser.$id)} />
                         ))}
-                        <a href='#' className='text-blue text-md hover:text-lightly transition-all text-center' onClick={async () => fetchData}>Show More</a>
+                        <AnchorLink size={'1'} description={'Show more'} color={'blue'} className={'text-center'} onClickFn={async () => fetchData} />
                     </div>
 
                     <form
@@ -540,14 +541,14 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
                                 <div className='flex flex-row justify-between'>
                                     <div className=""><FontAwesomeIcon icon={faUser} className="text-blue pr-[0.5dvw]"/> Members ({group.users.length})
                                     </div>
-                                    <a href='#' className='text-blue hover:text-lightly transition-all' onClick={() => setDialog(true)}>Add</a>
+                                    <AnchorLink size={'1'} description={'Add'} color={'blue'} onClickFn={() => setDialog(true)} />
                                 </div>
 
                                 <FormModal title={"Add people"} modalState={dialog} setModalState={setDialog} onSubmit={generateInviteLink} submitText={'Generate'}>
 
                                     {inviteLink && (
                                         <span className='text-white break-normal'>Generated invite link:
-                                            <a target={'_blank'} href={`${process.env.NEXT_PUBLIC_HOSTNAME}/invite/${inviteLink}`} className='text-blue hover:text-blue-hover transition-all ease-in hover:cursor-pointer'> {`${process.env.NEXT_PUBLIC_HOSTNAME}/invite/${inviteLink}`}</a>
+                                            <AnchorLink target={'_blank'} size={'1'} description={`${process.env.NEXT_PUBLIC_HOSTNAME}/invite/${inviteLink}`} href={`${process.env.NEXT_PUBLIC_HOSTNAME}/invite/${inviteLink}`} />
                                         </span>
                                     )}
 
@@ -580,8 +581,7 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
                                     </div>
                                 ))}
 
-
-                                {/*<a href='#' className='text-blue text-md hover:text-lightly transition-all text-center'>Show More</a>*/}
+                                {/*<AnchorLink size={'1'} description={'Show More'} color={'blue'} className={'text-center'} />*/}
                             </div>
                         </>
                     )}

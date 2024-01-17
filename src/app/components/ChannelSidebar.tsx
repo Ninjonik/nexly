@@ -28,6 +28,7 @@ import {useRouter} from "next/navigation";
 import PrimaryButton from "@/app/components/form/buttons/PrimaryButton";
 import {FormModal} from "@/app/components/form/FormModal";
 import fireToast from "@/app/utils/toast";
+import AnchorLink from "@/app/components/AnchorLink";
 
 interface SidebarProps {
 }
@@ -82,8 +83,8 @@ const Sidebar: FC<SidebarProps> = ({}) => {
 
             <header className='h-1/10 flex flex-col justify-center gap-8 p-6'>
                 <div className="flex flex-row justify-between items-center">
-                    <a className="text-3 hover:text-blue transition-all ease-in" onClick={() => router.push(`/`)} href={'#'}>Messages</a>
-                    <SmallIcon title={'New group'} icon={<FontAwesomeIcon icon={faPlus} className="text-blue text-3 hover:text-blue-hover"/>} onClickFn={() => setGroupDialog(true)} />
+                    <AnchorLink size={'3'} description={'Messages'} color={'white'} onClickFn={() => router.push(`/`)} />
+                <SmallIcon title={'New group'} icon={<FontAwesomeIcon icon={faPlus} className="text-blue text-3 hover:text-blue-hover"/>} onClickFn={() => setGroupDialog(true)} />
                 </div>
             </header>
 

@@ -17,7 +17,7 @@ const MessageHeader: FC<{ username?: string, updatedAt: string }> = ({ username,
     </div>
 );
 
-const MessageBody: FC<{ isImage: boolean | "string", message: string, localUser?: boolean }> = ({ isImage, message, localUser }) => {
+const MessageBody: FC<{ isImage: boolean | string, message: string, localUser?: boolean }> = ({ isImage, message, localUser }) => {
     const messageClass = localUser ? 'bg-blue rounded-b-lg rounded-l-lg' : 'bg-lightly rounded-b-lg rounded-r-lg';
     return (
         <span className={!isImage ? `w-full text-md break-words p-2 ${messageClass}` : 'max-w-full'} style={{ whiteSpace: 'pre-line' }}>
@@ -29,7 +29,7 @@ const MessageBody: FC<{ isImage: boolean | "string", message: string, localUser?
 };
 
 const ChannelMessage: FC<ChannelMessageProps> = ({ typing, message, localUser }) => {
-    const [isImage, setIsImage] = useState<boolean | "string">(false);
+    const [isImage, setIsImage] = useState<boolean | string>(false);
     const [alignmentClass, setAlignmentClass] = useState('');
     const [profileIconAlignment, setProfileIconAlignment] = useState('');
 

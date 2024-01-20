@@ -372,9 +372,9 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
                 ID.unique(),
                 file,
                 [
-                    Permission.read(Role.user('658ed5a9933deecd0ab9')),
-                    Permission.update(Role.user('658ed5a9933deecd0ab9')),
-                    Permission.delete(Role.user('658ed5a9933deecd0ab9')),
+                    Permission.read(Role.any()),
+                    Permission.update(Role.user(loggedInUser.$id)),
+                    Permission.delete(Role.user(loggedInUser.$id)),
                 ]
             );
 
@@ -508,7 +508,7 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
                     </div>
 
                     <form
-                        className='max-h-4/10 flex-grow w-full bg-light p-[1dvw] flex justify-center items-center'
+                        className='max-h-5/10 flex-grow w-full bg-light p-[1dvw] flex justify-center items-center'
                         onSubmit={(e) => {
                             e.preventDefault();
                             messageSubmit(newMessage.replace(/\\n/g, "\n"));

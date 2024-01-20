@@ -513,7 +513,7 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
                         {messages.map((message: any) => (
                             <ChannelMessage message={message} key={message.$id} localUser={(message.author.$id === loggedInUser.$id)} />
                         ))}
-                        <AnchorLink size={'1'} description={'Show more'} color={'blue'} className={'text-center'} onClickFn={async () => fetchData} />
+                        <AnchorLink size={'1'} description={'Show more'} color={'blue'} className={'text-center'} onClickFn={async () => fetchData(true)} />
                     </div>
 
                     <form

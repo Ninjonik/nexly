@@ -8,6 +8,7 @@ import GifPicker from "gif-picker-react";
 import {storage} from "@/app/appwrite";
 import {ID, Permission, Role} from "appwrite";
 import Image from "next/image";
+import fireToast from "@/app/utils/toast";
 
 interface FormTextAreaProps {
     title: string;
@@ -19,6 +20,8 @@ interface FormTextAreaProps {
     handlePasteFn?: (value: File) => void;
     gifValue: string;
     setGifValue: (value: string) => void;
+    attachments: File[];
+    setAttachments: (value: File[]) => void;
 }
 
 const FormTextArea: FC<FormTextAreaProps> = ({
@@ -31,10 +34,10 @@ const FormTextArea: FC<FormTextAreaProps> = ({
                                                  handlePasteFn = () => {},
                                                  gifValue,
                                                  setGifValue,
+                                                 setAttachments,
+                                                 attachments
                                              }) => {
     const textareaRef = useRef<HTMLTextAreaElement>(null);
-    const [error, setError] = useState<string>('');
-    const [files, setFiles] = useState<File[]>([]);
 
     const handleTextareaChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
         if (textareaRef.current) {
@@ -68,18 +71,25 @@ const FormTextArea: FC<FormTextAreaProps> = ({
     };
 
     const deleteFile = (index: number) => {
-        const newFiles = [...files];
+        const newFiles = [...attachments];
         newFiles.splice(index, 1);
-        setFiles(newFiles);
+        setAttachments(newFiles);
     }
+
+    useEffect(() => {
+        if(attachments.length > 5) {
+            setAttachments([])
+            fireToast('error', 'You can only upload maximum of 5 files at once!')
+        }
+    }, [attachments]);
 
     const tenorKey = process.env.NEXT_PUBLIC_TENOR_KEY || 'tenorapikeynotentered';
 
     return (
         <div className="h-full w-full flex flex-col rounded-lg bg-gray py-[1dvw]">
             <div className='flex flex-row px-[1dvw] text-center items-center gap-[0.5dvw] max-w-full'>
-                {files.map((file: File, index: number) => (
-                    <div className='flex flex-col w-1/5 h-full relative'>
+                {attachments.map((file: File, index: number) => (
+                    <div className='flex flex-col w-1/5 h-full relative' key={index}>
                         <button title='Remove' className={`w-[1.5dvw] h-[1.5dvw] top-[-0.5dvw] right-[-0.5dvw] hover:border-blue hover:text-red-600 transition-all ease-in hover:cursor-pointer absolute border-2 border-light rounded-full bg-white text-red-500 text-1.5 flex justify-center items-center text-center`} onClick={() => deleteFile(index)}>
                             <FontAwesomeIcon icon={faTrash} />
                         </button>
@@ -97,8 +107,6 @@ const FormTextArea: FC<FormTextAreaProps> = ({
                 ))}
             </div>
 
-            <div className='text-red-500 text-2 px-[1dvw]'>{error}</div>
-
             <div className="relative text-lightly text-2 h-full w-full flex flex-row bg-gray rounded-lg overflow-x-hidden">
                 <div className='h-full w-0.5/10'>
                     <label htmlFor={'myInput'} className="h-full w-0.5/10 flex items-center justify-center pointer-events-none rounded-lg absolute hover:cursor-pointer">
@@ -109,7 +117,7 @@ const FormTextArea: FC<FormTextAreaProps> = ({
                         type="file"
                         multiple
                         className="opacity-0 h-full w-full"
-                        onChange={(e) => setFiles(Array.from(e.target.files || []))}
+                        onChange={(e) => setAttachments(Array.from(e.target.files || []))}
                     />
                 </div>
 

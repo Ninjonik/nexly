@@ -45,6 +45,7 @@ import {Md5} from "ts-md5";
 import {useRouter} from "next/navigation";
 import messageInterface from "@/app/utils/interfaces/MessageInterface";
 import AnchorLink from "@/app/components/AnchorLink";
+import uploadMultipleFiles from "@/app/utils/uploadMultipleFiles";
 
 interface ChannelMainProps {
     activeGroup: string
@@ -57,6 +58,7 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
     const [loading, setLoading] = useState<boolean>(true)
     const [newMessage, setNewMessage] = useState<string>("")
     const [gifValue, setGifValue] = useState<string>("")
+    const [attachments, setAttachments] = useState<File[]>([])
     const [messages, setMessages] = useState<any>([])
     const [group, setGroup] = useState<any>([])
     const [submitting, setSubmitting] = useState(false)
@@ -150,6 +152,11 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
 
                 const dbID = loggedInUser.dbID;
                 let constructedBody
+                let fileIds: string[] = []
+
+                if(attachments.length > 0){
+                    fileIds = await uploadMultipleFiles(attachments);
+                }
 
                 if(messageToSubmit === 'file' && fileId){
                     constructedBody = JSON.stringify({
@@ -163,7 +170,7 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
                         "dbID": dbID,
                         "activeGroup": activeGroup,
                         "message": messageToSubmit,
-                        "attachments": []
+                        "attachments": fileIds
                     });
                 }
 
@@ -180,8 +187,10 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
                 }
 
                 setNewMessage("")
-
+                setAttachments([])
+                setGifValue("")
             } catch (err: any) {
+                fireToast('error', err.message, 'top-right', 2000)
                 console.error(err);
             } finally {
                 setSubmitting(false);
@@ -522,6 +531,8 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
                             handlePasteFn={handleTextAreaPaste}
                             gifValue={gifValue}
                             setGifValue={(value) => setGifValue(value)}
+                            attachments={attachments}
+                            setAttachments={setAttachments}
                             required={false}
                         />
                     </form>
@@ -541,7 +552,7 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
                                 <div className='flex flex-row justify-between'>
                                     <div className=""><FontAwesomeIcon icon={faUser} className="text-blue pr-[0.5dvw]"/> Members ({group.users.length})
                                     </div>
-                                    <AnchorLink size={'1'} description={'Add'} color={'blue'} onClickFn={() => setDialog(true)} />
+                                    <AnchorLink size={'2'} description={'Add'} color={'blue'} onClickFn={() => setDialog(true)} />
                                 </div>
 
                                 <FormModal title={"Add people"} modalState={dialog} setModalState={setDialog} onSubmit={generateInviteLink} submitText={'Generate'}>

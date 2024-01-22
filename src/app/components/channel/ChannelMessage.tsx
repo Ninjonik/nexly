@@ -7,6 +7,7 @@ import getFilePreview from "@/app/utils/getFilePreview";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faDownload} from "@fortawesome/free-solid-svg-icons";
 import getFileDownload from "@/app/utils/getFileDownload";
+import FormModal from "@/app/components/form/FormModal";
 
 interface ChannelMessageProps {
     typing?: boolean,
@@ -23,26 +24,50 @@ const MessageHeader: FC<{ username?: string, updatedAt: string }> = ({ username,
 
 const MessageBody: FC<{ isImage: boolean, message: string, attachments: string[], localUser?: boolean }> = ({ isImage, message, attachments, localUser }) => {
     const messageClass = localUser ? 'bg-blue rounded-b-lg rounded-l-lg' : 'bg-lightly rounded-b-lg rounded-r-lg';
-    return (
-        <span className={!isImage ? `w-full text-md break-words p-2` : 'max-w-full'} style={{ whiteSpace: 'pre-line' }}>
-            {isImage === true ? <img className='rounded-lg max-h-35' src={message} alt="Message content" /> :
-                <div className='flex flex-col gap-[0.5dvw]'>
-                    <span className={`p-[0.4dvw] text-1.5 ${messageClass}`}>{message}</span>
-                    {attachments.length > 0 && attachments.map((attachment, index) => (
-                        <div className="flex flex-row gap-[0.5dvw]" key={index}>
-                            <div className='text-2'></div>
-                            <div className='relative'>
-                                <img className='rounded-lg max-h-35' src={getFilePreview(attachment)} alt="Attachment" />
-                                <a href={getFileDownload(attachment)} download title='Download' className={`w-[1.5dvw] h-[1.5dvw] bottom-[-0.5dvw] right-[-0.5dvw] hover:border-blue hover:text-blue-hover transition-all ease-in hover:cursor-pointer absolute border-2 border-light rounded-full bg-white text-blue text-1.5 flex justify-center items-center text-center`}>
-                                    <FontAwesomeIcon icon={faDownload} />
-                                </a>
-                            </div>
+    const [fullscreenImage, setFullscreenImage] = useState<string>("")
+    const [modal, setModal] = useState<boolean>(false)
 
-                        </div>
-                    ))}
-                </div>
-            }
-        </span>
+    const openImage = (imageUrl: string | undefined) => {
+        if(imageUrl){
+            setFullscreenImage(imageUrl)
+            setModal(true)
+        }
+    }
+
+    const closeImage = () => {
+        setModal(false)
+        setFullscreenImage('')
+    }
+
+    return (
+        <>
+
+            <FormModal modalState={modal} setModalState={setModal} title={'Image Preview'} customCloseFn={closeImage}>
+                {fullscreenImage && (
+                    <img className='rounded-lg w-4/5 self-center pb-[1dvw]' src={fullscreenImage} alt="Attachment" />
+                )}
+            </FormModal>
+
+            <span className={!isImage ? `w-full text-md break-words p-2` : 'max-w-full'} style={{ whiteSpace: 'pre-line' }}>
+                {isImage === true ? <img className='rounded-lg max-h-35' src={message} alt="Message content" /> :
+                    <div className='flex flex-col gap-[0.5dvw]'>
+                        <span className={`p-[0.4dvw] text-1.5 ${messageClass}`}>{message}</span>
+                        {attachments.length > 0 && attachments.map((attachment, index) => (
+                            <div key={index}>
+                                <div className='text-2'></div>
+                                <button type="submit" className='relative flex flex-row gap-[0.5dvw] hover:cursor-pointer' onClick={() => openImage(getFilePreview(attachment))}>
+                                    <img className='rounded-lg max-h-35' src={getFilePreview(attachment)} alt="Attachment" />
+                                    <a href={getFileDownload(attachment)} download title='Download' className={`w-[1.5dvw] h-[1.5dvw] bottom-[-0.5dvw] right-[-0.5dvw] hover:border-blue hover:text-blue-hover transition-all ease-in hover:cursor-pointer absolute border-2 border-light rounded-full bg-white text-blue text-1.5 flex justify-center items-center text-center`}>
+                                        <FontAwesomeIcon icon={faDownload} />
+                                    </a>
+                                </button>
+
+                            </div>
+                        ))}
+                    </div>
+                }
+            </span>
+        </>
     );
 };
 

@@ -13,10 +13,10 @@ export default async ({ req, res, log, error }) => {
     try {
       const removedUserId = req.body.$id;
 
-      const userRecord = await database.listDocuments('nexly', 'users', [Query.equal('authID', removedUserId)]);
+      const userRecord = await database.getDocument('nexly', 'users', removedUserId);
 
-      if (userRecord.documents.length > 0) {
-        const documentId = userRecord.documents[0].$id;
+      if (userRecord) {
+        const documentId = userRecord.$id;
 
         await database.deleteDocument('nexly', 'users', documentId);
 

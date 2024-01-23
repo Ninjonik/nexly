@@ -76,11 +76,7 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
 
     const fetchData = async (refreshInfinite: boolean = false) => {
         try {
-            const fetchedGroup = await databases.listDocuments(
-                database,
-                'groups',
-                [Query.equal('$id', activeGroup)]
-            );
+            const fetchedGroup = await databases.getDocument(database, 'groups', activeGroup)
 
             let query = [Query.equal('group', activeGroup), Query.orderDesc("$updatedAt"), Query.limit(10)];
             if (lastLoadedMessageId && refreshInfinite) {
@@ -94,8 +90,7 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
             );
 
             if(fetchedGroup) {
-                const transformedGroup: Models.Document[] = fetchedGroup.documents;
-                setGroup(transformedGroup[0]);
+                setGroup(fetchedGroup);
             }
 
             if (fetchedMessage) {

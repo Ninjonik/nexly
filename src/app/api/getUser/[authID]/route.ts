@@ -6,14 +6,10 @@ import {database} from "@/app/appwrite";
 const getUser = async (authID: string) => {
     if(!database) return null;
     try {
-        const result = await databases.listDocuments(database, 'users',
-            [
-                Query.equal('authID', authID)
-            ]
-        );
+        const result = await databases.getDocument(database, 'users', authID);
 
-        if (result.documents.length > 0) {
-            return result.documents[0];
+        if (result) {
+            return result;
         } else {
             return null;
         }

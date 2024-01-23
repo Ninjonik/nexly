@@ -81,7 +81,7 @@ const Login: FC<LoginProps> = ({ loggedInUser, setLoggedInUser }) => {
                 ) : (
                     <div className='py-2 flex flex-col gap-[1dvh] h-[10dvh]'>
                         <PrimaryButton title={'Log In'} type='submit' onClickFn={() => handleSubmit(false)} />
-                        <AnchorLink size={'1'} description={'Not registered yet? create a free account now!'} onClickFn={() => setPage(true)} />
+                        <AnchorLink size={'1'} description={'Not registered yet? create a free account now!'} color={'blue'} onClickFn={() => setPage(true)} />
                     </div>
                 )}
             </form>

@@ -1,28 +1,14 @@
-import messageInterface from "@/app/utils/interfaces/MessageInterface";
 import {storage} from "@/app/appwrite";
 
-const isValidImageUrl = (message: messageInterface): boolean | "string" => {
+const isValidImageUrl = (message: string): boolean => {
     const imageExtensions = ['.png', '.jpg', '.jpeg', '.gif', '.webp'];
-    const lowercasedUrl = message.message.toLowerCase();
+    const lowercasedUrl = message.toLowerCase();
+
     if(imageExtensions.some((ext) => lowercasedUrl.endsWith(ext))){
         return true;
     }
 
-    console.log(message)
-    if((message.message === 'file' && message.attachments && message.attachments.length > 0)){
-
-        const fileId = message.attachments[0] //  TODO: Add support for more attachments in one message
-        const result = storage.getFilePreview(
-            'messageAttachments',
-            fileId,
-        );
-
-        return result.href;
-
-    }
-
-
     return false;
 };
 
-export { isValidImageUrl }; // Export the helper function
+export { isValidImageUrl };

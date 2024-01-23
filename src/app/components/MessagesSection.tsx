@@ -38,7 +38,7 @@ const MessagesSection: FC<MessagesSectionProps> = ({ title, icon }) => {
                 (title === 'Pinned' && loggedInUser.pinnedGroups.includes(group.$id)) ? (
                     <MessageLink notifications={1} time={Date.now()} typing={false} group={group} key={group.$id} />
                 ) : (
-                    !loggedInUser.pinnedGroups.includes(group.$id) ?? (
+                    (title !== 'Pinned' && !loggedInUser.pinnedGroups.includes(group.$id)) && (
                         <MessageLink notifications={1} time={Date.now()} typing={false} group={group} key={group.$id} />
                     )
                 )

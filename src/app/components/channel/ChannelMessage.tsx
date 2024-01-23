@@ -3,6 +3,11 @@ import ProfileIcon from "@/app/components/ProfileIcon";
 import MessageInterface from "@/app/utils/interfaces/MessageInterface";
 import convertTimestamp from "@/app/utils/convertTimestamp";
 import { isValidImageUrl } from "@/app/utils/isValidImageUrl";
+import getFilePreview from "@/app/utils/getFilePreview";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faDownload} from "@fortawesome/free-solid-svg-icons";
+import getFileDownload from "@/app/utils/getFileDownload";
+import FormModal from "@/app/components/form/FormModal";
 
 interface ChannelMessageProps {
     typing?: boolean,
@@ -17,37 +22,74 @@ const MessageHeader: FC<{ username?: string, updatedAt: string }> = ({ username,
     </div>
 );
 
-const MessageBody: FC<{ isImage: boolean | "string", message: string, localUser?: boolean }> = ({ isImage, message, localUser }) => {
+const MessageBody: FC<{ isImage: boolean, message: string, attachments: string[], localUser?: boolean }> = ({ isImage, message, attachments, localUser }) => {
     const messageClass = localUser ? 'bg-blue rounded-b-lg rounded-l-lg' : 'bg-lightly rounded-b-lg rounded-r-lg';
+    const [fullscreenImage, setFullscreenImage] = useState<string>("")
+    const [modal, setModal] = useState<boolean>(false)
+
+    const openImage = (imageUrl: string | undefined) => {
+        if(imageUrl){
+            setFullscreenImage(imageUrl)
+            setModal(true)
+        }
+    }
+
+    const closeImage = () => {
+        setModal(false)
+        setFullscreenImage('')
+    }
+
     return (
-        <span className={!isImage ? `w-full text-md break-words p-2 ${messageClass}` : 'max-w-full'} style={{ whiteSpace: 'pre-line' }}>
-            {isImage === true ? <img src={message} alt="Message content" /> :
-                isImage ? <img src={isImage} alt="Message attachment" /> : <span>{message}</span>
-            }
-        </span>
+        <>
+
+            <FormModal modalState={modal} setModalState={setModal} title={'Image Preview'} customCloseFn={closeImage}>
+                {fullscreenImage && (
+                    <img className='rounded-lg w-4/5 self-center pb-[1dvw]' src={fullscreenImage} alt="Attachment" />
+                )}
+            </FormModal>
+
+            <span className={!isImage ? `w-full text-md break-words p-2` : 'max-w-full'} style={{ whiteSpace: 'pre-line' }}>
+                {isImage === true ? <img className='rounded-lg max-h-35' src={message} alt="Message content" /> :
+                    <div className='flex flex-col gap-[0.5dvw]'>
+                        <span className={`p-[0.4dvw] text-1.5 ${messageClass}`}>{message}</span>
+                        {attachments.length > 0 && attachments.map((attachment, index) => (
+                            <div key={index}>
+                                <div className='text-2'></div>
+                                <button type="submit" className='relative flex flex-row gap-[0.5dvw] hover:cursor-pointer' onClick={() => openImage(getFilePreview(attachment))}>
+                                    <img className='rounded-lg max-h-35' src={getFilePreview(attachment)} alt="Attachment" />
+                                    <a href={getFileDownload(attachment)} download title='Download' className={`w-[1.5dvw] h-[1.5dvw] bottom-[-0.5dvw] right-[-0.5dvw] hover:border-blue hover:text-blue-hover transition-all ease-in hover:cursor-pointer absolute border-2 border-light rounded-full bg-white text-blue text-1.5 flex justify-center items-center text-center`}>
+                                        <FontAwesomeIcon icon={faDownload} />
+                                    </a>
+                                </button>
+
+                            </div>
+                        ))}
+                    </div>
+                }
+            </span>
+        </>
     );
 };
 
 const ChannelMessage: FC<ChannelMessageProps> = ({ typing, message, localUser }) => {
-    const [isImage, setIsImage] = useState<boolean | "string">(false);
+    const [isImage, setIsImage] = useState<boolean>(false);
     const [alignmentClass, setAlignmentClass] = useState('');
     const [profileIconAlignment, setProfileIconAlignment] = useState('');
 
     useEffect(() => {
-        setIsImage(isValidImageUrl(message));
-        setAlignmentClass(localUser ? 'self-end items-end' : '');
+        setIsImage(isValidImageUrl(message.message));
+        setAlignmentClass(localUser ? 'self-end' : '');
         setProfileIconAlignment(localUser ? 'self-start' : '');
-        console.log(localUser, profileIconAlignment)
     }, [message]);
 
     return (
-        <div className={`max-w-8/10 flex flex-row gap-[0.5dvw] items-center ${alignmentClass}`}>
-            {localUser && <ProfileIcon imageUrl={`/images/users/${message.author?.avatarPath}`} customClass={profileIconAlignment} />}
+        <div className={`max-w-8/10 flex flex-row gap-[0.5dvw] ${alignmentClass}`}>
+            {!localUser && <ProfileIcon imageUrl={`/images/users/${message.author?.avatarPath}`} customClass={profileIconAlignment} />}
             <div className={`max-w-9/10 flex flex-col justify-center ${localUser ? 'items-end' : ''}`}>
                 <MessageHeader username={message.author?.username} updatedAt={message.$updatedAt} />
-                <MessageBody isImage={isImage} message={message.message} localUser={localUser} />
+                <MessageBody isImage={isImage} message={message.message} localUser={localUser} attachments={message.attachments} />
             </div>
-            {!localUser && <ProfileIcon imageUrl={`/images/users/${message.author?.avatarPath}`} customClass={profileIconAlignment} />}
+            {localUser && <ProfileIcon imageUrl={`/images/users/${message.author?.avatarPath}`} customClass={profileIconAlignment} />}
         </div>
     );
 };

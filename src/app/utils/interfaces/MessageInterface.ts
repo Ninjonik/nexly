@@ -10,7 +10,7 @@ interface MessageInterface {
     $permissions: string[];
     author: null | UserInterface; // Replace 'any' with the actual type of 'author' if known
     group: null | GroupInterface; // Replace 'any' with the actual type of 'group' if known
-    attachments?: string[];
+    attachments: string[];
     $databaseId: string;
     $collectionId: string;
 }

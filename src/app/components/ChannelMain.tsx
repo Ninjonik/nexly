@@ -44,6 +44,8 @@ import {ID, Permission, Role} from "appwrite";
 import {Md5} from "ts-md5";
 import {useRouter} from "next/navigation";
 import messageInterface from "@/app/utils/interfaces/MessageInterface";
+import AnchorLink from "@/app/components/AnchorLink";
+import uploadMultipleFiles from "@/app/utils/uploadMultipleFiles";
 
 interface ChannelMainProps {
     activeGroup: string
@@ -56,6 +58,7 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
     const [loading, setLoading] = useState<boolean>(true)
     const [newMessage, setNewMessage] = useState<string>("")
     const [gifValue, setGifValue] = useState<string>("")
+    const [attachments, setAttachments] = useState<File[]>([])
     const [messages, setMessages] = useState<any>([])
     const [group, setGroup] = useState<any>([])
     const [submitting, setSubmitting] = useState(false)
@@ -144,6 +147,11 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
 
                 const dbID = loggedInUser.dbID;
                 let constructedBody
+                let fileIds: string[] = []
+
+                if(attachments.length > 0){
+                    fileIds = await uploadMultipleFiles(attachments);
+                }
 
                 if(messageToSubmit === 'file' && fileId){
                     constructedBody = JSON.stringify({
@@ -157,7 +165,7 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
                         "dbID": dbID,
                         "activeGroup": activeGroup,
                         "message": messageToSubmit,
-                        "attachments": []
+                        "attachments": fileIds
                     });
                 }
 
@@ -174,8 +182,10 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
                 }
 
                 setNewMessage("")
-
+                setAttachments([])
+                setGifValue("")
             } catch (err: any) {
+                fireToast('error', err.message, 'top-right', 2000)
                 console.error(err);
             } finally {
                 setSubmitting(false);
@@ -366,9 +376,9 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
                 ID.unique(),
                 file,
                 [
-                    Permission.read(Role.user('658ed5a9933deecd0ab9')),
-                    Permission.update(Role.user('658ed5a9933deecd0ab9')),
-                    Permission.delete(Role.user('658ed5a9933deecd0ab9')),
+                    Permission.read(Role.any()),
+                    Permission.update(Role.user(loggedInUser.$id)),
+                    Permission.delete(Role.user(loggedInUser.$id)),
                 ]
             );
 
@@ -433,11 +443,8 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
                 fireToast('error', 'There has been an error while pinning the group.')
             }
         }
-        console.log(loggedInUser.pinnedGroups)
 
     }
-
-    console.log(loggedInUser.pinnedGroups)
 
     if (loading || !group || !group?.users) {
         return <ChannelMainSkeleton />;
@@ -455,11 +462,11 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
                     </div>
                 </div>
                 <div className='flex flex-row gap-6 justify-center items-center'>
-                    <SmallIcon icon={<FontAwesomeIcon icon={faPhone}/>} size={'3'} onClickFn={() => call(true)} />
-                    <SmallIcon icon={<FontAwesomeIcon icon={faVideo}/>} size={'3'}/>
-                    <SmallIcon icon={<FontAwesomeIcon icon={faThumbtack}/>} size={'3'} onClickFn={pinGroup}/>
-                    <SmallIcon icon={<FontAwesomeIcon icon={faUsers}/>} size={'3'} onClickFn={() => setUsersShown(!usersShown)} />
-                    <SmallIcon icon={<FontAwesomeIcon icon={faRightFromBracket}/>} size={'3'} onClickFn={leaveGroup} />
+                    <SmallIcon icon={<FontAwesomeIcon icon={faPhone}/>} size={'3'} onClickFn={() => call(true)} title={'Start a call'} />
+                    {/*<SmallIcon icon={<FontAwesomeIcon icon={faVideo}/>} size={'3'}/>*/}
+                    <SmallIcon icon={<FontAwesomeIcon icon={faThumbtack}/>} size={'3'} onClickFn={pinGroup} title={'Pin/Unpin group'}/>
+                    <SmallIcon icon={<FontAwesomeIcon icon={faUsers}/>} size={'3'} onClickFn={() => setUsersShown(!usersShown)} title={'Show/Hide users'} />
+                    <SmallIcon icon={<FontAwesomeIcon icon={faRightFromBracket}/>} size={'3'} onClickFn={leaveGroup} title={'Leave group'} />
                 </div>
             </header>
 
@@ -501,11 +508,11 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
                         {messages.map((message: any) => (
                             <ChannelMessage message={message} key={message.$id} localUser={(message.author.$id === loggedInUser.$id)} />
                         ))}
-                        <a href='#' className='text-blue text-md hover:text-lightly transition-all text-center' onClick={async () => fetchData}>Show More</a>
+                        <AnchorLink size={'1'} description={'Show more'} color={'blue'} className={'text-center'} onClickFn={async () => fetchData(true)} />
                     </div>
 
                     <form
-                        className='max-h-4/10 flex-grow w-full bg-light p-[1dvw] flex justify-center items-center'
+                        className='max-h-5/10 flex-grow w-full bg-light p-[1dvw] flex justify-center items-center'
                         onSubmit={(e) => {
                             e.preventDefault();
                             messageSubmit(newMessage.replace(/\\n/g, "\n"));
@@ -519,6 +526,8 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
                             handlePasteFn={handleTextAreaPaste}
                             gifValue={gifValue}
                             setGifValue={(value) => setGifValue(value)}
+                            attachments={attachments}
+                            setAttachments={setAttachments}
                             required={false}
                         />
                     </form>
@@ -538,14 +547,14 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
                                 <div className='flex flex-row justify-between'>
                                     <div className=""><FontAwesomeIcon icon={faUser} className="text-blue pr-[0.5dvw]"/> Members ({group.users.length})
                                     </div>
-                                    <a href='#' className='text-blue hover:text-lightly transition-all' onClick={() => setDialog(true)}>Add</a>
+                                    <AnchorLink size={'2'} description={'Add'} color={'blue'} onClickFn={() => setDialog(true)} />
                                 </div>
 
                                 <FormModal title={"Add people"} modalState={dialog} setModalState={setDialog} onSubmit={generateInviteLink} submitText={'Generate'}>
 
                                     {inviteLink && (
                                         <span className='text-white break-normal'>Generated invite link:
-                                            <a target={'_blank'} href={`${process.env.NEXT_PUBLIC_HOSTNAME}/invite/${inviteLink}`} className='text-blue hover:text-blue-hover transition-all ease-in hover:cursor-pointer'> {`${process.env.NEXT_PUBLIC_HOSTNAME}/invite/${inviteLink}`}</a>
+                                            <AnchorLink target={'_blank'} size={'1'} description={`${process.env.NEXT_PUBLIC_HOSTNAME}/invite/${inviteLink}`} href={`${process.env.NEXT_PUBLIC_HOSTNAME}/invite/${inviteLink}`} />
                                         </span>
                                     )}
 
@@ -578,8 +587,7 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
                                     </div>
                                 ))}
 
-
-                                {/*<a href='#' className='text-blue text-md hover:text-lightly transition-all text-center'>Show More</a>*/}
+                                {/*<AnchorLink size={'1'} description={'Show More'} color={'blue'} className={'text-center'} />*/}
                             </div>
                         </>
                     )}
@@ -593,21 +601,21 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
 
 export default ChannelMain;
 
-function MyVideoConference() {
-    // `useTracks` returns all camera and screen share tracks. If a user
-    // joins without a published camera track, a placeholder track is returned.
-    const tracks = useTracks(
-        [
-            { source: Track.Source.Camera, withPlaceholder: true },
-            { source: Track.Source.ScreenShare, withPlaceholder: false },
-        ],
-        { onlySubscribed: false },
-    );
-    return (
-        <GridLayout tracks={tracks} className=''>
-            {/* The GridLayout accepts zero or one child. The child is used
-      as a template to render all passed in tracks. */}
-            <ParticipantTile />
-        </GridLayout>
-    );
-}
+// function MyVideoConference() {
+//     // `useTracks` returns all camera and screen share tracks. If a user
+//     // joins without a published camera track, a placeholder track is returned.
+//     const tracks = useTracks(
+//         [
+//             { source: Track.Source.Camera, withPlaceholder: true },
+//             { source: Track.Source.ScreenShare, withPlaceholder: false },
+//         ],
+//         { onlySubscribed: false },
+//     );
+//     return (
+//         <GridLayout tracks={tracks} className=''>
+//             {/* The GridLayout accepts zero or one child. The child is used
+//       as a template to render all passed in tracks. */}
+//             <ParticipantTile />
+//         </GridLayout>
+//     );
+// }

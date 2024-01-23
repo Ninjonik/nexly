@@ -14,9 +14,10 @@ interface FormModalProps {
     modalState: boolean;
     setModalState: React.Dispatch<React.SetStateAction<boolean>>;
     children?: ReactNode;
+    customCloseFn?: () => void;
 }
 
-export const FormModal: FC<FormModalProps> = ({children, submitText = "Submit", onSubmit = null, title = "", modalState, setModalState}) => {
+export const FormModal: FC<FormModalProps> = ({children, submitText = "Submit", onSubmit = null, title = "", modalState, setModalState, customCloseFn = () => setModalState(false)}) => {
 
     return (
         <>
@@ -24,10 +25,10 @@ export const FormModal: FC<FormModalProps> = ({children, submitText = "Submit", 
                 <div className="absolute inset-0 z-30 bg-black bg-opacity-50 backdrop-blur-sm"></div>
             )}
 
-            <dialog className={`flex flex-col mt-0.25/10 w-3/10 max-h-5/10 bg-gray-dark border-blue border-2 rounded-md z-50 gap-[0.5dvw] ${!modalState && 'hidden'}`}>
+            <dialog className={`fixed top-[0dvh] flex flex-col mt-0.25/10 w-3/10 max-h-9/10 bg-gray-dark border-blue border-2 rounded-md z-50 gap-[0.5dvw] ${!modalState && 'hidden'}`}>
 
                 <div className={'absolute text-lightly right-[0.2dvw] top-0 flex justify-center items-center'}>
-                    <SmallIcon icon={<FontAwesomeIcon icon={faXmark} />} size={'2'} onClickFn={() => setModalState(false)} />
+                    <SmallIcon icon={<FontAwesomeIcon icon={faXmark} />} size={'2'} onClickFn={customCloseFn} />
                 </div>
 
 

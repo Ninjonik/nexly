@@ -12,6 +12,8 @@ import ProfileIcon from "@/app/components/ProfileIcon";
 import {faCheck, faPhone, faXmark} from "@fortawesome/free-solid-svg-icons";
 import formatTimestampToTime from "@/app/utils/convertTimestamp";
 import SmallIcon from "@/app/components/SmallIcon";
+import {useRouter} from "next/navigation";
+import AnchorLink from "@/app/components/AnchorLink";
 
 export const Homepage = () => {
 
@@ -21,6 +23,8 @@ export const Homepage = () => {
     const [friendRequests, setFriendRequests] = useState<any>("loading")
     const [savedUsers, setSavedUsers] = useState<any>({})
     const friendRequestsRef = useRef<any>(friendRequests);
+
+    const router = useRouter();
 
     const updateUsers = async (friendRequestsCopy: any) => {
         setSavedUsers('loading')
@@ -65,8 +69,6 @@ export const Homepage = () => {
             const res: any = response.payload
             const resId: string = res.$id
             const events: any = response.events
-
-            console.log("New event:", res)
 
             fetchFriendRequests()
         });
@@ -179,7 +181,7 @@ export const Homepage = () => {
         <section className="w-8/10 bg-gray-dark h-full flex flex-col text-white">
 
             <header className='h-1/10 w-full bg-light flex flex-row justify-center items-center px-8'>
-                <h1 className='text-4'>NEXLY</h1>
+                <AnchorLink size={'4'} title={'Nexly'} description={'Nexly'} className={'text-white'} onClickFn={() => router.push('/')} />
             </header>
 
             <article className='h-9/10 w-full flex flex-col p-[2dvw] gap-[1-dvw]'>

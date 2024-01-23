@@ -10,6 +10,7 @@ import InviteInterface from "@/app/utils/interfaces/InviteInterface";
 import ProfileIcon from "@/app/components/ProfileIcon";
 import {useUserContext} from "@/app/UserContext";
 import fireToast from "@/app/utils/toast";
+import AnchorLink from "@/app/components/AnchorLink";
 
 const Group = () => {
 
@@ -92,7 +93,7 @@ const Group = () => {
                                 </h3>
                                 <PrimaryButton title={'Join group'} onClickFn={joinGroup} height={'2/10'}
                                                width={'7/10'}/>
-                                <a className={'text-blue hover:text-blue-hover transition-all ease-in hover:cursor-pointer'} onClick={() => router.push(`/`)}>Decline</a>
+                                <AnchorLink size={'1'} description={'Decline'} onClickFn={() => router.push('/')} />
                             </>
                         )
                     )

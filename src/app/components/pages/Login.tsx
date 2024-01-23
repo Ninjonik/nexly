@@ -11,6 +11,7 @@ import User from "@/app/utils/interfaces/User";
 import register from "@/app/utils/register";
 import {account} from "@/app/appwrite";
 import fireToast from "@/app/utils/toast";
+import AnchorLink from "@/app/components/AnchorLink";
 
 interface LoginProps {
     loggedInUser: User | null,
@@ -75,13 +76,12 @@ const Login: FC<LoginProps> = ({ loggedInUser, setLoggedInUser }) => {
                 {page ? (
                     <div className='py-2 flex flex-col gap-[1dvh] h-[10dvh]'>
                         <PrimaryButton title={'Register'} type='submit' onClickFn={() => handleSubmit(true)} />
-                        <a className={'text-blue hover:text-blue-hover transition-all ease-in hover:cursor-pointer'} onClick={() => setPage(false)}>Already have an account? Log in now!</a>
-                    </div>
+                        <AnchorLink size={'1'} description={'Already have an account? Log in now!'} onClickFn={() => setPage(false)} />                    </div>
 
                 ) : (
                     <div className='py-2 flex flex-col gap-[1dvh] h-[10dvh]'>
                         <PrimaryButton title={'Log In'} type='submit' onClickFn={() => handleSubmit(false)} />
-                        <a className={'text-blue hover:text-blue-hover transition-all ease-in hover:cursor-pointer'} onClick={() => setPage(true)}>Not registered yet? Create a free account now!</a>
+                        <AnchorLink size={'1'} description={'Not registered yet? create a free account now!'} onClickFn={() => setPage(true)} />
                     </div>
                 )}
             </form>

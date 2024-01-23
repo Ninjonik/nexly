@@ -26,11 +26,11 @@ const inter = Inter({ subsets: ['latin'] })
 export default function RootLayout({ children }: { children: React.ReactNode }) {
     return (
         <html lang="en" suppressHydrationWarning={true}>
-            <body className={inter.className}>
+            <body className={`overflow-hidden ${inter.className}`}>
                 <UserContextProvider>
                     <InnerLayout>{children}</InnerLayout>
                 </UserContextProvider>
-        </body>
+            </body>
         </html>
     )
 }

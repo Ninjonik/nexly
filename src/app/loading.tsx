@@ -21,11 +21,12 @@ const Loading = () => {
         //     </div>
         // </div>
 
-        <div role="status" className={'h-screen w-screen flex justify-center items-center animate-pulse bg-lightly'}>
+        <div role="status" className={'h-screen w-screen flex flex-col justify-center items-center bg-lightly overflow-hidden no-scrollbar'}>
             <div
-                className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
+                className="absolute pacman inline-block h-[10dvw] w-[10dvw] animate-bounce rounded-full border-[5dvw] border-solid border-yellow-500 border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
                 role="status">
             </div>
+            <div className='pacman-text'>Lorem ipsum dit dolor amet sit Fragment Suspense o amets.</div>
         </div>
 
     );

@@ -40,3 +40,40 @@ body {
     }
   }
 }
+
+@keyframes pacmanTextAnim {
+  0% {
+    color: red;
+  }
+  100% {
+    color: blue;
+  }
+}
+
+pacman-text {
+  color: red;
+  animation: pacmanTextAnim;
+  animation-duration: 4s;
+  animation-direction: normal;
+  animation-iteration-count: infinite;
+}
+
+@keyframes pacmanAnim {
+
+  0% {
+    left: -20%;
+  }
+
+  100% {
+    left: 120%;
+  }
+
+}
+
+.pacman {
+  left: -20%;
+  animation: pacmanAnim;
+  animation-duration: 4s;
+  animation-direction: normal;
+  animation-iteration-count: infinite;
+}

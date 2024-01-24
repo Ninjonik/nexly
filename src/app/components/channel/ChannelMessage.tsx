@@ -8,6 +8,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faDownload} from "@fortawesome/free-solid-svg-icons";
 import getFileDownload from "@/app/utils/getFileDownload";
 import FormModal from "@/app/components/form/FormModal";
+import {MessageAttachment} from "@/app/components/channel/MessageAttachment";
 
 interface ChannelMessageProps {
     typing?: boolean,
@@ -53,16 +54,7 @@ const MessageBody: FC<{ isImage: boolean, message: string, attachments: string[]
                     <div className='flex flex-col gap-[0.5dvw]'>
                         <span className={`p-[0.4dvw] text-1.5 ${messageClass}`}>{message}</span>
                         {attachments.length > 0 && attachments.map((attachment, index) => (
-                            <div key={index}>
-                                <div className='text-2'></div>
-                                <button type="submit" className='relative flex flex-row gap-[0.5dvw] hover:cursor-pointer' onClick={() => openImage(getFilePreview(attachment))}>
-                                    <img className='rounded-lg max-h-35' src={getFilePreview(attachment)} alt="Attachment" />
-                                    <a href={getFileDownload(attachment)} download title='Download' className={`w-[1.5dvw] h-[1.5dvw] bottom-[-0.5dvw] right-[-0.5dvw] hover:border-blue hover:text-blue-hover transition-all ease-in hover:cursor-pointer absolute border-2 border-light rounded-full bg-white text-blue text-1.5 flex justify-center items-center text-center`}>
-                                        <FontAwesomeIcon icon={faDownload} />
-                                    </a>
-                                </button>
-
-                            </div>
+                            <MessageAttachment attachmentId={attachment} openImage={openImage} />
                         ))}
                     </div>
                 }

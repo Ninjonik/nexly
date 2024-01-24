@@ -10,6 +10,7 @@ import MessageInterface from "@/app/utils/interfaces/MessageInterface";
 import formatTimestampToTime from "@/app/utils/convertTimestamp";
 import { useRouter } from 'next/navigation';
 import MessageLinkInterface from "@/app/utils/interfaces/MessageLinkInterface";
+import formatTimestampToDate from "@/app/utils/formatTimestampToDate";
 
 
 interface MessageLinkProps {
@@ -72,8 +73,8 @@ const MessageLink: FC<MessageLinkProps> = ({ typing, time, notifications, group 
             />
 
             <div className="flex flex-row justify-between w-8/10">
-                <div className="flex flex-col justify-between w-7/10">
-                    <h3 className="text-lg font-bold">{group.title}</h3>
+                <div className="flex flex-col justify-between w-6/10">
+                    <h3 className="text-lg font-bold">{group.title.slice(0, 12)}</h3>
                     {typing ?
                         <span className="italic text-md text-blue">Typing...</span>
                         :
@@ -93,8 +94,13 @@ const MessageLink: FC<MessageLinkProps> = ({ typing, time, notifications, group 
 
                 </div>
 
-                <div className="flex flex-col justify-between items-end w-3/10">
-                    {(message && Object.keys(message).length > 0) && <h3 className="text-md text-lightly font-bold">{formatTimestampToTime("$updatedAt" in message ? message.$updatedAt : "")}</h3>}
+                <div className="flex flex-col justify-between items-end w-4/10">
+                    {(message && Object.keys(message).length > 0) && (
+                        <>
+                            <h3 className="text-md text-lightly font-bold">{formatTimestampToTime("$updatedAt" in message ? message.$updatedAt : "")}</h3>
+                            <h3 className="text-md text-lightly font-bold">{formatTimestampToDate("$updatedAt" in message ? message.$updatedAt : "")}</h3>
+                        </>
+                    )}
                     {/*{notifications && <span className="text-center bg-blue h-[1dvw] w-[1dvw] text-md rounded-full text-white">{ notifications }</span>}*/}
                 </div>
             </div>

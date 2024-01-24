@@ -69,10 +69,10 @@ const Loading = () => {
     return (
 
         <div role="status"
-             className={'h-screen w-screen flex flex-col justify-center items-center bg-lightly overflow-hidden no-scrollbar'}>
+             className={'h-screen w-screen flex flex-col justify-center items-center bg-gray overflow-hidden no-scrollbar'}>
             <div className='animate-bounce'>
                 <div
-                    className="inline-block h-[10dvw] w-[10dvw] animate-spin rounded-full border-[2dvw] border-solid border-yellow-500 border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
+                    className="inline-block h-[10dvw] w-[10dvw] animate-spin rounded-full border-[2dvw] border-solid border-cyan-100 border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
                     role="status">
                 </div>
             </div>

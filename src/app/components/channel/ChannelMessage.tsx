@@ -64,6 +64,7 @@ const MessageBody: FC<{ isImage: boolean, message: string, attachments: string[]
 };
 
 const ChannelMessage: FC<ChannelMessageProps> = ({ typing, message, localUser }) => {
+
     const [isImage, setIsImage] = useState<boolean>(false);
     const [alignmentClass, setAlignmentClass] = useState('');
     const [profileIconAlignment, setProfileIconAlignment] = useState('');

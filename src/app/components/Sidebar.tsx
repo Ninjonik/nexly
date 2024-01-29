@@ -1,28 +1,19 @@
 import SidebarIcon from "@/app/components/sidebar/SidebarIcon";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faDiscord} from "@fortawesome/free-brands-svg-icons";
-import logout from "@/app/utils/logout";
-import {faBell, faGear, faInbox, faRightFromBracket, faUsers} from "@fortawesome/free-solid-svg-icons";
+import {faInbox, faUsers} from "@fortawesome/free-solid-svg-icons";
 import Image from "next/image";
-import ProfileIcon from "@/app/components/ProfileIcon";
-import getAvatar from "@/app/utils/getAvatar";
 import React, {FC} from "react";
-import User from "@/app/utils/interfaces/User";
-import {useUserContext} from "@/app/UserContext";
-import Loading from "@/app/loading";
+import {SidebarUser} from "@/app/components/sidebar/SidebarUser";
 
 interface SidebarProps {
 }
 
 const Sidebar: FC<SidebarProps> = ({}) => {
 
-    const { loggedInUser, setLoggedInUser } = useUserContext();
-
     return (
         <aside className="w-0.5/10 h-screen flex flex-col py-4 bg-heavy text-white text-4">
             <div className="flex flex-col gap-4 h-2/10 text-center justify-center items-center">
-                <SidebarIcon title={'↪️ Logout'} icon={<FontAwesomeIcon icon={faRightFromBracket}
-                                                                     onClick={async () => setLoggedInUser(await logout())}/>}/>
+
                 <hr className="w-1/3 text-heavily"/>
                 <SidebarIcon title={'✉️ Inbox'} icon={<FontAwesomeIcon icon={faInbox}/>}/>
                 <SidebarIcon title={'👥 Friends'} icon={<FontAwesomeIcon icon={faUsers}/>}/>
@@ -71,12 +62,7 @@ const Sidebar: FC<SidebarProps> = ({}) => {
                                           alt={'World War Community'} height={0} width={0}
                                           src={'/images/servers/wwc_gif_logo.gif'}/>}/>
             </div>
-            <div className="flex flex-col gap-4 h-2/10 text-center justify-center items-center">
-                <hr className="w-1/3 text-heavily"/>
-                <ProfileIcon imageUrl={getAvatar(loggedInUser.avatarPath)} status={'online'}/>
-                <SidebarIcon title={'🔔 Notifications'} icon={<FontAwesomeIcon icon={faBell}/>}/>
-                <SidebarIcon title={'⚙️ Settings'} icon={<FontAwesomeIcon icon={faGear}/>}/>
-            </div>
+            <SidebarUser />
         </aside>
     )
 }

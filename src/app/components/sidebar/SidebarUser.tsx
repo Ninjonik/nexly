@@ -15,7 +15,7 @@ export const SidebarUser = () => {
     return (
         <div className="flex flex-col gap-4 h-2/10 text-center justify-center items-center">
             <hr className="w-1/3 text-heavily"/>
-            <ProfileIcon imageUrl={getAvatar(loggedInUser.avatarPath)} status={'online'}/>
+            <ProfileIcon imageUrl={loggedInUser.avatarPath ? getAvatar(loggedInUser.avatarPath) : undefined} status={'online'}/>
             <SidebarIcon title={'🔔 Notifications'} icon={<FontAwesomeIcon icon={faBell}/>}/>
             <SidebarIcon title={'⚙️ Settings'} icon={<FontAwesomeIcon icon={faGear}/>}/>
         </div>

@@ -36,6 +36,7 @@ interface SidebarProps {
 const Sidebar: FC<SidebarProps> = ({}) => {
 
     const { loggedInUser, setLoggedInUser } = useUserContext();
+
     const router = useRouter();
 
     const groupName = useRef<HTMLInputElement>(null)
@@ -76,6 +77,53 @@ const Sidebar: FC<SidebarProps> = ({}) => {
             setGroupDialog(false)
         }
 
+    }
+
+    if(!loggedInUser || loggedInUser === 'pending'){
+        return (
+            <section className="w-2/10 bg-light h-full flex flex-col text-white">
+
+                <header className='h-1/10 flex flex-col justify-center gap-8 p-6'>
+                    <div className="flex flex-row justify-between items-center">
+                        <div className="animate-pulse w-full h-[2dvw] bg-gray rounded-md"></div>
+                    </div>
+                </header>
+
+                <article className='h-9/10 w-full flex flex-col justify-between'>
+
+                    <div className="max-h-9/10 flex flex-col gap-8 text-white pt-[2dvh] px-6 overflow-y-scroll no-scrollbar">
+
+                        <div className="flex flex-col gap-2 w-full">
+
+                            {Array.from({ length: 10 }).map((_, index) => (
+                                <div key={index} className="flex flex-row gap-2 w-full h-[3.5dvw] w-full bg-gray rounded-md animate-pulse">
+
+                                </div>
+                            ))}
+
+                        </div>
+
+                    </div>
+
+                    <div
+                        className="w-full text-center h-1/10 border-t-2 border-blue flex flex-row justify-between px-4">
+                        <div className="flex flex-row items-center justify-center gap-2 w-full">
+                            <ProfileIcon imageUrl={undefined} status={'online'} />
+                            <div className="flex flex-col justify-between text-start text-2 w-full">
+                                <div className="animate-pulse w-4/5 h-[2dvw] bg-gray rounded-md"></div>
+                            </div>
+                        </div>
+
+                        <div className="flex flex-row gap-4 items-center animate-pulse">
+                            <a className={`h-[1.5dvw] w-[1.5dvw] rounded-full bg-gray text-lightly hover:text-blue transition-all duration-200 cursor-pointer`}></a>
+                            <a className={`h-[1.5dvw] w-[1.5dvw] rounded-full bg-gray text-lightly hover:text-blue transition-all duration-200 cursor-pointer`}></a>
+                            <a className={`h-[1.5dvw] w-[1.5dvw] rounded-full bg-gray text-lightly hover:text-blue transition-all duration-200 cursor-pointer`}></a>
+                        </div>
+                    </div>
+                </article>
+
+            </section>
+        )
     }
 
     return (

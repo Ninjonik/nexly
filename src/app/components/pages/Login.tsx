@@ -12,17 +12,14 @@ import register from "@/app/utils/register";
 import {account} from "@/app/appwrite";
 import fireToast from "@/app/utils/toast";
 import AnchorLink from "@/app/components/AnchorLink";
+import {useUserContext} from "@/app/UserContext";
 
-interface LoginProps {
-    loggedInUser: User | null,
-    setLoggedInUser:  React.Dispatch<React.SetStateAction<User | null | "pending">>
-}
-
-const Login: FC<LoginProps> = ({ loggedInUser, setLoggedInUser }) => {
+const Login = () => {
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [name, setName] = useState<string>("");
     const [page, setPage] = useState<boolean>(false); // false = login; true = register;
+    const { loggedInUser, setLoggedInUser } = useUserContext();
 
     const handleSubmit = async (submitType: boolean) => {
 

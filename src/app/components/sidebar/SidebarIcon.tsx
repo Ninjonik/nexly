@@ -1,3 +1,5 @@
+"use client"
+
 import React, { FC, ReactNode } from 'react';
 import { faDiscord } from '@fortawesome/free-brands-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';

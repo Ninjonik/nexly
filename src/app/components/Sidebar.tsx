@@ -9,7 +9,7 @@ interface SidebarProps {
 }
 
 const Sidebar: FC<SidebarProps> = ({}) => {
-
+    console.log(typeof window === 'undefined' ? 'server' : 'client')
     return (
         <aside className="w-0.5/10 h-screen flex flex-col py-4 bg-heavy text-white text-4">
             <div className="flex flex-col gap-4 h-2/10 text-center justify-center items-center">

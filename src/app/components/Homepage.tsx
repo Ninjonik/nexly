@@ -1,3 +1,5 @@
+"use client"
+
 import React, {useEffect, useRef, useState} from "react";
 import {client, database, databases} from "@/app/appwrite";
 import {useUserContext} from "@/app/UserContext";

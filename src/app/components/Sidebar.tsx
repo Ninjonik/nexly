@@ -4,12 +4,10 @@ import {faInbox, faUsers} from "@fortawesome/free-solid-svg-icons";
 import Image from "next/image";
 import React, {FC} from "react";
 import {SidebarUser} from "@/app/components/sidebar/SidebarUser";
+import {SidebarLogout} from "@/app/components/sidebar/SidebarLogout";
 
-interface SidebarProps {
-}
+const Sidebar = () => {
 
-const Sidebar: FC<SidebarProps> = ({}) => {
-    console.log(typeof window === 'undefined' ? 'server' : 'client')
     return (
         <aside className="w-0.5/10 h-screen flex flex-col py-4 bg-heavy text-white text-4">
             <div className="flex flex-col gap-4 h-2/10 text-center justify-center items-center">
@@ -17,6 +15,7 @@ const Sidebar: FC<SidebarProps> = ({}) => {
                 <hr className="w-1/3 text-heavily"/>
                 <SidebarIcon title={'✉️ Inbox'} icon={<FontAwesomeIcon icon={faInbox}/>}/>
                 <SidebarIcon title={'👥 Friends'} icon={<FontAwesomeIcon icon={faUsers}/>}/>
+                <SidebarLogout />
                 <hr className="w-1/3 text-heavily"/>
             </div>
             <div

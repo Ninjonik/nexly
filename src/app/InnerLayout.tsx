@@ -1,10 +1,7 @@
 "use client"
 
 import React from "react";
-import {UserContextProvider, useUserContext} from "@/app/UserContext";
-import Loading from "@/app/loading";
-import ChannelSidebar from "@/app/components/ChannelSidebar";
-import LoginPage from "@/app/components/pages/Login";
+import {UserContextProvider} from "@/app/UserContext";
 
 export function InnerLayout({ children }: { children: React.ReactNode }) {
 

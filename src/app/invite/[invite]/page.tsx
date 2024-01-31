@@ -11,6 +11,8 @@ import ProfileIcon from "@/app/components/ProfileIcon";
 import {useUserContext} from "@/app/UserContext";
 import fireToast from "@/app/utils/toast";
 import AnchorLink from "@/app/components/AnchorLink";
+import Sidebar from "@/app/components/Sidebar";
+import ChannelSidebar from "@/app/components/ChannelSidebar";
 
 const Group = () => {
 
@@ -77,29 +79,33 @@ const Group = () => {
     }
 
     return (
-        <div className='h-full w-full bg-light flex justify-center items-center'>
-            <div className='h-3/10 w-1/3 bg-gray-dark border-blue border rounded-md flex flex-col justify-center items-center p-1/5 gap-0.5/10'>
-                {error === 'loading' ? (
-                    <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]" role="status"></div>
-                ) : (
-                    error ? (
-                        <h3 className='text-white text-2'>{error}</h3>
+        <>
+            {/*<Sidebar />*/}
+            {/*<ChannelSidebar />*/}
+            <div className='h-full w-full bg-light flex justify-center items-center'>
+                <div className='h-3/10 w-1/3 bg-gray-dark border-blue border rounded-md flex flex-col justify-center items-center p-1/5 gap-0.5/10'>
+                    {error === 'loading' ? (
+                        <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]" role="status"></div>
                     ) : (
-                        invite && invite.groupId && (
-                            <>
-                                {/*<ProfileIcon imageUrl={`/images/groups/${invite.group.avatarPath}`} />*/}
-                                <h3 className='text-white text-2'>Invited to a group
-                                    {/*<span className='text-blue'>{invite.group.title}</span>*/}
-                                </h3>
-                                <PrimaryButton title={'Join group'} onClickFn={joinGroup} height={'2/10'}
-                                               width={'7/10'}/>
-                                <AnchorLink size={'1'} description={'Decline'} onClickFn={() => router.push('/')} />
-                            </>
+                        error ? (
+                            <h3 className='text-white text-2'>{error}</h3>
+                        ) : (
+                            invite && invite.groupId && (
+                                <>
+                                    {/*<ProfileIcon imageUrl={`/images/groups/${invite.group.avatarPath}`} />*/}
+                                    <h3 className='text-white text-2'>Invited to a group
+                                        {/*<span className='text-blue'>{invite.group.title}</span>*/}
+                                    </h3>
+                                    <PrimaryButton title={'Join group'} onClickFn={joinGroup} height={'2/10'}
+                                                   width={'7/10'}/>
+                                    <AnchorLink size={'1'} description={'Decline'} onClickFn={() => router.push('/')} />
+                                </>
+                            )
                         )
-                    )
-                )}
+                    )}
+                </div>
             </div>
-        </div>
+        </>
     );
 
 };

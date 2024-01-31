@@ -13,6 +13,7 @@ import {account} from "@/app/appwrite";
 import fireToast from "@/app/utils/toast";
 import AnchorLink from "@/app/components/AnchorLink";
 import {useUserContext} from "@/app/UserContext";
+import {useRouter} from "next/navigation";
 
 const Login = () => {
     const [email, setEmail] = useState<string>("");
@@ -20,6 +21,7 @@ const Login = () => {
     const [name, setName] = useState<string>("");
     const [page, setPage] = useState<boolean>(false); // false = login; true = register;
     const { loggedInUser, setLoggedInUser } = useUserContext();
+    const router = useRouter();
 
     const handleSubmit = async (submitType: boolean) => {
 
@@ -49,6 +51,7 @@ const Login = () => {
             }
         }
 
+        router.push('/')
         setLoggedInUser(result)
 
     }
@@ -73,8 +76,8 @@ const Login = () => {
                 {page ? (
                     <div className='py-2 flex flex-col gap-[1dvh] h-[10dvh]'>
                         <PrimaryButton title={'Register'} type='submit' onClickFn={() => handleSubmit(true)} />
-                        <AnchorLink size={'1'} description={'Already have an account? Log in now!'} onClickFn={() => setPage(false)} />                    </div>
-
+                        <AnchorLink size={'1'} description={'Already have an account? Log in now!'} onClickFn={() => setPage(false)} />
+                    </div>
                 ) : (
                     <div className='py-2 flex flex-col gap-[1dvh] h-[10dvh]'>
                         <PrimaryButton title={'Log In'} type='submit' onClickFn={() => handleSubmit(false)} />

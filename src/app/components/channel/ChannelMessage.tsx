@@ -54,7 +54,7 @@ const MessageBody: FC<{ isImage: boolean, message: string, attachments: string[]
                     <div className='flex flex-col gap-[0.5dvw]'>
                         <span className={`p-[0.4dvw] text-1.5 ${messageClass}`}>{message}</span>
                         {attachments.length > 0 && attachments.map((attachment, index) => (
-                            <MessageAttachment attachmentId={attachment} openImage={openImage} />
+                            <MessageAttachment attachmentId={attachment} openImage={openImage} key={index} />
                         ))}
                     </div>
                 }

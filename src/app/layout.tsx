@@ -18,8 +18,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <html lang="en" suppressHydrationWarning={true}>
             <body className={`overflow-hidden ${inter.className}`}>
                     <InnerLayout>
-                        <Sidebar />
-                        <ChannelSidebar />
                         {children}
                     </InnerLayout>
             </body>

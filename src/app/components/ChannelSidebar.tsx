@@ -24,11 +24,12 @@ import Tippy from "@tippyjs/react";
 import SmallIcon from "@/app/components/SmallIcon";
 import FormInput from "@/app/components/form/FormInput";
 import MessagesSection from "@/app/components/MessagesSection";
-import {useRouter} from "next/navigation";
+import {usePathname, useRouter} from "next/navigation";
 import PrimaryButton from "@/app/components/form/buttons/PrimaryButton";
 import {FormModal} from "@/app/components/form/FormModal";
 import fireToast from "@/app/utils/toast";
 import AnchorLink from "@/app/components/AnchorLink";
+import {headers} from "next/headers";
 
 interface SidebarProps {
 }
@@ -38,6 +39,7 @@ const Sidebar: FC<SidebarProps> = ({}) => {
     const { loggedInUser, setLoggedInUser } = useUserContext();
 
     const router = useRouter();
+    const currentPage = usePathname();
 
     const groupName = useRef<HTMLInputElement>(null)
 
@@ -79,7 +81,14 @@ const Sidebar: FC<SidebarProps> = ({}) => {
 
     }
 
-    if(!loggedInUser || loggedInUser === 'pending'){
+    if(currentPage === '/login'){
+        return ''
+    }
+
+    if(loggedInUser === null){
+        router.push('/login?login=true')
+        return
+    } else if (!loggedInUser || loggedInUser === 'pending'){
         return (
             <section className="w-2/10 bg-light h-full flex flex-col text-white">
 
@@ -124,56 +133,57 @@ const Sidebar: FC<SidebarProps> = ({}) => {
 
             </section>
         )
-    }
+    } else {
+        return (
+            <section className="w-2/10 bg-light h-full flex flex-col text-white">
 
-    return (
-        <section className="w-2/10 bg-light h-full flex flex-col text-white">
+                <header className='h-1/10 flex flex-col justify-center gap-8 p-6'>
+                    <div className="flex flex-row justify-between items-center">
+                        <AnchorLink size={'2'} description={'Messages'} color={'white'} onClickFn={() => router.push(`/`)} />
+                        <SmallIcon size={'1'} title={'New group'} icon={<FontAwesomeIcon icon={faPlus} className="text-blue text-3 hover:text-blue-hover"/>} onClickFn={() => setGroupDialog(true)} />
+                    </div>
+                </header>
 
-            <header className='h-1/10 flex flex-col justify-center gap-8 p-6'>
-                <div className="flex flex-row justify-between items-center">
-                    <AnchorLink size={'2'} description={'Messages'} color={'white'} onClickFn={() => router.push(`/`)} />
-                    <SmallIcon size={'1'} title={'New group'} icon={<FontAwesomeIcon icon={faPlus} className="text-blue text-3 hover:text-blue-hover"/>} onClickFn={() => setGroupDialog(true)} />
-                </div>
-            </header>
+                <FormModal title={"Create new group"} onSubmit={handleSubmit} modalState={groupDialog} setModalState={setGroupDialog}>
+                    <FormInput title={"Group's name"} icon={<FontAwesomeIcon icon={faHeading} />} ref={groupName} required={true} />
+                </FormModal>
 
-            <FormModal title={"Create new group"} onSubmit={handleSubmit} modalState={groupDialog} setModalState={setGroupDialog}>
-                <FormInput title={"Group's name"} icon={<FontAwesomeIcon icon={faHeading} />} ref={groupName} required={true} />
-            </FormModal>
+                <article className='h-9/10 w-full flex flex-col justify-between'>
 
-            <article className='h-9/10 w-full flex flex-col justify-between'>
+                    <div className="max-h-9/10 flex flex-col gap-8 text-white pt-[2dvh] px-6 overflow-y-scroll no-scrollbar">
 
-                <div className="max-h-9/10 flex flex-col gap-8 text-white pt-[2dvh] px-6 overflow-y-scroll no-scrollbar">
+                        <FormInput icon={<FontAwesomeIcon icon={faMagnifyingGlass} className="text-gray-400"/>}
+                                   title={'Search'}/>
 
-                    <FormInput icon={<FontAwesomeIcon icon={faMagnifyingGlass} className="text-gray-400"/>}
-                               title={'Search'}/>
+                        <MessagesSection icon={<FontAwesomeIcon className="text-blue pr-4" icon={faThumbtack}/>}
+                                         title="Pinned"/>
 
-                    <MessagesSection icon={<FontAwesomeIcon className="text-blue pr-4" icon={faThumbtack}/>}
-                                     title="Pinned"/>
+                        <MessagesSection icon={<FontAwesomeIcon className="text-blue pr-4" icon={faEnvelope}/>}
+                                         title="Groups"/>
 
-                    <MessagesSection icon={<FontAwesomeIcon className="text-blue pr-4" icon={faEnvelope}/>}
-                                     title="Groups"/>
+                    </div>
 
-                </div>
-
-                <div
-                    className="w-full text-center h-1/10 border-t-2 border-blue flex flex-row justify-between px-4">
-                    <div className="flex flex-row items-center justify-center gap-2">
-                        <ProfileIcon imageUrl={getAvatar(loggedInUser.avatarPath)} status={'online'}/>
-                        <div className="flex flex-col justify-between text-start text-2">
-                            <span>{loggedInUser.username ? loggedInUser.username : loggedInUser.name}</span>
-                            <span className="text-lightly">#{loggedInUser.$id.slice(0, 4)}</span>
+                    <div
+                        className="w-full text-center h-1/10 border-t-2 border-blue flex flex-row justify-between px-4">
+                        <div className="flex flex-row items-center justify-center gap-2">
+                            <ProfileIcon imageUrl={loggedInUser ? getAvatar(loggedInUser.avatarPath) : undefined} status={'online'}/>
+                            <div className="flex flex-col justify-between text-start text-2">
+                                <span>{loggedInUser.username ? loggedInUser.username : loggedInUser.name}</span>
+                                <span className="text-lightly">#{loggedInUser.$id.slice(0, 4)}</span>
+                            </div>
+                        </div>
+                        <div className="flex flex-row gap-4 items-center">
+                            <SmallIcon icon={<FontAwesomeIcon icon={faMicrophone}/>}/>
+                            <SmallIcon icon={<FontAwesomeIcon icon={faVideo}/>}/>
+                            <SmallIcon icon={<FontAwesomeIcon icon={faHeadphones}/>}/>
                         </div>
                     </div>
-                    <div className="flex flex-row gap-4 items-center">
-                        <SmallIcon icon={<FontAwesomeIcon icon={faMicrophone}/>}/>
-                        <SmallIcon icon={<FontAwesomeIcon icon={faVideo}/>}/>
-                        <SmallIcon icon={<FontAwesomeIcon icon={faHeadphones}/>}/>
-                    </div>
-                </div>
-            </article>
+                </article>
 
-        </section>
-    )
+            </section>
+        )
+    }
+
 }
 
 export default Sidebar;

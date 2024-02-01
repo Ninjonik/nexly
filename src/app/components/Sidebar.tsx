@@ -20,46 +20,46 @@ const Sidebar = () => {
             </div>
             <div
                 className="flex flex-col gap-2 h-full text-center items-center my-4 overflow-y-scroll no-scrollbar z-0">
-                <SidebarIcon title={''}
-                             icon={<Image className='w-2/3 rounded-3xl group-hover:rounded-xl transition-all ease-in'
-                                          alt={'World War Community'} height={0} width={0}
-                                          src={'/images/servers/wwc_gif_logo.gif'}/>}/>
-                <SidebarIcon title={''}
-                             icon={<Image className='w-2/3 rounded-3xl group-hover:rounded-xl transition-all ease-in'
-                                          alt={'World War Community'} height={0} width={0}
-                                          src={'/images/servers/wwc_gif_logo.gif'}/>}/>
-                <SidebarIcon title={''}
-                             icon={<Image className='w-2/3 rounded-3xl group-hover:rounded-xl transition-all ease-in'
-                                          alt={'World War Community'} height={0} width={0}
-                                          src={'/images/servers/wwc_gif_logo.gif'}/>}/>
-                <SidebarIcon title={''}
-                             icon={<Image className='w-2/3 rounded-3xl group-hover:rounded-xl transition-all ease-in'
-                                          alt={'World War Community'} height={0} width={0}
-                                          src={'/images/servers/wwc_gif_logo.gif'}/>}/>
-                <SidebarIcon title={''}
-                             icon={<Image className='w-2/3 rounded-3xl group-hover:rounded-xl transition-all ease-in'
-                                          alt={'World War Community'} height={0} width={0}
-                                          src={'/images/servers/wwc_gif_logo.gif'}/>}/>
-                <SidebarIcon title={''}
-                             icon={<Image className='w-2/3 rounded-3xl group-hover:rounded-xl transition-all ease-in'
-                                          alt={'World War Community'} height={0} width={0}
-                                          src={'/images/servers/wwc_gif_logo.gif'}/>}/>
-                <SidebarIcon title={''}
-                             icon={<Image className='w-2/3 rounded-3xl group-hover:rounded-xl transition-all ease-in'
-                                          alt={'World War Community'} height={0} width={0}
-                                          src={'/images/servers/wwc_gif_logo.gif'}/>}/>
-                <SidebarIcon title={''}
-                             icon={<Image className='w-2/3 rounded-3xl group-hover:rounded-xl transition-all ease-in'
-                                          alt={'World War Community'} height={0} width={0}
-                                          src={'/images/servers/wwc_gif_logo.gif'}/>}/>
-                <SidebarIcon title={''}
-                             icon={<Image className='w-2/3 rounded-3xl group-hover:rounded-xl transition-all ease-in'
-                                          alt={'World War Community'} height={0} width={0}
-                                          src={'/images/servers/wwc_gif_logo.gif'}/>}/>
-                <SidebarIcon title={''}
-                             icon={<Image className='w-2/3 rounded-3xl group-hover:rounded-xl transition-all ease-in'
-                                          alt={'World War Community'} height={0} width={0}
-                                          src={'/images/servers/wwc_gif_logo.gif'}/>}/>
+                {/*<SidebarIcon title={''}*/}
+                {/*             icon={<Image className='w-2/3 rounded-3xl group-hover:rounded-xl transition-all ease-in'*/}
+                {/*                          alt={'World War Community'} height={0} width={0}*/}
+                {/*                          src={'/images/servers/wwc_gif_logo.gif'}/>}/>*/}
+                {/*<SidebarIcon title={''}*/}
+                {/*             icon={<Image className='w-2/3 rounded-3xl group-hover:rounded-xl transition-all ease-in'*/}
+                {/*                          alt={'World War Community'} height={0} width={0}*/}
+                {/*                          src={'/images/servers/wwc_gif_logo.gif'}/>}/>*/}
+                {/*<SidebarIcon title={''}*/}
+                {/*             icon={<Image className='w-2/3 rounded-3xl group-hover:rounded-xl transition-all ease-in'*/}
+                {/*                          alt={'World War Community'} height={0} width={0}*/}
+                {/*                          src={'/images/servers/wwc_gif_logo.gif'}/>}/>*/}
+                {/*<SidebarIcon title={''}*/}
+                {/*             icon={<Image className='w-2/3 rounded-3xl group-hover:rounded-xl transition-all ease-in'*/}
+                {/*                          alt={'World War Community'} height={0} width={0}*/}
+                {/*                          src={'/images/servers/wwc_gif_logo.gif'}/>}/>*/}
+                {/*<SidebarIcon title={''}*/}
+                {/*             icon={<Image className='w-2/3 rounded-3xl group-hover:rounded-xl transition-all ease-in'*/}
+                {/*                          alt={'World War Community'} height={0} width={0}*/}
+                {/*                          src={'/images/servers/wwc_gif_logo.gif'}/>}/>*/}
+                {/*<SidebarIcon title={''}*/}
+                {/*             icon={<Image className='w-2/3 rounded-3xl group-hover:rounded-xl transition-all ease-in'*/}
+                {/*                          alt={'World War Community'} height={0} width={0}*/}
+                {/*                          src={'/images/servers/wwc_gif_logo.gif'}/>}/>*/}
+                {/*<SidebarIcon title={''}*/}
+                {/*             icon={<Image className='w-2/3 rounded-3xl group-hover:rounded-xl transition-all ease-in'*/}
+                {/*                          alt={'World War Community'} height={0} width={0}*/}
+                {/*                          src={'/images/servers/wwc_gif_logo.gif'}/>}/>*/}
+                {/*<SidebarIcon title={''}*/}
+                {/*             icon={<Image className='w-2/3 rounded-3xl group-hover:rounded-xl transition-all ease-in'*/}
+                {/*                          alt={'World War Community'} height={0} width={0}*/}
+                {/*                          src={'/images/servers/wwc_gif_logo.gif'}/>}/>*/}
+                {/*<SidebarIcon title={''}*/}
+                {/*             icon={<Image className='w-2/3 rounded-3xl group-hover:rounded-xl transition-all ease-in'*/}
+                {/*                          alt={'World War Community'} height={0} width={0}*/}
+                {/*                          src={'/images/servers/wwc_gif_logo.gif'}/>}/>*/}
+                {/*<SidebarIcon title={''}*/}
+                {/*             icon={<Image className='w-2/3 rounded-3xl group-hover:rounded-xl transition-all ease-in'*/}
+                {/*                          alt={'World War Community'} height={0} width={0}*/}
+                {/*                          src={'/images/servers/wwc_gif_logo.gif'}/>}/>*/}
             </div>
             <SidebarUser />
         </aside>

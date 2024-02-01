@@ -458,7 +458,7 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
                     <ProfileIcon imageUrl={`/images/groups/${group.avatarPath}`} size={'3dvw'}/>
                     <div className='flex flex-col justify-center'>
                         <h3 className='text-xl font-bold'>{group.title}</h3>
-                        <span className='text-lightly'>{group.users.length} members</span>
+                        <span className='text-lightly text-2'>{group.users.length} members</span>
                     </div>
                 </div>
                 <div className='flex flex-row gap-6 justify-center items-center'>
@@ -508,7 +508,9 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
                         {messages.map((message: any) => (
                             <ChannelMessage message={message} key={message.$id} localUser={(message.author.$id === loggedInUser.$id)} />
                         ))}
-                        <AnchorLink size={'1'} description={'Show more'} color={'blue'} className={'text-center'} onClickFn={async () => fetchData(true)} />
+                        {messages.length > 9 && (
+                            <AnchorLink size={'1'} description={'Show more'} color={'blue'} className={'text-center'} onClickFn={async () => fetchData(true)} />
+                        )}
                     </div>
 
                     <form

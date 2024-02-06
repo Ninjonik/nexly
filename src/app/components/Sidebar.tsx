@@ -9,7 +9,7 @@ import {SidebarLogout} from "@/app/components/sidebar/SidebarLogout";
 const Sidebar = () => {
 
     return (
-        <aside className="w-0.5/10 h-screen flex flex-col py-4 bg-heavy text-white text-4">
+        <aside className="sm: w-2/10 lg:w-0.5/10 h-screen flex flex-col py-4 bg-heavy text-white text-4">
             <div className="flex flex-col gap-4 h-2/10 text-center justify-center items-center">
 
                 <hr className="w-1/3 text-heavily"/>

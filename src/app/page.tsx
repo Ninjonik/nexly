@@ -1,5 +1,3 @@
-"use client"
-
 import React from "react";
 import Main from "@/app/components/pages/Main";
 import Sidebar from "@/app/components/Sidebar";

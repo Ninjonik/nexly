@@ -67,14 +67,14 @@ const MessageLink: FC<MessageLinkProps> = ({ typing, time, notifications, group 
     }
 
     return (
-        <button className="flex flex-row justify-between text-start items-center gap-4 group" onClick={() => router.push(`/group/${group.$id}`)}>
+        <button className="flex flex-row justify-between text-start items-center gap-4 group" onClick={() => router.push(`/group/${group.$id}`)} type={'button'}>
             <ProfileIcon imageUrl={`/images/groups/${group.avatarPath}`}
                          // status={'online'}
             />
 
             <div className="flex flex-row justify-between w-8/10">
                 <div className="flex flex-col justify-between w-6/10">
-                    <h3 className="text-lg font-bold">{group.title.slice(0, 12)}</h3>
+                    <h3 className="text-3xl lg:text-md font-bold">{group.title.slice(0, 12)}</h3>
                     {typing ?
                         <span className="italic text-md text-blue">Typing...</span>
                         :
@@ -84,7 +84,7 @@ const MessageLink: FC<MessageLinkProps> = ({ typing, time, notifications, group 
                                     {/*<span className='text-blue'>*/}
                                     {/*    {message.author.username}:*/}
                                     {/* </span>*/}
-                                    <span className="text-md text-lightly">
+                                    <span className="text-2 lg:text-md text-lightly">
                                       {"message" in message ? message.message.slice(0, 15) : ""}
                                     </span>
                                 </div>
@@ -97,8 +97,8 @@ const MessageLink: FC<MessageLinkProps> = ({ typing, time, notifications, group 
                 <div className="flex flex-col justify-between items-end w-4/10">
                     {(message && Object.keys(message).length > 0) && (
                         <>
-                            <h3 className="text-md text-lightly font-bold">{formatTimestampToTime("$updatedAt" in message ? message.$updatedAt : "")}</h3>
-                            <h3 className="text-md text-lightly font-bold">{formatTimestampToDate("$updatedAt" in message ? message.$updatedAt : "")}</h3>
+                            <h3 className="text-1.5 lg:text-md text-lightly font-bold">{formatTimestampToTime("$updatedAt" in message ? message.$updatedAt : "")}</h3>
+                            <h3 className="text-1.5 lg:text-md text-lightly font-bold">{formatTimestampToDate("$updatedAt" in message ? message.$updatedAt : "")}</h3>
                         </>
                     )}
                     {/*{notifications && <span className="text-center bg-blue h-[1dvw] w-[1dvw] text-md rounded-full text-white">{ notifications }</span>}*/}

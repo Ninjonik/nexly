@@ -135,7 +135,7 @@ const Sidebar: FC<SidebarProps> = ({}) => {
         )
     } else {
         return (
-            <section className="w-2/10 bg-light h-full flex flex-col text-white">
+            <section className="w-full lg:w-2/10 overflow-x-hidden bg-light h-full flex flex-col text-white">
 
                 <header className='h-1/10 flex flex-col justify-center gap-8 p-6'>
                     <div className="flex flex-row justify-between items-center">

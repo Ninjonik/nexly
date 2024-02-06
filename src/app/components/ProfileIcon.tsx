@@ -49,7 +49,7 @@ const ProfileIcon: FC<ProfileIconProps> = ({ imageUrl, status, size, customClass
             return (
                 <div className='flex flex-col items-center'>
                     <div
-                        className={`animate-pulse w-[${size ?? '3dvw'}] h-[${size ?? '3dvw'}] ${customClass ?? ''} relative group`}
+                        className={`animate-pulse w-[${size ?? '8dvw'}] h-[${size ?? '8dvw'}] lg:w-[${size ?? '3dvw'}] lg:h-[${size ?? '3dvw'}] ${customClass ?? ''} relative group`}
                         title={divTitle}>
                         <div className={`w-full h-full rounded-full bg-${pulseColor}`}></div>
                     </div>
@@ -60,14 +60,14 @@ const ProfileIcon: FC<ProfileIconProps> = ({ imageUrl, status, size, customClass
 
         return (
             <div className='flex flex-col items-center'>
-                <div className={`w-[${size ?? '3dvw'}] h-[${size ?? '3dvw'}] ${customClass ?? ''} relative group`}
+                <div className={`w-[${size ?? '8dvw'}] h-[${size ?? '8dvw'}] lg:w-[${size ?? '3dvw'}] lg:h-[${size ?? '3dvw'}] ${customClass ?? ''} relative group`}
                      title={divTitle}>
                     {actionColor && (
                         <button title={actionTitle} onClick={actionFn}
                                 className={`w-[1dvw] h-[1dvw] bottom-[0.1dvw] right-[2dvw] hover:border-blue absolute border-2 border-light rounded-full text-sm flex justify-center items-center bg-${actionColor}`}>{actionIcon}</button>
                     )}
 
-                    <Image src={imageUrl} width="0" height="0" sizes={`${size ?? '3dvw'}`}
+                    <Image src={imageUrl} width="0" height="0" sizes={`${size ?? '(min-width: 768px) 8dvw'}, ${size ?? '(max-width: 768px) 30dvw'}`}
                            className="w-full h-full rounded-full" alt={'user icon'}/>
 
                     {actionColor2 && (

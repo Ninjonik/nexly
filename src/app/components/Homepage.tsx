@@ -180,7 +180,7 @@ export const Homepage = () => {
     }
 
     return (
-        <section className="w-8/10 bg-gray-dark h-full flex flex-col text-white">
+        <section className="w-0 lg:w-8/10 overflow-x-hidden bg-gray-dark h-full flex flex-col text-white">
 
             <header className='h-1/10 w-full bg-light flex flex-row justify-center items-center px-8'>
                 <AnchorLink size={'4'} title={'Nexly'} description={'Nexly'} className={'text-white'} onClickFn={() => router.push('/')} />

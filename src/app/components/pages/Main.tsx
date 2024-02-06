@@ -6,6 +6,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import {Homepage} from "@/app/components/Homepage";
 import {useUserContext} from "@/app/UserContext";
 import {useRouter} from "next/navigation";
+import {SwipeHandler} from "@/app/components/SwipeHandler";
 
 interface MainProps {
     group?: string | null
@@ -22,14 +23,14 @@ const Main: FC<MainProps> = ({ group }) => {
     }
 
     return (
-        <>
+        <SwipeHandler>
             <ToastContainer />
             {group ? (
                 <ChannelMain activeGroup={group} />
             ) : (
                 <Homepage />
             )}
-        </>
+        </SwipeHandler>
     )
 
 };

@@ -43,6 +43,32 @@ const Sidebar: FC<SidebarProps> = ({}) => {
 
     const groupName = useRef<HTMLInputElement>(null)
 
+    const [touchStart, setTouchStart] = useState(null)
+    const [touchEnd, setTouchEnd] = useState(null)
+
+    const [sidebarWidth, setSidebarWidth] = useState<string>('full')
+
+    const minSwipeDistance = 50
+
+    const onTouchStart = (e: any) => {
+        setTouchEnd(null)
+        setTouchStart(e.targetTouches[0].clientX)
+        console.log("touch start")
+    }
+
+    const onTouchMove = (e: any) => setTouchEnd(e.targetTouches[0].clientX)
+
+    const onTouchEnd = () => {
+        if (!touchStart || !touchEnd) return
+        const distance = touchStart - touchEnd
+        const isLeftSwipe = distance > minSwipeDistance
+        const isRightSwipe = distance < -minSwipeDistance
+        if (isLeftSwipe || isRightSwipe) console.log('swipe', isLeftSwipe ? 'left' : 'right')
+
+        if(isLeftSwipe) setSidebarWidth('0')
+        if(isRightSwipe) setSidebarWidth('full')
+    }
+
     const [groupDialog, setGroupDialog] = useState<boolean>(false)
     const handleSubmit = async () => {
         if(groupName?.current?.value && groupName.current.value.length > 0){
@@ -90,7 +116,7 @@ const Sidebar: FC<SidebarProps> = ({}) => {
         return
     } else if (!loggedInUser || loggedInUser === 'pending'){
         return (
-            <section className="w-2/10 bg-light h-full flex flex-col text-white">
+            <section className="w-full lg:w-2/10 bg-light h-full flex flex-col text-white">
 
                 <header className='h-1/10 flex flex-col justify-center gap-8 p-6'>
                     <div className="flex flex-row justify-between items-center">
@@ -100,12 +126,14 @@ const Sidebar: FC<SidebarProps> = ({}) => {
 
                 <article className='h-9/10 w-full flex flex-col justify-between'>
 
-                    <div className="max-h-9/10 flex flex-col gap-8 text-white pt-[2dvh] px-6 overflow-y-scroll no-scrollbar">
+                    <div
+                        className="max-h-9/10 flex flex-col gap-8 text-white pt-[2dvh] px-6 overflow-y-scroll no-scrollbar">
 
                         <div className="flex flex-col gap-2 w-full">
 
-                            {Array.from({ length: 10 }).map((_, index) => (
-                                <div key={index} className="flex flex-row gap-2 w-full h-[3.5dvw] w-full bg-gray rounded-md animate-pulse">
+                            {Array.from({length: 10}).map((_, index) => (
+                                <div key={index}
+                                     className="flex flex-row gap-2 w-full h-[3.5dvw] w-full bg-gray rounded-md animate-pulse">
 
                                 </div>
                             ))}
@@ -117,7 +145,7 @@ const Sidebar: FC<SidebarProps> = ({}) => {
                     <div
                         className="w-full text-center h-1/10 border-t-2 border-blue flex flex-row justify-between px-4">
                         <div className="flex flex-row items-center justify-center gap-2 w-full">
-                            <ProfileIcon imageUrl={undefined} status={'online'} />
+                            <ProfileIcon imageUrl={undefined} status={'online'}/>
                             <div className="flex flex-col justify-between text-start text-2 w-full">
                                 <div className="animate-pulse w-4/5 h-[2dvw] bg-gray rounded-md"></div>
                             </div>
@@ -135,22 +163,28 @@ const Sidebar: FC<SidebarProps> = ({}) => {
         )
     } else {
         return (
-            <section className="w-full lg:w-2/10 overflow-x-hidden bg-light h-full flex flex-col text-white">
+            <section className={`w-${sidebarWidth} lg:w-2/10 overflow-x-hidden bg-light h-full flex flex-col text-white`}>
 
                 <header className='h-1/10 flex flex-col justify-center gap-8 p-6'>
                     <div className="flex flex-row justify-between items-center">
-                        <AnchorLink size={'2'} description={'Messages'} color={'white'} onClickFn={() => router.push(`/`)} />
-                        <SmallIcon size={'1'} title={'New group'} icon={<FontAwesomeIcon icon={faPlus} className="text-blue text-3 hover:text-blue-hover"/>} onClickFn={() => setGroupDialog(true)} />
+                        <AnchorLink size={'2'} description={'Messages'} color={'white'}
+                                    onClickFn={() => router.push(`/`)}/>
+                        <SmallIcon size={'1'} title={'New group'} icon={<FontAwesomeIcon icon={faPlus}
+                                                                                         className="text-blue text-3 hover:text-blue-hover"/>}
+                                   onClickFn={() => setGroupDialog(true)}/>
                     </div>
                 </header>
 
-                <FormModal title={"Create new group"} onSubmit={handleSubmit} modalState={groupDialog} setModalState={setGroupDialog}>
-                    <FormInput title={"Group's name"} icon={<FontAwesomeIcon icon={faHeading} />} ref={groupName} required={true} />
+                <FormModal title={"Create new group"} onSubmit={handleSubmit} modalState={groupDialog}
+                           setModalState={setGroupDialog}>
+                    <FormInput title={"Group's name"} icon={<FontAwesomeIcon icon={faHeading}/>} ref={groupName}
+                               required={true}/>
                 </FormModal>
 
                 <article className='h-9/10 w-full flex flex-col justify-between'>
 
-                    <div className="max-h-9/10 flex flex-col gap-8 text-white pt-[2dvh] px-6 overflow-y-scroll no-scrollbar">
+                    <div
+                        className="max-h-9/10 flex flex-col gap-8 text-white pt-[2dvh] px-6 overflow-y-scroll no-scrollbar">
 
                         <FormInput icon={<FontAwesomeIcon icon={faMagnifyingGlass} className="text-gray-400"/>}
                                    title={'Search'}/>
@@ -166,7 +200,8 @@ const Sidebar: FC<SidebarProps> = ({}) => {
                     <div
                         className="w-full text-center h-1/10 border-t-2 border-blue flex flex-row justify-between px-4">
                         <div className="flex flex-row items-center justify-center gap-2">
-                            <ProfileIcon imageUrl={loggedInUser ? getAvatar(loggedInUser.avatarPath) : undefined} status={'online'}/>
+                            <ProfileIcon imageUrl={loggedInUser ? getAvatar(loggedInUser.avatarPath) : undefined}
+                                         status={'online'}/>
                             <div className="flex flex-col justify-between text-start text-2">
                                 <span>{loggedInUser.username ? loggedInUser.username : loggedInUser.name}</span>
                                 <span className="text-lightly">#{loggedInUser.$id.slice(0, 4)}</span>

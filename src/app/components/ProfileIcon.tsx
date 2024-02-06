@@ -67,7 +67,7 @@ const ProfileIcon: FC<ProfileIconProps> = ({ imageUrl, status, size, customClass
                                 className={`w-[1dvw] h-[1dvw] bottom-[0.1dvw] right-[2dvw] hover:border-blue absolute border-2 border-light rounded-full text-sm flex justify-center items-center bg-${actionColor}`}>{actionIcon}</button>
                     )}
 
-                    <Image src={imageUrl} width="0" height="0" sizes={`${size ?? '(min-width: 768px) 8dvw'}, ${size ?? '(max-width: 768px) 30dvw'}`}
+                    <Image src={imageUrl} width="0" height="0" sizes={`${size ?? '(min-width: 768px) 3dvw'}, ${size ?? '(max-width: 768px) 8dvw'}`}
                            className="w-full h-full rounded-full" alt={'user icon'}/>
 
                     {actionColor2 && (

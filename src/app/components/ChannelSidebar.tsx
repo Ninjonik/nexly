@@ -30,6 +30,7 @@ import {FormModal} from "@/app/components/form/FormModal";
 import fireToast from "@/app/utils/toast";
 import AnchorLink from "@/app/components/AnchorLink";
 import {headers} from "next/headers";
+import {useSlideContext} from "@/app/SlideContext";
 
 interface SidebarProps {
 }
@@ -37,6 +38,8 @@ interface SidebarProps {
 const Sidebar: FC<SidebarProps> = ({}) => {
 
     const { loggedInUser, setLoggedInUser } = useUserContext();
+    const { slide, setSlide } = useSlideContext();
+    console.log("SLIDE:", slide)
 
     const router = useRouter();
     const currentPage = usePathname();

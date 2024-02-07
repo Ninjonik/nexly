@@ -16,10 +16,12 @@ import formatTimestampToTime from "@/app/utils/convertTimestamp";
 import SmallIcon from "@/app/components/SmallIcon";
 import {useRouter} from "next/navigation";
 import AnchorLink from "@/app/components/AnchorLink";
+import {useSlideContext} from "@/app/SlideContext";
 
 export const Homepage = () => {
 
     const { loggedInUser, setLoggedInUser } = useUserContext();
+    const { slide, setSlide, onTouchStart, onTouchMove, onTouchEnd } = useSlideContext();
     const searchRef = useRef<HTMLInputElement>(null);
     const [error, setError] = useState<string>("");
     const [friendRequests, setFriendRequests] = useState<any>("loading")
@@ -180,7 +182,7 @@ export const Homepage = () => {
     }
 
     return (
-        <section className="w-0 lg:w-8/10 overflow-x-hidden bg-gray-dark h-full flex flex-col text-white">
+        <section className={`w-${slide === 'main' ? 'full' : '0'} lg:w-8/10 overflow-x-hidden bg-gray-dark h-full flex flex-col text-white`} onTouchEnd={onTouchEnd} onTouchStart={onTouchStart} onTouchMove={onTouchMove}>
 
             <header className='h-1/10 w-full bg-light flex flex-row justify-center items-center px-8'>
                 <AnchorLink size={'4'} title={'Nexly'} description={'Nexly'} className={'text-white'} onClickFn={() => router.push('/')} />

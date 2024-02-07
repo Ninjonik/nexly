@@ -46,6 +46,7 @@ import {useRouter} from "next/navigation";
 import messageInterface from "@/app/utils/interfaces/MessageInterface";
 import AnchorLink from "@/app/components/AnchorLink";
 import uploadMultipleFiles from "@/app/utils/uploadMultipleFiles";
+import {useSlideContext} from "@/app/SlideContext";
 
 interface ChannelMainProps {
     activeGroup: string
@@ -67,6 +68,8 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
     const [hiddenCall, hideCall] = useState<boolean>(false);
     const [fullscreen, setFullscreen] = useState<boolean>(false);
     const [dialog, setDialog] = useState<boolean>(false)
+
+    const { slide, setSlide, onTouchStart, onTouchMove, onTouchEnd } = useSlideContext();
 
     const router = useRouter();
 
@@ -361,7 +364,6 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
         let newLoggedInUser = {...loggedInUser}
         newLoggedInUser.groups = newLoggedInUser.groups.filter((group: any) => group.$id !== activeGroup);
 
-        console.log(loggedInUser, newLoggedInUser)
         setLoggedInUser(newLoggedInUser)
 
         fireToast('success', 'Successfully left the group.', 'top-right', 2000)
@@ -451,22 +453,22 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
     }
 
     return (
-        <section className="w-0 lg:w-full bg-gray h-full flex flex-col text-white">
+        <section className={`w-${slide === 'main' ? 'full' : '0'} lg:w-8/10 overflow-x-hidden bg-gray h-full flex flex-col text-white`} onTouchEnd={onTouchEnd} onTouchStart={onTouchStart} onTouchMove={onTouchMove}>
 
             <header className='h-1/10 w-full bg-light flex flex-row justify-between px-8'>
                 <div className='flex flex-row gap-2 w-1/2 items-center'>
-                    <ProfileIcon imageUrl={`/images/groups/${group.avatarPath}`} size={'3dvw'}/>
+                    <ProfileIcon imageUrl={`/images/groups/${group.avatarPath}`}/>
                     <div className='flex flex-col justify-center'>
-                        <h3 className='text-xl font-bold'>{group.title}</h3>
-                        <span className='text-lightly text-2'>{group.users.length} members</span>
+                        <h3 className='text-3xl lg:text-xl font-bold'>{group.title}</h3>
+                        <span className='text-lightly text-2xl lg:text-md'>{group.users.length} members</span>
                     </div>
                 </div>
                 <div className='flex flex-row gap-6 justify-center items-center'>
-                    <SmallIcon icon={<FontAwesomeIcon icon={faPhone}/>} size={'3'} onClickFn={() => call(true)} title={'Start a call'} />
+                    <SmallIcon icon={<FontAwesomeIcon icon={faPhone}/>} size={'4xl'} className={'lg:text-3'} onClickFn={() => call(true)} title={'Start a call'} />
                     {/*<SmallIcon icon={<FontAwesomeIcon icon={faVideo}/>} size={'3'}/>*/}
-                    <SmallIcon icon={<FontAwesomeIcon icon={faThumbtack}/>} size={'3'} onClickFn={pinGroup} title={'Pin/Unpin group'}/>
-                    <SmallIcon icon={<FontAwesomeIcon icon={faUsers}/>} size={'3'} onClickFn={() => setUsersShown(!usersShown)} title={'Show/Hide users'} />
-                    <SmallIcon icon={<FontAwesomeIcon icon={faRightFromBracket}/>} size={'3'} onClickFn={leaveGroup} title={'Leave group'} />
+                    <SmallIcon icon={<FontAwesomeIcon icon={faThumbtack}/>} size={'4xl'} className={'lg:text-3'} onClickFn={pinGroup} title={'Pin/Unpin group'}/>
+                    <SmallIcon icon={<FontAwesomeIcon icon={faUsers}/>} size={'4xl'} className={'lg:text-3'} onClickFn={() => setUsersShown(!usersShown)} title={'Show/Hide users'} />
+                    <SmallIcon icon={<FontAwesomeIcon icon={faRightFromBracket}/>} size={'4xl'} className={'lg:text-3'} onClickFn={leaveGroup} title={'Leave group'} />
                 </div>
             </header>
 
@@ -504,7 +506,7 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
                         </>
                     )}
 
-                    <div className='h-full w-full bg-gray-dark p-[2dvw] flex flex-col-reverse gap-[2dvw] overflow-y-scroll no-scrollbar'>
+                    <div className='h-full w-full bg-gray-dark p-[2dvw] flex flex-col-reverse gap-[3dvw] lg:gap-[2dvw] overflow-y-scroll no-scrollbar'>
                         {messages.map((message: any) => (
                             <ChannelMessage message={message} key={message.$id} localUser={(message.author.$id === loggedInUser.$id)} />
                         ))}
@@ -514,7 +516,7 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
                     </div>
 
                     <form
-                        className='max-h-5/10 flex-grow w-full bg-light p-[1dvw] flex justify-center items-center'
+                        className='max-h-5/10 flex-grow w-full bg-light lg:p-[1dvw] p-[2dvw] flex justify-center items-center'
                         onSubmit={(e) => {
                             e.preventDefault();
                             messageSubmit(newMessage.replace(/\\n/g, "\n"));
@@ -536,7 +538,7 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
 
                 </div>
 
-                <aside className={`h-full bg-light border-t-2 border-blue flex flex-col gap-[2dvw] transition-all ${usersShown ? 'w-3/10 p-[2dvw]' : 'w-0'}`}>
+                <aside className={`h-full bg-light border-t-2 border-blue flex flex-col gap-[2dvw] transition-all ${usersShown ? 'w-full lg:w-3/10 p-[2dvw]' : 'w-0'}`}>
                     {usersShown && (
                         <>
                             <h3 className='text-xl font-bold'>{group.title}</h3>

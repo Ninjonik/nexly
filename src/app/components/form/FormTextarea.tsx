@@ -86,7 +86,7 @@ const FormTextArea: FC<FormTextAreaProps> = ({
     const tenorKey = process.env.NEXT_PUBLIC_TENOR_KEY || 'tenorapikeynotentered';
 
     return (
-        <div className="h-full w-full flex flex-col rounded-lg bg-gray py-[1dvw]">
+        <div className="h-full w-full flex flex-col rounded-lg bg-gray py-[1dvw] px-[2dvw] lg:px-0">
             <div className='flex flex-row px-[1dvw] text-center items-center gap-[0.5dvw] max-w-full'>
                 {attachments.map((file: File, index: number) => (
                     <div className='flex flex-col w-1/5 h-full relative' key={index}>

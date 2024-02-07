@@ -23,14 +23,14 @@ const Main: FC<MainProps> = ({ group }) => {
     }
 
     return (
-        <SwipeHandler>
+        <>
             <ToastContainer />
             {group ? (
                 <ChannelMain activeGroup={group} />
             ) : (
                 <Homepage />
             )}
-        </SwipeHandler>
+        </>
     )
 
 };

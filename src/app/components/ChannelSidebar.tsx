@@ -38,39 +38,12 @@ interface SidebarProps {
 const Sidebar: FC<SidebarProps> = ({}) => {
 
     const { loggedInUser, setLoggedInUser } = useUserContext();
-    const { slide, setSlide } = useSlideContext();
-    console.log("SLIDE:", slide)
+    const { slide, setSlide, onTouchStart, onTouchMove, onTouchEnd } = useSlideContext();
 
     const router = useRouter();
     const currentPage = usePathname();
 
     const groupName = useRef<HTMLInputElement>(null)
-
-    const [touchStart, setTouchStart] = useState(null)
-    const [touchEnd, setTouchEnd] = useState(null)
-
-    const [sidebarWidth, setSidebarWidth] = useState<string>('full')
-
-    const minSwipeDistance = 50
-
-    const onTouchStart = (e: any) => {
-        setTouchEnd(null)
-        setTouchStart(e.targetTouches[0].clientX)
-        console.log("touch start")
-    }
-
-    const onTouchMove = (e: any) => setTouchEnd(e.targetTouches[0].clientX)
-
-    const onTouchEnd = () => {
-        if (!touchStart || !touchEnd) return
-        const distance = touchStart - touchEnd
-        const isLeftSwipe = distance > minSwipeDistance
-        const isRightSwipe = distance < -minSwipeDistance
-        if (isLeftSwipe || isRightSwipe) console.log('swipe', isLeftSwipe ? 'left' : 'right')
-
-        if(isLeftSwipe) setSidebarWidth('0')
-        if(isRightSwipe) setSidebarWidth('full')
-    }
 
     const [groupDialog, setGroupDialog] = useState<boolean>(false)
     const handleSubmit = async () => {
@@ -166,7 +139,7 @@ const Sidebar: FC<SidebarProps> = ({}) => {
         )
     } else {
         return (
-            <section className={`w-${sidebarWidth} lg:w-2/10 overflow-x-hidden bg-light h-full flex flex-col text-white`}>
+            <section className={`w-${slide === 'sidebar' ? 'full' : '0'} lg:w-2/10 overflow-x-hidden bg-light h-full flex flex-col text-white transition-all`} onTouchEnd={onTouchEnd} onTouchStart={onTouchStart} onTouchMove={onTouchMove}>
 
                 <header className='h-1/10 flex flex-col justify-center gap-8 p-6'>
                     <div className="flex flex-row justify-between items-center">

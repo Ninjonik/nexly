@@ -17,9 +17,9 @@ interface ChannelMessageProps {
 }
 
 const MessageHeader: FC<{ username?: string, updatedAt: string }> = ({ username, updatedAt }) => (
-    <div className='flex flex-row gap-[0.5dvw] items-center'>
-        <h4 className='font-bold text-xl'>{username}</h4>
-        <span className='text-lightly text-md'>{convertTimestamp(updatedAt)}</span>
+    <div className='flex flex-row gap-[1dvw] lg:gap-[0.5dvw] items-center'>
+        <h4 className='font-bold text-3xl lg:text-xl'>{username}</h4>
+        <span className='text-lightly text-2xl lg:text-md'>{convertTimestamp(updatedAt)}</span>
     </div>
 );
 
@@ -52,7 +52,7 @@ const MessageBody: FC<{ isImage: boolean, message: string, attachments: string[]
             <span className={!isImage ? `w-full text-md break-words p-2` : 'max-w-full'} style={{ whiteSpace: 'pre-line' }}>
                 {isImage === true ? <img className='rounded-lg max-h-35' src={message} alt="Message content" /> :
                     <div className='flex flex-col gap-[0.5dvw]'>
-                        <span className={`p-[0.4dvw] text-1.5 ${messageClass}`}>{message}</span>
+                        <span className={`p-[1dvw] lg:p-[0.4dvw] text-1.5 ${messageClass}`}>{message}</span>
                         {attachments.length > 0 && attachments.map((attachment, index) => (
                             <MessageAttachment attachmentId={attachment} openImage={openImage} key={index} />
                         ))}
@@ -76,7 +76,7 @@ const ChannelMessage: FC<ChannelMessageProps> = ({ typing, message, localUser })
     }, [message]);
 
     return (
-        <div className={`max-w-8/10 flex flex-row gap-[0.5dvw] ${alignmentClass}`}>
+        <div className={`max-w-8/10 flex flex-row gap-[1dvw] lg:gap-[0.5dvw] ${alignmentClass}`}>
             {!localUser && <ProfileIcon imageUrl={`/images/users/${message.author?.avatarPath}`} customClass={profileIconAlignment} />}
             <div className={`max-w-9/10 flex flex-col justify-center ${localUser ? 'items-end' : ''}`}>
                 <MessageHeader username={message.author?.username} updatedAt={message.$updatedAt} />

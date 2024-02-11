@@ -21,7 +21,7 @@ Open [http://localhost:3005](http://localhost:3005) with your browser to see the
 
 ## Contributing
 
-We welcome contributions to Nexly! To contribute, follow these steps:
+We welcome contributions to Nexly! To contribute please follow these steps:
 
 ```
 Fork the repository.

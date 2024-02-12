@@ -22,6 +22,8 @@ interface FormTextAreaProps {
     setGifValue: (value: string) => void;
     attachments: File[];
     setAttachments: (value: File[]) => void;
+    submitting: boolean;
+    setSubmitting: (value: boolean) => void;
 }
 
 const FormTextArea: FC<FormTextAreaProps> = ({
@@ -35,6 +37,8 @@ const FormTextArea: FC<FormTextAreaProps> = ({
                                                  gifValue,
                                                  setGifValue,
                                                  setAttachments,
+                                                 submitting,
+                                                 setSubmitting,
                                                  attachments
                                              }) => {
     const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -131,6 +135,7 @@ const FormTextArea: FC<FormTextAreaProps> = ({
                         className="bg-gray rounded-md border-none w-full focus:outline-none text-white h-auto resize-none overflow-scroll no-scrollbar"
                         placeholder={title}
                         onPaste={handlePaste}
+                        disabled={submitting}
                     />
                     <div className="replicated-value overflow-hidden h-0" data-replicated-value={valueProp}></div>
                 </div>

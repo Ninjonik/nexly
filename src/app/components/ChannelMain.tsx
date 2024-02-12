@@ -141,7 +141,7 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
 
     }, []);
 
-    // TODO: fixnúť to, aby bol cooldown, keď sa niečo napíše a aby to teda stále neupdatovalo state cez setNewMessage
+    // TODO: fixnúť to aby to teda stále neupdatovalo state cez setNewMessage
 
     const messageSubmit = async (messageToSubmit: string, fileId?: string) => {
         if(messageToSubmit && messageToSubmit !== ""){
@@ -532,6 +532,8 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
                             setGifValue={(value) => setGifValue(value)}
                             attachments={attachments}
                             setAttachments={setAttachments}
+                            submitting={submitting}
+                            setSubmitting={setSubmitting}
                             required={false}
                         />
                     </form>

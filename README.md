@@ -13,7 +13,7 @@ npm run dev
 yarn dev
 # or
 pnpm dev
-# or
+# or - the best
 bun dev
 ```
 

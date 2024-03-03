@@ -69,6 +69,8 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
     const [fullscreen, setFullscreen] = useState<boolean>(false);
     const [dialog, setDialog] = useState<boolean>(false)
 
+    const textareaRef = useRef<HTMLTextAreaElement>(null);
+
     const { slide, setSlide, onTouchStart, onTouchMove, onTouchEnd } = useSlideContext();
 
     const router = useRouter();
@@ -192,6 +194,9 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
                 console.error(err);
             } finally {
                 setSubmitting(false);
+                setTimeout(() => {
+                    textareaRef.current?.focus();
+                },  50);
             }
         }
     };
@@ -535,6 +540,7 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
                             submitting={submitting}
                             setSubmitting={setSubmitting}
                             required={false}
+                            ref={textareaRef}
                         />
                     </form>
 

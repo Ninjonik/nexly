@@ -1,4 +1,4 @@
-import React, { FC, ReactNode, forwardRef, ChangeEvent, useState, useRef, useEffect } from 'react';
+import React, {FC, ReactNode, forwardRef, ChangeEvent, useState, useRef, useEffect, RefObject} from 'react';
 import data from '@emoji-mart/data';
 import Picker from '@emoji-mart/react';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -24,7 +24,10 @@ interface FormTextAreaProps {
     setAttachments: (value: File[]) => void;
     submitting: boolean;
     setSubmitting: (value: boolean) => void;
+    ref?: RefObject<HTMLTextAreaElement>;
 }
+
+const textareaRef = useRef<HTMLTextAreaElement>(null);
 
 const FormTextArea: FC<FormTextAreaProps> = ({
                                                  title,
@@ -39,24 +42,24 @@ const FormTextArea: FC<FormTextAreaProps> = ({
                                                  setAttachments,
                                                  submitting,
                                                  setSubmitting,
-                                                 attachments
+                                                 attachments,
+                                                 ref = textareaRef
                                              }) => {
-    const textareaRef = useRef<HTMLTextAreaElement>(null);
 
     const handleTextareaChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
-        if (textareaRef.current) {
-            textareaRef.current.style.height = 'auto';
+        if (ref.current) {
+            ref.current.style.height = 'auto';
             const heightValue = Math.min(event.target.scrollHeight, window.innerHeight / 5 * 2);
-            textareaRef.current.style.height = `${heightValue}px`;
+            ref.current.style.height = `${heightValue}px`;
         }
 
         onChangeFn(event.target.value);
     };
 
     useEffect(() => {
-        if (textareaRef.current) {
-            const newHeight = textareaRef.current.scrollHeight;
-            textareaRef.current.style.height = `${newHeight}px`;
+        if (ref.current) {
+            const newHeight = ref.current.scrollHeight;
+            ref.current.style.height = `${newHeight}px`;
         }
     }, [valueProp]);
 
@@ -128,7 +131,7 @@ const FormTextArea: FC<FormTextAreaProps> = ({
                 <div className="flex flex-col grow-wrap w-full">
                     <textarea
                         required={required || false}
-                        ref={textareaRef}
+                        ref={ref}
                         value={valueProp}
                         rows={1}
                         onChange={handleTextareaChange}
@@ -136,6 +139,7 @@ const FormTextArea: FC<FormTextAreaProps> = ({
                         placeholder={title}
                         onPaste={handlePaste}
                         disabled={submitting}
+                        autoFocus
                     />
                     <div className="replicated-value overflow-hidden h-0" data-replicated-value={valueProp}></div>
                 </div>

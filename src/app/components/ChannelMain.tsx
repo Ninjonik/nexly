@@ -69,8 +69,6 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
     const [fullscreen, setFullscreen] = useState<boolean>(false);
     const [dialog, setDialog] = useState<boolean>(false)
 
-    const textareaRef = useRef<HTMLTextAreaElement>(null);
-
     const { slide, setSlide, onTouchStart, onTouchMove, onTouchEnd } = useSlideContext();
 
     const router = useRouter();
@@ -143,12 +141,12 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
 
     }, []);
 
-    // TODO: fixnúť to aby to teda stále neupdatovalo state cez setNewMessage
-
     const messageSubmit = async (messageToSubmit: string, fileId?: string) => {
-        if(messageToSubmit && messageToSubmit !== ""){
+        if((messageToSubmit && messageToSubmit !== "") || attachments.length > 0 || gifValue !== ""){
             try {
                 setSubmitting(true);
+
+                if(!messageToSubmit) messageToSubmit = " ";
 
                 const dbID = loggedInUser.dbID;
                 let constructedBody
@@ -183,6 +181,7 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
                 });
 
                 if (!response.ok) {
+                    console.error(response.body);
                     throw new Error('Failed to submit message');
                 }
 
@@ -194,9 +193,6 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
                 console.error(err);
             } finally {
                 setSubmitting(false);
-                setTimeout(() => {
-                    textareaRef.current?.focus();
-                },  100);
             }
         }
     };
@@ -319,8 +315,19 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
             validDate: dateLimit !== "0" ? new Date(Date.now() + parseInt(dateLimit) * 24 * 60 * 60 * 1000) : undefined,
         };
 
-        const generatedId: string = Md5.hashStr(`${activeGroup}${Date.now()}${loggedInUser.$id}`)
 
+
+        let codeUsed = true
+        let generatedId: string = ""
+        while (codeUsed) {
+            generatedId = Md5.hashStr(`${activeGroup}${Date.now()}${loggedInUser.$id}`).slice(0, 6)
+            const result = await databases.listDocuments(
+                database,
+                'invites',
+                [Query.equal('$id', generatedId)]
+            )
+            if(result.documents.length === 0) codeUsed = false
+        }
 
         try {
             const res = await databases.createDocument(
@@ -540,7 +547,6 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
                             submitting={submitting}
                             setSubmitting={setSubmitting}
                             required={false}
-                            ref={textareaRef}
                         />
                     </form>
 
@@ -565,15 +571,15 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
                                 <FormModal title={"Add people"} modalState={dialog} setModalState={setDialog} onSubmit={generateInviteLink} submitText={'Generate'}>
 
                                     {inviteLink && (
-                                        <span className='text-white break-normal'>Generated invite link:
-                                            <AnchorLink target={'_blank'} size={'1'} description={`${process.env.NEXT_PUBLIC_HOSTNAME}/invite/${inviteLink}`} href={`${process.env.NEXT_PUBLIC_HOSTNAME}/invite/${inviteLink}`} />
+                                        <span className='text-white break-normal'>Generated invite link: <br />
+                                            <AnchorLink target={'_blank'} description={`${process.env.NEXT_PUBLIC_HOSTNAME}/invite/${inviteLink}`} href={`${process.env.NEXT_PUBLIC_HOSTNAME}/invite/${inviteLink}`} />
                                         </span>
                                     )}
 
                                     <div>
                                         <label
                                             htmlFor="customRange1"
-                                            className="mb-2 inline-block text-neutral-700 dark:text-neutral-200"
+                                            className="mb-2 inline-block text-white"
                                         >{dateLimit === "0" ? ('No expiration') : (dateLimit + " Days till expiration")}</label
                                         >
                                         <input

@@ -22,22 +22,22 @@ export const FormModal: FC<FormModalProps> = ({children, submitText = "Submit", 
     return (
         <>
             {modalState && (
-                <div className="absolute inset-0 z-30 bg-black bg-opacity-50 backdrop-blur-sm"></div>
+                <div className="absolute inset-0 z-30 bg-black bg-opacity-50 backdrop-blur-sm" onClick={customCloseFn}></div>
             )}
 
-            <dialog className={`fixed top-[0dvh] flex flex-col mt-0.25/10 w-3/10 max-h-9/10 bg-gray-dark border-blue border-2 rounded-md z-50 gap-[0.5dvw] ${!modalState && 'hidden'}`}>
+            <dialog className={`fixed top-[0dvh] flex flex-col mt-0.25/10 min-w-3/10 max-w-8/10 max-h-9/10 bg-gray-dark border-blue border-2 rounded-md z-50 gap-[0.5dvw] ${!modalState && 'hidden'}`}>
 
                 <div className={'absolute text-lightly right-[0.2dvw] top-0 flex justify-center items-center'}>
                     <SmallIcon icon={<FontAwesomeIcon icon={faXmark} />} size={'2'} onClickFn={customCloseFn} />
                 </div>
 
 
-                <div className='w-full h-2/10 pt-[1dvw] px-[0.5dvw]'>
+                <div className='h-2/10 pt-[1dvw] px-[0.5dvw]'>
                     <h2 className='text-white pl-[0.5dvw] text-2 font-bold'><FontAwesomeIcon icon={faRightLong} /> {title}</h2>
                 </div>
 
                 <form method={"dialog"} className='flex flex-col gap-[0.5dvw] pt-[1dvw]' onSubmit={(e) => { e.preventDefault(); onSubmit && onSubmit(); }}>
-                    <div className='w-full h-full flex flex-col gap-[0.5dvw] px-[1.5dvw]'>
+                    <div className='flex flex-col gap-[0.5dvw] px-[1.5dvw]'>
                         {children}
                     </div>
 

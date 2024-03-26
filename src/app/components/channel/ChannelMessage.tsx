@@ -41,25 +41,53 @@ const MessageBody: FC<{ isImage: boolean, message: string, attachments: string[]
     }
 
     return (
-        <>
+      <>
+        <FormModal
+          modalState={modal}
+          setModalState={setModal}
+          title={"Image Preview"}
+          customCloseFn={closeImage}
+        >
+          {fullscreenImage && (
+            <img
+              className="rounded-lg max-w-8/10 max-h-8/10 self-center pb-[1dvw]"
+              src={fullscreenImage}
+              alt="Attachment"
+            />
+          )}
+        </FormModal>
 
-            <FormModal modalState={modal} setModalState={setModal} title={'Image Preview'} customCloseFn={closeImage}>
-                {fullscreenImage && (
-                    <img className='rounded-lg w-4/5 self-center pb-[1dvw]' src={fullscreenImage} alt="Attachment" />
-                )}
-            </FormModal>
-
-            <span className={!isImage ? `w-full text-md break-words p-2` : 'max-w-full'} style={{ whiteSpace: 'pre-line' }}>
-                {isImage === true ? <img className='rounded-lg max-h-35' src={message} alt="Message content" /> :
-                    <div className='flex flex-col gap-[0.5dvw]'>
-                        <span className={`p-[1dvw] lg:p-[0.4dvw] text-1.5 ${messageClass}`}>{message}</span>
-                        {attachments.length > 0 && attachments.map((attachment, index) => (
-                            <MessageAttachment attachmentId={attachment} openImage={openImage} key={index} />
-                        ))}
-                    </div>
-                }
-            </span>
-        </>
+        <span
+          className={!isImage ? `w-full text-md break-words p-2` : "max-w-full"}
+          style={{ whiteSpace: "pre-line" }}
+        >
+          {isImage === true ? (
+            <img
+              className="rounded-lg max-h-35"
+              src={message}
+              alt="Message content"
+            />
+          ) : (
+            <div className="flex flex-col gap-[0.5dvw]">
+              {(message && message !== " ") && (
+                <span
+                  className={`p-[1dvw] lg:p-[0.4dvw] text-1.5 ${messageClass}`}
+                >
+                  {message}
+                </span>
+              )}
+              {attachments.length > 0 &&
+                attachments.map((attachment, index) => (
+                  <MessageAttachment
+                    attachmentId={attachment}
+                    openImage={openImage}
+                    key={index}
+                  />
+                ))}
+            </div>
+          )}
+        </span>
+      </>
     );
 };
 
@@ -74,6 +102,10 @@ const ChannelMessage: FC<ChannelMessageProps> = ({ typing, message, localUser })
         setAlignmentClass(localUser ? 'self-end' : '');
         setProfileIconAlignment(localUser ? 'self-start' : '');
     }, [message]);
+
+    if(!profileIconAlignment){
+        return "";
+    }
 
     return (
         <div className={`max-w-8/10 flex flex-row gap-[1dvw] lg:gap-[0.5dvw] ${alignmentClass}`}>

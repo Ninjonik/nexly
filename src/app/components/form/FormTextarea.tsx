@@ -27,8 +27,6 @@ interface FormTextAreaProps {
     ref?: RefObject<HTMLTextAreaElement>;
 }
 
-const textareaRef = useRef<HTMLTextAreaElement>(null);
-
 const FormTextArea: FC<FormTextAreaProps> = ({
                                                  title,
                                                  icon,
@@ -43,7 +41,7 @@ const FormTextArea: FC<FormTextAreaProps> = ({
                                                  submitting,
                                                  setSubmitting,
                                                  attachments,
-                                                 ref = textareaRef
+                                                 ref = useRef<HTMLTextAreaElement>(null)
                                              }) => {
 
     const handleTextareaChange = (event: ChangeEvent<HTMLTextAreaElement>) => {

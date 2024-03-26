@@ -196,7 +196,7 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
                 setSubmitting(false);
                 setTimeout(() => {
                     textareaRef.current?.focus();
-                },  50);
+                },  100);
             }
         }
     };

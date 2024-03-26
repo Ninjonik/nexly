@@ -1,11 +1,10 @@
 "use client"
 
-import React, {Dispatch, FC, SetStateAction, useState} from 'react';
+import React, {FC, useState} from 'react';
 import ProfileIcon from "@/app/components/ProfileIcon";
-import GroupInterface from '../utils/interfaces/GroupInterface';
 import {useEffect} from 'react';
 import {client, database, databases} from "@/app/appwrite";
-import {Models, Query} from 'appwrite';
+import {Query} from 'appwrite';
 import MessageInterface from "@/app/utils/interfaces/MessageInterface";
 import formatTimestampToTime from "@/app/utils/convertTimestamp";
 import { useRouter } from 'next/navigation';
@@ -44,11 +43,11 @@ const MessageLink: FC<MessageLinkProps> = ({ typing, time, notifications, group 
             if(res.group.$id === group.$id) setMessage(res)
         });
 
+        setLoading(false)
+
         return () => {
             unsubscribe()
         };
-
-        setLoading(false)
 
     }, []);
 

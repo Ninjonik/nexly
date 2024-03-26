@@ -1,13 +1,9 @@
 "use client"
 
-import React, {Dispatch, FC, ReactNode, SetStateAction, useEffect, useState} from 'react';
+import React, {FC, ReactNode, useEffect, useState} from 'react';
 import MessageLink from "@/app/components/MessageLink";
-import User from "@/app/utils/interfaces/User";
-import {client, database, databases} from "@/app/appwrite";
-import { Query } from 'appwrite';
 import {useUserContext} from "@/app/UserContext";
 import MessageLinkInterface from "@/app/utils/interfaces/MessageLinkInterface";
-import FriendRequestInterface from "@/app/utils/interfaces/FriendRequestInterface";
 
 
 interface MessagesSectionProps {
@@ -35,13 +31,16 @@ const MessagesSection: FC<MessagesSectionProps> = ({ title, icon }) => {
             <div className="text-lightly text-2">{icon} {title}</div>
 
             {groups?.map((group: MessageLinkInterface) =>
-                (title === 'Pinned' && loggedInUser.pinnedGroups.includes(group.$id)) ? (
-                    <MessageLink notifications={1} time={Date.now()} typing={false} group={group} key={group.$id} />
-                ) : (
-                    (title !== 'Pinned' && !loggedInUser.pinnedGroups.includes(group.$id)) && (
+                (group && group?.$id) && (
+                    (title === 'Pinned' && loggedInUser.pinnedGroups.includes(group.$id)) ? (
                         <MessageLink notifications={1} time={Date.now()} typing={false} group={group} key={group.$id} />
+                    ) : (
+                        (title !== 'Pinned' && !loggedInUser.pinnedGroups.includes(group.$id)) && (
+                            <MessageLink notifications={1} time={Date.now()} typing={false} group={group} key={group.$id} />
+                        )
                     )
                 )
+
             )}
 
             <hr className="w-full text-heavily my-2 text-2"/>

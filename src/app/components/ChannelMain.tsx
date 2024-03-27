@@ -340,7 +340,7 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
                 ]
             );
 
-            messageSubmit('file', res.$id)
+            messageSubmit(' ', res.$id)
 
             fireToast('success', 'File uploaded.')
 

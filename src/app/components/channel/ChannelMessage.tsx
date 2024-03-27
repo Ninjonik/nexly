@@ -9,6 +9,8 @@ import {faDownload} from "@fortawesome/free-solid-svg-icons";
 import getFileDownload from "@/app/utils/getFileDownload";
 import FormModal from "@/app/components/form/FormModal";
 import {MessageAttachment} from "@/app/components/channel/MessageAttachment";
+import formatTimestampToTime from "@/app/utils/convertTimestamp";
+import formatTimestampToDate from "@/app/utils/formatTimestampToDate";
 
 interface ChannelMessageProps {
     typing?: boolean,
@@ -19,7 +21,7 @@ interface ChannelMessageProps {
 const MessageHeader: FC<{ username?: string, updatedAt: string }> = ({ username, updatedAt }) => (
     <div className='flex flex-row gap-[1dvw] lg:gap-[0.5dvw] items-center'>
         <h4 className='font-bold text-3xl lg:text-xl'>{username}</h4>
-        <span className='text-lightly text-2xl lg:text-md'>{convertTimestamp(updatedAt)}</span>
+        <span className='text-lightly text-2xl lg:text-md'>{formatTimestampToDate(updatedAt)} {formatTimestampToTime(updatedAt)}</span>
     </div>
 );
 

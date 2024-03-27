@@ -100,12 +100,12 @@ const ChannelMessage: FC<ChannelMessageProps> = ({ typing, message, localUser })
 
     useEffect(() => {
         setIsImage(isValidImageUrl(message.message));
-        setAlignmentClass(localUser ? 'self-end' : '');
-        setProfileIconAlignment(localUser ? 'self-start' : '');
+        setAlignmentClass(localUser ? 'self-end' : ' ');
+        setProfileIconAlignment(localUser ? 'self-start' : ' ');
         setLoading(false)
     }, [message]);
 
-    if(loading){
+    if(!profileIconAlignment){
         return "";
     }
 

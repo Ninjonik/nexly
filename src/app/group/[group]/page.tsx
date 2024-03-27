@@ -1,5 +1,4 @@
 import React from "react";
-import { useParams } from 'next/navigation';
 import Main from "@/app/components/pages/Main";
 import ChannelSidebar from "@/app/components/ChannelSidebar";
 import Sidebar from "@/app/components/Sidebar";

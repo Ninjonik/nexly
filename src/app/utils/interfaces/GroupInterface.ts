@@ -1,6 +1,8 @@
+import UserInterface from "@/app/utils/interfaces/UserInterface";
+
 interface GroupInterface {
     title: string;
-    users: string[];
+    users: UserInterface[];
     ownerID: string;
     avatarPath: string;
     call: boolean;

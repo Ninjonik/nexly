@@ -48,6 +48,7 @@ import AnchorLink from "@/app/components/AnchorLink";
 import uploadMultipleFiles from "@/app/utils/uploadMultipleFiles";
 import {useSlideContext} from "@/app/SlideContext";
 import {ChannelAside} from "@/app/components/channel/ChannelAside";
+import MessageInterface from "@/app/utils/interfaces/MessageInterface";
 
 interface ChannelMainProps {
     activeGroup: string
@@ -103,7 +104,6 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
                     setMessages(transformedMessages)
                 }
 
-
                 if (transformedMessages.length > 0) {
                     setLastLoadedMessageId(transformedMessages[transformedMessages.length - 1].$id);
                 }
@@ -137,14 +137,13 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
 
     }, []);
 
-    const messageSubmit = async (messageToSubmit: string, fileId?: string) => {
+    const messageSubmit = async (messageToSubmit: string | null, fileId?: string) => {
         if((messageToSubmit && messageToSubmit !== "") || attachments.length > 0 || gifValue !== ""){
             try {
                 setSubmitting(true);
 
                 if(!messageToSubmit) messageToSubmit = " ";
 
-                const dbID = loggedInUser.dbID;
                 let constructedBody
                 let fileIds: string[] = []
 
@@ -154,19 +153,21 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
 
                 if(messageToSubmit === 'file' && fileId){
                     constructedBody = JSON.stringify({
-                        "dbID": dbID,
+                        "dbID": loggedInUser.$id,
                         "activeGroup": activeGroup,
                         "message": messageToSubmit,
                         "attachments": [fileId]
                     });
                 } else {
                     constructedBody = JSON.stringify({
-                        "dbID": dbID,
+                        "dbID": loggedInUser.$id,
                         "activeGroup": activeGroup,
                         "message": messageToSubmit,
                         "attachments": fileIds
                     });
                 }
+
+                console.log(constructedBody)
 
                 const response = await fetch(`/api/sendMessage`, {
                     method: 'POST',
@@ -177,8 +178,9 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
                 });
 
                 if (!response.ok) {
-                    console.error(response.body);
-                    throw new Error('Failed to submit message');
+                    const responseBody = await response.json()
+                    console.log(responseBody)
+                    throw new Error('Failed to submit message: '+ responseBody.error + '');
                 }
 
                 setNewMessage("")
@@ -238,9 +240,8 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
         try {
             setSubmitting(true);
 
-            const dbID = loggedInUser.dbID;
             const constructedBody = JSON.stringify({
-                "dbID": dbID,
+                "dbID": loggedInUser.$id,
                 "activeGroup": activeGroup,
                 "status": status
             });
@@ -340,7 +341,7 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
                 ]
             );
 
-            messageSubmit(' ', res.$id)
+            messageSubmit(null, res.$id)
 
             fireToast('success', 'File uploaded.')
 
@@ -463,7 +464,7 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
                     )}
 
                     <div className='h-full w-full bg-gray-dark p-[2dvw] flex flex-col-reverse gap-[3dvw] lg:gap-[2dvw] overflow-y-scroll no-scrollbar'>
-                        {messages.map((message: any) => (
+                        {messages.map((message: MessageInterface) => (
                             <ChannelMessage message={message} key={message.$id} localUser={(message.author.$id === loggedInUser.$id)} />
                         ))}
                         {messages.length > 9 && (

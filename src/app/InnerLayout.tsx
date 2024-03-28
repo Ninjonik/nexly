@@ -1,6 +1,6 @@
 "use client"
 
-import React from "react";
+import React, {useEffect} from "react";
 import {UserContextProvider} from "@/app/UserContext";
 
 export function InnerLayout({ children }: { children: React.ReactNode }) {

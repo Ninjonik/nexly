@@ -113,12 +113,12 @@ const ChannelMessage: FC<ChannelMessageProps> = ({ typing, message, localUser })
 
     return (
         <div className={`max-w-8/10 flex flex-row gap-[1dvw] lg:gap-[0.5dvw] ${alignmentClass}`}>
-            {!localUser && <ProfileIcon imageUrl={`/images/users/${message.author?.avatarPath}`} customClass={profileIconAlignment} />}
+            {!localUser && <ProfileIcon imageUrl={`/images/users/${message.author?.avatarPath}`} customClass={profileIconAlignment} status={message.author.status} />}
             <div className={`max-w-9/10 flex flex-col justify-center ${localUser ? 'items-end' : ''}`}>
                 <MessageHeader username={message.author?.username} updatedAt={message.$updatedAt} />
                 <MessageBody isImage={isImage} message={message.message} localUser={localUser} attachments={message.attachments} />
             </div>
-            {localUser && <ProfileIcon imageUrl={`/images/users/${message.author?.avatarPath}`} customClass={profileIconAlignment} />}
+            {localUser && <ProfileIcon imageUrl={`/images/users/${message.author?.avatarPath}`} customClass={profileIconAlignment} status={message.author.status} />}
         </div>
     );
 };

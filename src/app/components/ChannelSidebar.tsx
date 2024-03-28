@@ -51,9 +51,8 @@ const Sidebar: FC<SidebarProps> = ({}) => {
 
             const groupNameValue = groupName.current.value
 
-            const dbID = loggedInUser.dbID;
             const constructedBody = JSON.stringify({
-                "dbID": dbID,
+                "dbID": loggedInUser.$id,
                 "groupName": groupNameValue,
             });
 
@@ -177,7 +176,7 @@ const Sidebar: FC<SidebarProps> = ({}) => {
                         className="w-full text-center h-1/10 border-t-2 border-blue flex flex-row justify-between px-4">
                         <div className="flex flex-row items-center justify-center gap-2">
                             <ProfileIcon imageUrl={loggedInUser ? getAvatar(loggedInUser.avatarPath) : undefined}
-                                         status={'online'}/>
+                                         status={loggedInUser.status}/>
                             <div className="flex flex-col justify-between text-start text-2">
                                 <span>{loggedInUser.username ? loggedInUser.username : loggedInUser.name}</span>
                                 <span className="text-lightly">#{loggedInUser.$id.slice(0, 4)}</span>

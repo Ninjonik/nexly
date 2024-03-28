@@ -81,7 +81,8 @@ const FormTextArea: FC<FormTextAreaProps> = ({
         event.preventDefault();
         const file = item.getAsFile();
         if (file) {
-          await handlePasteFn(file);
+          setAttachments([...attachments, ...[file]])
+          console.info(attachments)
         }
         return;
       }

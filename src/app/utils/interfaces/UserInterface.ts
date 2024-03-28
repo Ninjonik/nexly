@@ -6,6 +6,7 @@ interface UserInterface {
     avatarPath: string;
     dbID: string;
     pinnedGroups: string[];
+    status: "offline" | "dnd" | "away" | "online";
     $id: string;
     $createdAt: string;
     $updatedAt: string;

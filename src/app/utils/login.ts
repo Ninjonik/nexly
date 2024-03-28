@@ -35,6 +35,7 @@ const login = async (email: string | undefined, password: string | undefined) =>
         authAccount.groups = data.user.groups ?? []
         authAccount.pinnedGroups = data.user.pinnedGroups
         authAccount.dbID = data.user.$id
+        authAccount.status = data.user.status
         // TODO: add more fields there
     } catch (error) {
         console.error('Error fetching user data:', error)

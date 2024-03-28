@@ -8,8 +8,8 @@ interface MessageInterface {
     $createdAt: string;
     $updatedAt: string;
     $permissions: string[];
-    author: null | UserInterface; // Replace 'any' with the actual type of 'author' if known
-    group: null | GroupInterface; // Replace 'any' with the actual type of 'group' if known
+    author: UserInterface; // Replace 'any' with the actual type of 'author' if known
+    group: GroupInterface; // Replace 'any' with the actual type of 'group' if known
     attachments: string[];
     $databaseId: string;
     $collectionId: string;

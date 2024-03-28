@@ -4,7 +4,8 @@ import { createContext, useContext, ReactNode, useState, useEffect } from 'react
 import Cookies from 'js-cookie';
 import login from '@/app/utils/login';
 import User from '@/app/utils/interfaces/User';
-import {client, database} from "@/app/appwrite";
+import {client, database, databases} from "@/app/appwrite";
+import {Permission, Role} from "node-appwrite";
 
 interface UserContextProps {
     children: ReactNode;
@@ -44,6 +45,13 @@ export const UserContextProvider = ({ children }: UserContextProps) => {
     }, [loggedInUser]);
 
     useEffect(() => {
+
+        if(loggedInUser !== "pending" && loggedInUser && loggedInUser.$id){
+            const setStatusRes = databases.updateDocument(database, "users", loggedInUser.$id, {
+                status: "online",
+            })
+        }
+
         const unsubscribe = client.subscribe(`databases.${database}.collections.users.documents`, response => {
             const res: any = response.payload;
             if (loggedInUser !== "pending" && loggedInUser && loggedInUser.$id && res.$id === loggedInUser.$id) {
@@ -51,8 +59,23 @@ export const UserContextProvider = ({ children }: UserContextProps) => {
             }
         });
 
+        /* RUN ON PAGE EXIT */
+        const handleUnload = () => {
+            if(loggedInUser !== "pending" && loggedInUser && loggedInUser.$id){
+                navigator.sendBeacon(`/api/setUserStatus`,
+                    JSON.stringify({
+                        userID: loggedInUser.$id,
+                        status: "offline"
+                    })
+                );
+            }
+        };
+        window.addEventListener('beforeunload', handleUnload);
+        /* END */
+
         return () => {
             unsubscribe();
+            window.removeEventListener('beforeunload', handleUnload);
         };
     }, [loggedInUser]);
 

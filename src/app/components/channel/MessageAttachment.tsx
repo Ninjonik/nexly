@@ -39,13 +39,13 @@ export const MessageAttachment: FC<MessageAttachmentProps> = ({attachmentId, ope
                 </div>
             ) : (
                 <div key={attachmentId}>
-                    <button type="submit" className='relative flex flex-row gap-[0.5dvw]'>
+                    <button type="submit" className='relative flex flex-row gap-[0.5dvw] w-full'>
 
                         {attachment?.mimeType?.startsWith('image') ? (
                             <img className='rounded-lg max-h-35 hover:cursor-pointer' src={getFilePreview(attachmentId)} alt="Attachment" onClick={() => openImage(filePreview)} />
                         ) : (
-                            <div className='flex flex-row gap-[0.5dvw]'>
-                                <span className={`p-[0.4dvw] pr-[1dvw] text-1.5 bg-blue rounded-b-lg rounded-l-lg`}>{attachment.name}</span>
+                            <div className='flex flex-row gap-[0.5dvw] w-full'>
+                                <span className={`p-[0.4dvw] pr-[1dvw] text-1.5 bg-blue rounded-b-lg rounded-l-lg w-full`}>{attachment.name}</span>
                             </div>
                         )}
                         <a href={getFileDownload(attachmentId)} download title='Download' className={`w-[1.5dvw] h-[1.5dvw] bottom-[-0.5dvw] right-[-0.5dvw] hover:border-blue hover:text-blue-hover transition-all ease-in hover:cursor-pointer absolute border-2 border-light rounded-full bg-white text-blue text-1.5 flex justify-center items-center text-center`}>

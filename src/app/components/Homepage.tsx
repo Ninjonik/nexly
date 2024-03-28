@@ -50,9 +50,9 @@ export const Homepage = () => {
 
     const fetchFriendRequests = async () => {
 
-        const sentFriendRequestsRes = await databases.listDocuments(database, 'usersRelations', [Query.equal('source', loggedInUser.dbID), Query.equal('type', 10)]);
-        const friendRequestsRes = await databases.listDocuments(database, 'usersRelations', [Query.equal('destination', loggedInUser.dbID), Query.equal('type', 10)]);
-        const friendsRes = await databases.listDocuments(database, 'usersRelations', [Query.equal('destination', loggedInUser.dbID), Query.equal('type', 11)]);
+        const sentFriendRequestsRes = await databases.listDocuments(database, 'usersRelations', [Query.equal('source', loggedInUser.$id), Query.equal('type', 10)]);
+        const friendRequestsRes = await databases.listDocuments(database, 'usersRelations', [Query.equal('destination', loggedInUser.$id), Query.equal('type', 10)]);
+        const friendsRes = await databases.listDocuments(database, 'usersRelations', [Query.equal('destination', loggedInUser.$id), Query.equal('type', 11)]);
         const combinedDocuments = [...friendsRes.documents, ...sentFriendRequestsRes.documents, ...friendRequestsRes.documents];
 
         const combinedObject: Record<string, FriendRequestInterface> = combinedDocuments.reduce((acc, document) => {
@@ -104,7 +104,7 @@ export const Homepage = () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ source: loggedInUser.dbID, dest: res.documents[0].$id })
+                body: JSON.stringify({ source: loggedInUser.$id, dest: res.documents[0].$id })
             });
 
             if (!friendRequestResponse.ok) {
@@ -146,7 +146,7 @@ export const Homepage = () => {
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ source: loggedInUser.dbID, dest: destination })
+                    body: JSON.stringify({ source: loggedInUser.$id, dest: destination })
                 });
 
                 if (!friendRequestResponse.ok) {
@@ -162,7 +162,7 @@ export const Homepage = () => {
             const promise = databases.deleteDocument(database, 'usersRelations', documentId);
             promise.then(async function (response) {
 
-                const duplicateReq = await databases.listDocuments(database, 'usersRelations', [Query.equal('source', loggedInUser.dbID), Query.equal('destination', destination), Query.equal('type', 11)]);
+                const duplicateReq = await databases.listDocuments(database, 'usersRelations', [Query.equal('source', loggedInUser.$id), Query.equal('destination', destination), Query.equal('type', 11)]);
 
                 const promise2 = databases.deleteDocument(database, 'usersRelations', duplicateReq.documents[0].$id);
                 promise2.then(function (response) {

@@ -3,7 +3,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCommentDots, faFileLines, faUser} from "@fortawesome/free-regular-svg-icons";
 import AnchorLink from "@/app/components/AnchorLink";
 import FormModal from "@/app/components/form/FormModal";
-import {faArrowUp91, faPhone} from "@fortawesome/free-solid-svg-icons";
+import {faArrowUp91, faPaperclip, faPhone} from "@fortawesome/free-solid-svg-icons";
 import UserInterface from "@/app/utils/interfaces/UserInterface";
 import ProfileIcon from "@/app/components/ProfileIcon";
 import SmallIcon from "@/app/components/SmallIcon";
@@ -132,13 +132,15 @@ export const ChannelAside = ({usersShown, group, activeGroup}: ChannelAsideProps
                         {group.users.map((user: UserInterface) => (
                             <div className='flex justify-between items-center' key={user.$id}>
                                 <div className='flex flex-row gap-[0.5dvw] items-center'>
-                                    <ProfileIcon imageUrl={`/images/users/${user.avatarPath}`} status={'online'}/>
+                                    <ProfileIcon imageUrl={`/images/users/${user.avatarPath}`} status={user.status}/>
                                     <h3 className='font-bold'>{user.username}</h3>
                                 </div>
+                                {/*
                                 <div className='flex flex-row gap-[0.5dvw]'>
                                     <SmallIcon icon={<FontAwesomeIcon icon={faPhone}/>}/>
                                     <SmallIcon icon={<FontAwesomeIcon icon={faCommentDots}/>}/>
                                 </div>
+                                */}
                             </div>
                         ))}
 

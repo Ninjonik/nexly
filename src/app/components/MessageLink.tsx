@@ -66,14 +66,14 @@ const MessageLink: FC<MessageLinkProps> = ({ typing, time, notifications, group 
     }
 
     return (
-        <button className="flex flex-row justify-between text-start items-center gap-4 group" onClick={() => router.push(`/group/${group.$id}`)} type={'button'}>
+        <button className="flex group p-2 flex-row justify-between text-start items-center gap-4 group" onClick={() => router.push(`/group/${group.$id}`)} type={'button'}>
             <ProfileIcon imageUrl={`/images/groups/${group.avatarPath}`}
                          // status={'online'}
             />
 
             <div className="flex flex-row justify-between w-8/10">
                 <div className="flex flex-col justify-between w-6/10">
-                    <h3 className="text-3xl lg:text-md font-bold">{group.title.slice(0, 12)}</h3>
+                    <h3 className="text-3xl lg:text-md font-bold group-hover:underline transition-all">{group.title.slice(0, 12)}</h3>
                     {typing ?
                         <span className="italic text-md text-blue">Typing...</span>
                         :

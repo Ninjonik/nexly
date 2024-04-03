@@ -1,12 +1,7 @@
 import React, {FC, useEffect, useState} from 'react';
 import ProfileIcon from "@/app/components/ProfileIcon";
 import MessageInterface from "@/app/utils/interfaces/MessageInterface";
-import convertTimestamp from "@/app/utils/convertTimestamp";
 import { isValidImageUrl } from "@/app/utils/isValidImageUrl";
-import getFilePreview from "@/app/utils/getFilePreview";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faDownload} from "@fortawesome/free-solid-svg-icons";
-import getFileDownload from "@/app/utils/getFileDownload";
 import FormModal from "@/app/components/form/FormModal";
 import {MessageAttachment} from "@/app/components/channel/MessageAttachment";
 import formatTimestampToTime from "@/app/utils/convertTimestamp";

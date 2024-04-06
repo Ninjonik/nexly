@@ -17,6 +17,8 @@ pnpm dev
 bun dev
 ```
 
+Docker: soon
+
 Open [http://localhost:3005](http://localhost:3005) with your browser to see the result.
 
 ## Contributing

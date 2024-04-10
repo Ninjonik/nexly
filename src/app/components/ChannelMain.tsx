@@ -15,12 +15,8 @@ import {
     faVideo, faXmark
 } from "@fortawesome/free-solid-svg-icons";
 import ChannelMessage from "@/app/components/channel/ChannelMessage";
-import {faCommentDots, faFileLines, faUser} from "@fortawesome/free-regular-svg-icons";
-import FormInput from "@/app/components/form/FormInput";
-import User from "@/app/utils/interfaces/User";
 import {client, database, databases, storage} from "@/app/appwrite";
 import {Models, Query} from "appwrite";
-import UserInterface from "@/app/utils/interfaces/UserInterface";
 import ChannelMainSkeleton from "@/app/components/skeletons/ChannelMain";
 import FormTextarea from "@/app/components/form/FormTextarea";
 import emojiNameMap from "emoji-name-map";
@@ -35,13 +31,9 @@ import {
     VideoConference,
     PreJoin,
 } from '@livekit/components-react';
-import {Track} from "livekit-client";
 import {useUserContext} from "@/app/UserContext";
-import FormModal from "@/app/components/form/FormModal";
 import fireToast from "@/app/utils/toast";
-import sha256 from "@/app/utils/sha256";
 import {ID, Permission, Role} from "appwrite";
-import {Md5} from "ts-md5";
 import {useRouter} from "next/navigation";
 import messageInterface from "@/app/utils/interfaces/MessageInterface";
 import AnchorLink from "@/app/components/AnchorLink";
@@ -49,7 +41,7 @@ import uploadMultipleFiles from "@/app/utils/uploadMultipleFiles";
 import {useSlideContext} from "@/app/SlideContext";
 import {ChannelAside} from "@/app/components/channel/ChannelAside";
 import MessageInterface from "@/app/utils/interfaces/MessageInterface";
-
+import InfiniteScroll from 'react-infinite-scroller';
 interface ChannelMainProps {
     activeGroup: string
 }
@@ -77,7 +69,7 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
     const [usersShown, setUsersShown] = useState<boolean>(true)
     const [lastLoadedMessageId, setLastLoadedMessageId] = useState<string>('')
 
-    const fetchData = async (refreshInfinite: boolean = false) => {
+    const fetchData = async (refreshInfinite: boolean = false, page?: number) => {
         try {
             const fetchedGroup = await databases.getDocument(database, 'groups', activeGroup)
 
@@ -100,6 +92,7 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
                 const transformedMessages: Models.Document[] = fetchedMessage.documents;
                 if(lastLoadedMessageId && refreshInfinite){
                     setMessages((prevMessages: messageInterface[]) => [...prevMessages, ...transformedMessages]);
+                    // setMessages(transformedMessages);
                 } else {
                     setMessages(transformedMessages)
                 }
@@ -166,8 +159,6 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
                         "attachments": fileIds
                     });
                 }
-
-                console.log(constructedBody)
 
                 const response = await fetch(`/api/sendMessage`, {
                     method: 'POST',
@@ -435,8 +426,9 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
 
                     {group.call && (
                         <>
-                            { (!hiddenCall && inCall) ? (
-                                <div className={`flex flex-col gap-[1dvw] bg-light transition-all duration-100 ${fullscreen ? 'absolute w-[100dvw] h-[100dvh] top-0 left-0 z-50' : 'relative w-full h-4/10'}`}>
+                            {(!hiddenCall && inCall) ? (
+                                <div
+                                    className={`flex flex-col gap-[1dvw] bg-light transition-all duration-100 ${fullscreen ? 'absolute w-[100dvw] h-[100dvh] top-0 left-0 z-50' : 'relative w-full h-4/10'}`}>
                                     <LiveKitRoom
                                         video={false}
                                         audio={false}
@@ -447,30 +439,56 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
                                         className='flex flex-col h-full'
                                         onDisconnected={onDisconnectedFn}
                                     >
-                                        <VideoConference />
-                                        <button className='h-[2dvw] w-[2dvw] p-[1dvw] text-lightly hover:text-white transition-all flex justify-center items-center text-center rounded-xl absolute right-[0.5dvw] bottom-[0.5dvw]' onClick={() => setFullscreen(!fullscreen)}>{fullscreen ? <FontAwesomeIcon icon={faMinimize} /> : <FontAwesomeIcon icon={faMaximize} />}</button>
+                                        <VideoConference/>
+                                        <button
+                                            className='h-[2dvw] w-[2dvw] p-[1dvw] text-lightly hover:text-white transition-all flex justify-center items-center text-center rounded-xl absolute right-[0.5dvw] bottom-[0.5dvw]'
+                                            onClick={() => setFullscreen(!fullscreen)}>{fullscreen ?
+                                            <FontAwesomeIcon icon={faMinimize}/> :
+                                            <FontAwesomeIcon icon={faMaximize}/>}</button>
 
                                     </LiveKitRoom>
                                 </div>
                             ) : (
-                                <div className='flex flex-row justify-center items-center w-full h-3/10 text-2 gap-[1dvw] p-[1dvw] bg-light z-10'>
+                                <div
+                                    className='flex flex-row justify-center items-center w-full h-3/10 text-2 gap-[1dvw] p-[1dvw] bg-light z-10'>
                                     {(!inCall && !hiddenCall) && (
-                                        <button className='h-[2dvw] w-[4dvw] p-[1dvw] bg-green-400 hover:bg-green-600 transition-all flex justify-center items-center text-center rounded-xl' onClick={() => setInCall(true)}>Join</button>
+                                        <button
+                                            className='h-[2dvw] w-[4dvw] p-[1dvw] bg-green-400 hover:bg-green-600 transition-all flex justify-center items-center text-center rounded-xl'
+                                            onClick={() => setInCall(true)}>Join</button>
                                     )}
-                                    <button className='right-10 h-[2dvw] w-[4dvw] p-[1dvw] bg-green-400 hover:bg-green-600 transition-all flex justify-center items-center text-center rounded-xl' onClick={() => hideCall(!hiddenCall)}>{hiddenCall ? 'Show' : 'Hide'}</button>
+                                    <button
+                                        className='right-10 h-[2dvw] w-[4dvw] p-[1dvw] bg-green-400 hover:bg-green-600 transition-all flex justify-center items-center text-center rounded-xl'
+                                        onClick={() => hideCall(!hiddenCall)}>{hiddenCall ? 'Show' : 'Hide'}</button>
                                 </div>
                             )}
                         </>
                     )}
 
-                    <div className='h-full w-full bg-gray-dark p-[2dvw] flex flex-col-reverse gap-[3dvw] lg:gap-[2dvw] overflow-y-scroll no-scrollbar'>
-                        {messages.map((message: MessageInterface) => (
-                            <ChannelMessage message={message} key={message.$id} localUser={(message.author.$id === loggedInUser.$id)} />
-                        ))}
-                        {messages.length > 9 && (
-                            <AnchorLink size={'1'} description={'Show more'} color={'blue'} className={'text-center'} onClickFn={async () => fetchData(true)} />
-                        )}
-                    </div>
+                    {/*<div className='h-full w-full bg-gray-dark p-[2dvw] flex flex-col-reverse gap-[3dvw] lg:gap-[2dvw] overflow-y-scroll no-scrollbar'>*/}
+                    {/*    {messages.map((message: MessageInterface) => (*/}
+                    {/*        <ChannelMessage message={message} key={message.$id} localUser={(message.author.$id === loggedInUser.$id)} />*/}
+                    {/*    ))}*/}
+                    {/*    {messages.length > 9 && (*/}
+                    {/*        <AnchorLink size={'1'} description={'Show more'} color={'blue'} className={'text-center'} onClickFn={async () => fetchData(true)} />*/}
+                    {/*    )}*/}
+                    {/*</div>*/}
+
+                        <InfiniteScroll
+                            pageStart={0}
+                            loadMore={(e) => fetchData(false, e)}
+                            hasMore={true}
+                            loader={<div className="loader" key={0}>Loading ...</div>}
+                            className={'h-full w-full bg-gray-dark p-[2dvw] flex flex-col-reverse gap-[3dvw] lg:gap-[2dvw] overflow-y-auto no-scrollbar'}
+                        >
+                            {messages.map((message: MessageInterface) => (
+                                <ChannelMessage message={message} key={message.$id}
+                                                localUser={(message.author.$id === loggedInUser.$id)}/>
+                            ))}
+                            {messages.length > 9 && (
+                                <AnchorLink size={'1'} description={'Show more'} color={'blue'} className={'text-center'}
+                                            onClickFn={async () => fetchData(true)}/>
+                            )}
+                        </InfiniteScroll>
 
                     <form
                         className='max-h-5/10 flex-grow w-full bg-light lg:p-[1dvw] p-[2dvw] flex justify-center items-center'
@@ -480,7 +498,7 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
                         }}
                     >
                         <FormTextarea
-                            icon={<FontAwesomeIcon icon={faCirclePlus} className="text-gray-400 text-2" />}
+                            icon={<FontAwesomeIcon icon={faCirclePlus} className="text-gray-400 text-2"/>}
                             title={''}
                             valueProp={newMessage}
                             onChangeFn={(value) => setNewMessage(convertText(value))}
@@ -497,7 +515,7 @@ const ChannelMain: FC<ChannelMainProps> = ({ activeGroup }) => {
 
                 </div>
 
-                <ChannelAside group={group} usersShown={usersShown} activeGroup={activeGroup} />
+                <ChannelAside group={group} usersShown={usersShown} activeGroup={activeGroup}/>
 
             </article>
 
